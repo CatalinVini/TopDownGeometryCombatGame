@@ -1,0 +1,197 @@
+extends CharacterBody2D
+
+@export var speed = 0.5
+var offset_dif: Vector2
+var enemy_position: Vector2
+var direction: Vector2
+var zero_momentum: Vector2
+var player_pos: Vector2
+var enemy_pos: Vector2
+var retreat_pos: Vector2
+var detection = false
+var attack_state = false
+var retreat_state = false
+var hurt_state = false
+var parried_state = false
+var area_detection = false
+var attack_connected = false
+var attack_area_collided = false
+var block_window = false
+var attack_hit = false
+var HitPoints = 100
+var attack_damage = 20
+
+@onready var animation = $"../AnimationPlayer"
+@onready var enemy_timer_attack = $"../EnemyTimerAttack"
+@onready var enemy_timer_hit = $"../EnemyTimerHit"
+@onready var enemy_timer_retreat = $"../EnemyTimerRetreat"
+@onready var enemy_timer_get_hurt = $"../EnemyTimerGetHurt"
+@onready var enemy_detection_area2d =  $DetectionArea2D
+@onready var Player = get_tree().get_first_node_in_group("Player")
+@onready var Player_array = get_tree().get_nodes_in_group("Player")
+@onready var enemy_timer_get_parried = $"../EnemyTimerGetParried"
+
+
+func _ready():
+	
+	enemy_position.x = 0
+	enemy_position.y = 0
+	zero_momentum.x = 0
+	zero_momentum.y = 0
+	#print(self)
+	#print(enemy_detection_area2d)
+	
+func _physics_process(delta: float) -> void:
+	
+	move()
+	enemy_hurt()
+	move_and_slide()
+	
+
+func move():
+	
+	if (detection == false) && (attack_state == false) && (retreat_state == false) && (hurt_state == false) && (parried_state == false):
+		enemy_position = get_global_position()
+		look_at(Global_variables_functions.player_position)
+		direction = Global_variables_functions.player_position - enemy_position
+		velocity = direction * speed
+		animation.play("Move")
+
+
+func enemy_hurt():
+	
+	if (Player.attack_connection == true) && (Player.enemy_body_ID == self):
+		#print("ENEMY HURT")
+		Player.attack_connection = false
+		hurt_state = true
+		attack_state = false
+		detection = false
+		parried_state = false
+		enemy_detection_area2d.monitoring = false
+		animation.stop()
+		animation.play("GettingHurt")
+		enemy_timer_attack.stop()
+		enemy_timer_hit.stop()
+		enemy_timer_get_parried.stop()
+		velocity = Vector2(0, 0)
+		enemy_timer_get_hurt.start(0.5)
+		HitPoints = HitPoints - attack_damage
+		
+
+func enemy_get_parried():
+	
+	#print("Player:", Player.enemy_area_ID, " Enemy: ", enemy_detection_area2d)
+	
+	if((Player.block_state == true)&&(hurt_state == false))&&((area_detection == true)):
+		print("PARRIED")
+		Player.successfull_parry = false
+		parried_state = true
+		attack_state = false
+		detection = false
+		enemy_detection_area2d.monitoring = false
+		animation.play("Parried") 
+		enemy_timer_attack.stop()
+		enemy_timer_hit.stop()
+		enemy_timer_get_hurt.stop()
+		enemy_timer_get_parried.start(1)
+
+
+func attack_seq():
+	
+	if (hurt_state == false) && (parried_state == false):
+		velocity = zero_momentum
+		attack_state = true
+		animation.play("Attack")
+		enemy_timer_attack.start(0.6)
+		enemy_timer_hit.start(0.33)
+		
+		if (area_detection == true):
+			attack_area_collided = true
+
+
+func corect_retreat_direction():
+	if(player_pos.x < enemy_pos.x) && (player_pos.y < enemy_pos.y):
+		retreat_pos = Vector2(1,1)
+	
+	if(player_pos.x > enemy_pos.x) && (player_pos.y > enemy_pos.y):
+		retreat_pos = Vector2(-1,-1)
+	
+	if(player_pos.x < enemy_pos.x) && (player_pos.y > enemy_pos.y):
+		retreat_pos = Vector2(1, -1)
+	
+	if(player_pos.x > enemy_pos.x) && (player_pos.y < enemy_pos.y):
+		retreat_pos = Vector2(-1, 1)
+
+
+######################################################
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	
+	if (body.name == Player.name):
+		attack_seq()
+
+
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	
+	if (body.name == Player.name):
+		detection = false
+		#print ("Body out")
+
+
+func _on_detection_area_2d_area_entered(area: Area2D) -> void:
+	
+	if(area.name == Player_array[1].name):
+		#print("AREA2D detected by ENEMY")
+		area_detection = true
+	
+
+func _on_detection_area_2d_area_exited(area: Area2D) -> void:
+	
+	if(area.name == Player_array[1].name):
+		area_detection = false
+	
+
+##########################################################
+
+
+func _on_enemy_timer_attack_timeout() -> void:
+	
+	attack_state = false
+	retreat_state = true
+	attack_connected = false
+	attack_area_collided = false
+	
+	player_pos = Player.get_global_position()
+	enemy_pos = get_global_position()
+
+	corect_retreat_direction()
+		
+	velocity = enemy_pos - player_pos + retreat_pos
+	look_at(player_pos)
+	animation.play("Move")
+	enemy_timer_retreat.start(0.5)
+
+
+func _on_enemy_timer_hit_timeout() -> void:
+	
+	if (Player.block_state == false)&&((area_detection == true)):
+		attack_hit = true
+	
+	enemy_get_parried()
+
+
+func _on_enemy_timer_retreat_timeout() -> void:
+	retreat_state = false
+	if (detection == true) && (hurt_state == false):
+		attack_seq()
+
+
+func _on_enemy_timer_get_hurt_timeout() -> void:
+	hurt_state = false
+	enemy_detection_area2d.monitoring = true
+
+
+func _on_enemy_timer_get_parried_timeout() -> void:
+	parried_state = false
+	enemy_detection_area2d.monitoring = true

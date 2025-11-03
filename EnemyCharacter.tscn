@@ -1,0 +1,452 @@
+[gd_scene load_steps=13 format=3 uid="uid://d4kj7q43vr1kr"]
+
+[ext_resource type="Script" uid="uid://0h8ga7ggwy4a" path="res://enemy_script.gd" id="1_d6you"]
+[ext_resource type="PackedScene" uid="uid://nk2war87clhf" path="res://HUD_Enemy.tscn" id="2_kbrm0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kbrm0"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qan7t"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d6you"]
+size = Vector2(128, 128)
+
+[sub_resource type="Animation" id="Animation_ayvk7"]
+resource_name = "Attack"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.266667, 0.333333, 0.433334, 0.566667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 128), Vector2(-48, 176), Vector2(143, 80), Vector2(208, 16), Vector2(143, 80), Vector2(0, 128)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.266667, 0.333333, 0.433333, 0.566667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -128), Vector2(-48, -176), Vector2(144, -80), Vector2(208, -16), Vector2(144, -80), Vector2(0, -128)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EnemyCharacterBody2D/Hand R:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EnemyCharacterBody2D/Hand L:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_kpxg6"]
+resource_name = "GettingHurt"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-80, 0), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EnemyCharacterBody2D/Hand R:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 128)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EnemyCharacterBody2D/Hand L:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -128)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("EnemyCharacterBody2D/Hand R:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("EnemyCharacterBody2D/Hand L:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_d6you"]
+resource_name = "Idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 128), Vector2(-8, 128), Vector2(0, 128)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -128), Vector2(-8, -128), Vector2(0, -128)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EnemyCharacterBody2D/Hand L:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EnemyCharacterBody2D/Hand R:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_16xks"]
+resource_name = "Move"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.466667, 0.733333, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 128), Vector2(-48, 128), Vector2(0, 128), Vector2(48, 128), Vector2(0, 128)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.466667, 0.733333, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -128), Vector2(48, -128), Vector2(0, -128), Vector2(-48, -128), Vector2(0, -128)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_s84lq"]
+resource_name = "Parried"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-64, 0), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.166667, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 3.14159, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EnemyCharacterBody2D/Hand R:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 128)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EnemyCharacterBody2D/Hand L:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -128)]
+}
+
+[sub_resource type="Animation" id="Animation_kbrm0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 128)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -128)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EnemyCharacterBody2D/Hand L:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EnemyCharacterBody2D/Hand R:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_16xks"]
+_data = {
+&"Attack": SubResource("Animation_ayvk7"),
+&"GettingHurt": SubResource("Animation_kpxg6"),
+&"Idle": SubResource("Animation_d6you"),
+&"Move": SubResource("Animation_16xks"),
+&"Parried": SubResource("Animation_s84lq"),
+&"RESET": SubResource("Animation_kbrm0")
+}
+
+[node name="Node2D" type="Node2D"]
+
+[node name="EnemyCharacterBody2D" type="CharacterBody2D" parent="." groups=["Enemy"]]
+script = ExtResource("1_d6you")
+
+[node name="EnemyCharacterArea" type="Area2D" parent="EnemyCharacterBody2D"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/EnemyCharacterArea"]
+shape = SubResource("RectangleShape2D_kbrm0")
+
+[node name="EnemySquare" type="Polygon2D" parent="EnemyCharacterBody2D"]
+polygon = PackedVector2Array(-64, 64, -64, -64, 64, -64, 64, 64)
+
+[node name="Hand R" type="Polygon2D" parent="EnemyCharacterBody2D"]
+position = Vector2(0, 128)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="Hand L" type="Polygon2D" parent="EnemyCharacterBody2D"]
+position = Vector2(0, -128)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D"]
+shape = SubResource("RectangleShape2D_qan7t")
+
+[node name="DetectionArea2D" type="Area2D" parent="EnemyCharacterBody2D" groups=["Enemy"]]
+position = Vector2(128, 0)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/DetectionArea2D"]
+shape = SubResource("RectangleShape2D_d6you")
+debug_color = Color(1, 0, 0.0888976, 0.42)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="EnemyCharacterBody2D"]
+
+[node name="Control" parent="EnemyCharacterBody2D/CanvasLayer" instance=ExtResource("2_kbrm0")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_16xks")
+}
+
+[node name="EnemyTimerAttack" type="Timer" parent="."]
+wait_time = 0.6
+one_shot = true
+
+[node name="EnemyTimerHit" type="Timer" parent="."]
+wait_time = 0.33
+one_shot = true
+
+[node name="EnemyTimerRetreat" type="Timer" parent="."]
+one_shot = true
+
+[node name="EnemyTimerGetHurt" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="EnemyTimerGetParried" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="area_entered" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_detection_area_2d_area_entered"]
+[connection signal="area_exited" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_detection_area_2d_area_exited"]
+[connection signal="body_entered" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_area_2d_body_exited"]
+[connection signal="timeout" from="EnemyTimerAttack" to="EnemyCharacterBody2D" method="_on_enemy_timer_attack_timeout"]
+[connection signal="timeout" from="EnemyTimerHit" to="EnemyCharacterBody2D" method="_on_enemy_timer_hit_timeout"]
+[connection signal="timeout" from="EnemyTimerRetreat" to="EnemyCharacterBody2D" method="_on_enemy_timer_retreat_timeout"]
+[connection signal="timeout" from="EnemyTimerGetHurt" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_hurt_timeout"]
+[connection signal="timeout" from="EnemyTimerGetParried" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_parried_timeout"]

@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://nk2war87clhf"]
+
+[ext_resource type="Script" uid="uid://dcnhyjhlsis7n" path="res://Progress_bar_enemy.gd" id="1_qtix5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xj7ud"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bayd2"]
+bg_color = Color(0.996078, 0.133333, 0.0313726, 1)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -632.0
+offset_right = 232.0
+offset_bottom = -609.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/background = SubResource("StyleBoxFlat_xj7ud")
+theme_override_styles/fill = SubResource("StyleBoxFlat_bayd2")
+step = 1.0
+value = 100.0
+fill_mode = 1
+script = ExtResource("1_qtix5")

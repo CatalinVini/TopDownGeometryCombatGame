@@ -1,0 +1,561 @@
+[gd_scene load_steps=19 format=3 uid="uid://cddoam1hokn8w"]
+
+[ext_resource type="Script" uid="uid://bwnsu5utej4x2" path="res://character_body_2d.gd" id="1_pgxrt"]
+[ext_resource type="PackedScene" uid="uid://civc7devo31tv" path="res://HUD_Player.tscn" id="2_opd46"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_opd46"]
+radius = 70.1783
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pgxrt"]
+radius = 31.9997
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kxtsn"]
+radius = 32.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pgxrt"]
+size = Vector2(158.436, 336)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_opd46"]
+size = Vector2(226, 96)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kxtsn"]
+
+[sub_resource type="Animation" id="Animation_kprj8"]
+resource_name = "Attack_L"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.233333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(8, -136), Vector2(216, -16), Vector2(8, -136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand L:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [3.14159]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand R:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 136)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Hand R:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_h0mou"]
+resource_name = "Attack_R"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.233333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(8, 136), Vector2(216, 16), Vector2(8, 136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand L:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, -136)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Hand L:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [3.14159]
+}
+
+[sub_resource type="Animation" id="Animation_86mt1"]
+resource_name = "Block"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(8, 136), Vector2(98, 104), Vector2(128, 32), Vector2(98, 104), Vector2(8, 136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 3.14159, 6.28319, 3.14159, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand L:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(8, -136), Vector2(98, -104), Vector2(128, -32), Vector2(98, -104), Vector2(8, -136)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Hand L:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [3.14159, 0.0, 3.14159, 6.28319, 3.14159]
+}
+
+[sub_resource type="Animation" id="Animation_f16rc"]
+resource_name = "Clinch"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(150, -16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(150, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_0wu8n"]
+resource_name = "Grab"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.233333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(8, -136), Vector2(280, -16), Vector2(8, -136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.233333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(8, 136), Vector2(280, 16), Vector2(8, 136)]
+}
+
+[sub_resource type="Animation" id="Animation_kxtsn"]
+resource_name = "Idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand L:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, -136)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand R:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Hand L:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [3.14159]
+}
+
+[sub_resource type="Animation" id="Animation_pgxrt"]
+resource_name = "Move"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.233333, 0.500988, 0.733333, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(8, 136), Vector2(72, 136), Vector2(8, 136), Vector2(-72, 136), Vector2(8, 136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand L:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.232579, 0.502728, 0.733333, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(8, -136), Vector2(-72, -136), Vector2(8, -136), Vector2(72, -136), Vector2(8, -136)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand R:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Hand L:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [3.14159]
+}
+
+[sub_resource type="Animation" id="Animation_q5ktn"]
+resource_name = "Pull"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0001, 0.266667, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(280, -16), Vector2(280, -16), Vector2(200, -16), Vector2(150, -16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.266667, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(280, 16), Vector2(200, 16), Vector2(150, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_opd46"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand L:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, -136)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Hand L:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [3.14159]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kxtsn"]
+_data = {
+&"Attack_L": SubResource("Animation_kprj8"),
+&"Attack_R": SubResource("Animation_h0mou"),
+&"Block": SubResource("Animation_86mt1"),
+&"Clinch": SubResource("Animation_f16rc"),
+&"Grab": SubResource("Animation_0wu8n"),
+&"Idle": SubResource("Animation_kxtsn"),
+&"Move": SubResource("Animation_pgxrt"),
+&"Pull": SubResource("Animation_q5ktn"),
+&"RESET": SubResource("Animation_opd46")
+}
+
+[node name="Node2D" type="Node2D"]
+
+[node name="PlayerCharacterBody2D" type="CharacterBody2D" parent="." groups=["Player"]]
+script = ExtResource("1_pgxrt")
+
+[node name="Camera2D" type="Camera2D" parent="PlayerCharacterBody2D"]
+zoom = Vector2(0.5, 0.5)
+process_callback = 0
+position_smoothing_enabled = true
+rotation_smoothing_enabled = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="PlayerCharacterBody2D/Camera2D"]
+follow_viewport_scale = 0.001
+
+[node name="HUD_Player" parent="PlayerCharacterBody2D/Camera2D/CanvasLayer" instance=ExtResource("2_opd46")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -512.0
+offset_top = 252.0
+offset_right = -512.0
+offset_bottom = 252.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D"]
+shape = SubResource("CircleShape2D_opd46")
+
+[node name="Body" type="Polygon2D" parent="PlayerCharacterBody2D/CollisionShape2D"]
+position = Vector2(1.0842e-19, 0)
+scale = Vector2(1.25373, 1.31496)
+offset = Vector2(0, -55)
+polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.006, -38.2858, 103.425, -57.4286, 55, -38.2858, 6.08384, -8.64781e-20, -18.006, 38.2858, 6.08384)
+
+[node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D"]
+position = Vector2(8, -136)
+rotation = 3.14159
+offset = Vector2(96, 23.87)
+polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
+
+[node name="AreaHandL2D" type="Area2D" parent="PlayerCharacterBody2D/Hand L"]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand L/AreaHandL2D"]
+shape = SubResource("CircleShape2D_pgxrt")
+debug_color = Color(0.863437, 0, 0.0125558, 0.42)
+
+[node name="Marker2D" type="Marker2D" parent="PlayerCharacterBody2D/Hand L"]
+position = Vector2(-9.99996, -16)
+
+[node name="Hand R" type="Polygon2D" parent="PlayerCharacterBody2D"]
+position = Vector2(8, 136)
+offset = Vector2(96, 23.87)
+polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
+
+[node name="AreaHandR2D" type="Area2D" parent="PlayerCharacterBody2D/Hand R"]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand R/AreaHandR2D"]
+shape = SubResource("CircleShape2D_kxtsn")
+debug_color = Color(0.862745, 0, 0.0117647, 0.419608)
+
+[node name="AreaParry2D" type="Area2D" parent="PlayerCharacterBody2D" groups=["Player"]]
+position = Vector2(0.450001, 0)
+scale = Vector2(1.00987, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaParry2D"]
+position = Vector2(78.7725, 0)
+shape = SubResource("RectangleShape2D_pgxrt")
+debug_color = Color(0.882353, 0.784314, 0, 0.513726)
+
+[node name="Area2D" type="Area2D" parent="PlayerCharacterBody2D"]
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Area2D"]
+position = Vector2(192, 0)
+shape = SubResource("RectangleShape2D_opd46")
+debug_color = Color(0, 0.506061, 0.132974, 0.42)
+
+[node name="RayCast2D" type="RayCast2D" parent="PlayerCharacterBody2D"]
+position = Vector2(80, 0)
+target_position = Vector2(240, 0)
+
+[node name="ShapeCast2D" type="ShapeCast2D" parent="PlayerCharacterBody2D"]
+visible = false
+position = Vector2(80, -120)
+scale = Vector2(8.01479, 4.80467)
+enabled = false
+shape = SubResource("RectangleShape2D_kxtsn")
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../PlayerCharacterBody2D")
+libraries = {
+&"": SubResource("AnimationLibrary_kxtsn")
+}
+
+[node name="Timer_attack" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="Timer_attack_hit" type="Timer" parent="."]
+wait_time = 0.23
+one_shot = true
+
+[node name="Timer_block" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="Timer_grab" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="Timer_grab_connected" type="Timer" parent="."]
+wait_time = 0.23
+one_shot = true
+
+[connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]
+[connection signal="body_entered" from="PlayerCharacterBody2D/Hand R/AreaHandR2D" to="PlayerCharacterBody2D" method="_on_area_hand_r_2d_body_entered"]
+[connection signal="area_entered" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_entered"]
+[connection signal="area_exited" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_exited"]
+[connection signal="timeout" from="Timer_attack" to="PlayerCharacterBody2D" method="_on_timer_timeout"]
+[connection signal="timeout" from="Timer_attack_hit" to="PlayerCharacterBody2D" method="_on_timer_attack_hit_timeout"]
+[connection signal="timeout" from="Timer_block" to="PlayerCharacterBody2D" method="_on_timer_block_timeout"]
+[connection signal="timeout" from="Timer_grab" to="PlayerCharacterBody2D" method="_on_timer_grab_timeout"]
+[connection signal="timeout" from="Timer_grab_connected" to="PlayerCharacterBody2D" method="_on_timer_grab_connected_timeout"]
