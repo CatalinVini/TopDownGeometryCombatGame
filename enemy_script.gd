@@ -76,7 +76,7 @@ func enemy_hurt():
 		velocity = Vector2(0, 0)
 		enemy_timer_get_hurt.start(0.5)
 		HitPoints = HitPoints - attack_damage
-		
+
 
 func enemy_get_parried():
 	

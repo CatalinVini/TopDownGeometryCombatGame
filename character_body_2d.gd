@@ -11,6 +11,7 @@ var some_zero: Vector2
 @onready var timer_block = $"../Timer_block"
 @onready var timer_grab = $"../Timer_grab"
 @onready var timer_grab_connected = $"../Timer_grab_connected"
+@onready var timer_pull = $"../Timer_pull"
 
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
@@ -21,6 +22,7 @@ var nr = 0
 var attack_state = false
 var block_state = false
 var grab_state = false
+var pull_state = false
 var clinch_state = false
 var in_buffer = false
 var action_to_block_transition = false
@@ -68,9 +70,9 @@ func move():
 	
 	velocity = input_direction * speed
 	
-	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false):
+	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false):
 		animation.play("Move")
-	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false):
+	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false):
 		animation.play("Idle")
 
 
@@ -92,7 +94,7 @@ func attack_seq():
 
 func attack():
 	
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false):
 		attack_seq() 
 	if (Input.is_action_just_pressed("attack")):
 		left_click_number = left_click_number + 1
@@ -153,7 +155,7 @@ func grab_seq():
 
 func grab():
 	
-	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false):
+	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false):
 		grab_seq()
 		
 	if (Input.is_action_just_pressed("grab")):
@@ -266,6 +268,17 @@ func _on_timer_grab_timeout() -> void:
 func _on_timer_grab_connected_timeout() -> void:
 	
 	if (raycast.is_colliding()):
-		clinch_state = true
+		grab_state = false
+		pull_state = true
+		timer_grab.stop()
 		animation.play("Pull")
+		timer_pull.start(0.5)
 		print("Grab HIT")
+
+
+func _on_timer_pull_timeout() -> void:
+	
+	pull_state = false
+	clinch_state = true
+	animation.play("Clinch")
+	

@@ -365,54 +365,6 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_opd46"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, 136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Hand L:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, -136)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hand L:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [3.14159]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kxtsn"]
 _data = {
@@ -464,7 +416,7 @@ offset = Vector2(0, -55)
 polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.006, -38.2858, 103.425, -57.4286, 55, -38.2858, 6.08384, -8.64781e-20, -18.006, 38.2858, 6.08384)
 
 [node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D"]
-position = Vector2(8, -136)
+position = Vector2(280, -16)
 rotation = 3.14159
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
@@ -481,7 +433,7 @@ debug_color = Color(0.863437, 0, 0.0125558, 0.42)
 position = Vector2(-9.99996, -16)
 
 [node name="Hand R" type="Polygon2D" parent="PlayerCharacterBody2D"]
-position = Vector2(8, 136)
+position = Vector2(280, 16)
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
@@ -513,6 +465,7 @@ debug_color = Color(0, 0.506061, 0.132974, 0.42)
 [node name="RayCast2D" type="RayCast2D" parent="PlayerCharacterBody2D"]
 position = Vector2(80, 0)
 target_position = Vector2(240, 0)
+hit_from_inside = true
 
 [node name="ShapeCast2D" type="ShapeCast2D" parent="PlayerCharacterBody2D"]
 visible = false
@@ -550,6 +503,10 @@ one_shot = true
 wait_time = 0.23
 one_shot = true
 
+[node name="Timer_pull" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand R/AreaHandR2D" to="PlayerCharacterBody2D" method="_on_area_hand_r_2d_body_entered"]
 [connection signal="area_entered" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_entered"]
@@ -559,3 +516,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_block" to="PlayerCharacterBody2D" method="_on_timer_block_timeout"]
 [connection signal="timeout" from="Timer_grab" to="PlayerCharacterBody2D" method="_on_timer_grab_timeout"]
 [connection signal="timeout" from="Timer_grab_connected" to="PlayerCharacterBody2D" method="_on_timer_grab_connected_timeout"]
+[connection signal="timeout" from="Timer_pull" to="PlayerCharacterBody2D" method="_on_timer_pull_timeout"]
