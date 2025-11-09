@@ -194,7 +194,6 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_16xks"]
 resource_name = "Move"
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -441,6 +440,10 @@ one_shot = true
 [node name="EnemyTimerGetParried" type="Timer" parent="."]
 one_shot = true
 
+[node name="EnemyTimerThrown" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
 [connection signal="area_entered" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_detection_area_2d_area_entered"]
 [connection signal="area_exited" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_detection_area_2d_area_exited"]
 [connection signal="body_entered" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_area_2d_body_entered"]
@@ -450,3 +453,4 @@ one_shot = true
 [connection signal="timeout" from="EnemyTimerRetreat" to="EnemyCharacterBody2D" method="_on_enemy_timer_retreat_timeout"]
 [connection signal="timeout" from="EnemyTimerGetHurt" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_hurt_timeout"]
 [connection signal="timeout" from="EnemyTimerGetParried" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_parried_timeout"]
+[connection signal="timeout" from="EnemyTimerThrown" to="EnemyCharacterBody2D" method="_on_enemy_timer_thrown_timeout"]

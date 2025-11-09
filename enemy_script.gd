@@ -13,6 +13,8 @@ var attack_state = false
 var retreat_state = false
 var hurt_state = false
 var parried_state = false
+var grabbed_state = false
+var thrown_state = false
 var area_detection = false
 var attack_connected = false
 var attack_area_collided = false
@@ -30,7 +32,7 @@ var attack_damage = 20
 @onready var Player = get_tree().get_first_node_in_group("Player")
 @onready var Player_array = get_tree().get_nodes_in_group("Player")
 @onready var enemy_timer_get_parried = $"../EnemyTimerGetParried"
-
+@onready var enemy_timer_thrown = $"../EnemyTimerThrown"
 
 func _ready():
 	
@@ -40,17 +42,21 @@ func _ready():
 	zero_momentum.y = 0
 	#print(self)
 	#print(enemy_detection_area2d)
-	
+	player_pos = Player.get_global_position()
+	enemy_pos = get_global_position()
+
 func _physics_process(delta: float) -> void:
 	
 	move()
 	enemy_hurt()
+	enemy_grabbed()
+	enemy_thrown()
 	move_and_slide()
 	
 
 func move():
 	
-	if (detection == false) && (attack_state == false) && (retreat_state == false) && (hurt_state == false) && (parried_state == false):
+	if (detection == false) && (attack_state == false) && (retreat_state == false) && (hurt_state == false) && (parried_state == false) && (grabbed_state == false) && (thrown_state == false):
 		enemy_position = get_global_position()
 		look_at(Global_variables_functions.player_position)
 		direction = Global_variables_functions.player_position - enemy_position
@@ -82,7 +88,7 @@ func enemy_get_parried():
 	
 	#print("Player:", Player.enemy_area_ID, " Enemy: ", enemy_detection_area2d)
 	
-	if((Player.block_state == true)&&(hurt_state == false))&&((area_detection == true)):
+	if((Player.block_state == true) && (hurt_state == false)) && ((area_detection == true)):
 		print("PARRIED")
 		Player.successfull_parry = false
 		parried_state = true
@@ -96,9 +102,40 @@ func enemy_get_parried():
 		enemy_timer_get_parried.start(1)
 
 
+func enemy_grabbed():
+	
+	if ((Player.grab_state == true) || (Player.pull_state == true) || (Player.clinch_state == true)) && (Player.enemy_raycast_collided == self) && (thrown_state == false):
+		grabbed_state = true
+		attack_state = false
+		animation.stop()
+		enemy_timer_attack.stop()
+		enemy_timer_hit.stop()
+		look_at(Global_variables_functions.player_position)
+		set_global_position(Player.marker_hand.global_position)
+	else:
+		grabbed_state = false
+
+
+func enemy_thrown():
+	
+	if (Player.throw_state == true) && (Player.enemy_raycast_collided == self):
+		thrown_state = true
+		grabbed_state = false
+		corect_retreat_direction()
+		print(retreat_pos)
+		player_pos = Player.get_global_position()
+		enemy_pos = get_global_position()
+		
+		if (Player.velocity != Vector2.ZERO):
+			velocity = (enemy_pos - player_pos) + Player.velocity * 3
+		else:
+			velocity = (enemy_pos - player_pos) * 3
+			
+		enemy_timer_thrown.start(0.3)
+
 func attack_seq():
 	
-	if (hurt_state == false) && (parried_state == false):
+	if (hurt_state == false) && (parried_state == false) && (grabbed_state == false) && (thrown_state == false):
 		velocity = zero_momentum
 		attack_state = true
 		animation.play("Attack")
@@ -110,6 +147,7 @@ func attack_seq():
 
 
 func corect_retreat_direction():
+	
 	if(player_pos.x < enemy_pos.x) && (player_pos.y < enemy_pos.y):
 		retreat_pos = Vector2(1,1)
 	
@@ -128,7 +166,7 @@ func corect_retreat_direction():
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	
-	if (body.name == Player.name):
+	if (body.name == Player.name) && (grabbed_state == false) && (thrown_state == false):
 		attack_seq()
 
 
@@ -195,3 +233,7 @@ func _on_enemy_timer_get_hurt_timeout() -> void:
 func _on_enemy_timer_get_parried_timeout() -> void:
 	parried_state = false
 	enemy_detection_area2d.monitoring = true
+
+
+func _on_enemy_timer_thrown_timeout() -> void:
+	thrown_state = false

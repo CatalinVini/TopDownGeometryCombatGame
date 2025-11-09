@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cddoam1hokn8w"]
+[gd_scene load_steps=20 format=3 uid="uid://cddoam1hokn8w"]
 
 [ext_resource type="Script" uid="uid://bwnsu5utej4x2" path="res://character_body_2d.gd" id="1_pgxrt"]
 [ext_resource type="PackedScene" uid="uid://civc7devo31tv" path="res://HUD_Player.tscn" id="2_opd46"]
@@ -365,6 +365,46 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_opd46"]
 length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(150, -16)]
+}
+
+[sub_resource type="Animation" id="Animation_f243m"]
+resource_name = "Throw"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(150, -16), Vector2(250, -16), Vector2(240, -180), Vector2(88, -150), Vector2(8, -136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(150, 16), Vector2(250, 16), Vector2(240, 180), Vector2(88, 150), Vector2(8, 136)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kxtsn"]
 _data = {
@@ -376,7 +416,8 @@ _data = {
 &"Idle": SubResource("Animation_kxtsn"),
 &"Move": SubResource("Animation_pgxrt"),
 &"Pull": SubResource("Animation_q5ktn"),
-&"RESET": SubResource("Animation_opd46")
+&"RESET": SubResource("Animation_opd46"),
+&"Throw": SubResource("Animation_f243m")
 }
 
 [node name="Node2D" type="Node2D"]
@@ -416,7 +457,7 @@ offset = Vector2(0, -55)
 polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.006, -38.2858, 103.425, -57.4286, 55, -38.2858, 6.08384, -8.64781e-20, -18.006, 38.2858, 6.08384)
 
 [node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D"]
-position = Vector2(280, -16)
+position = Vector2(150, -16)
 rotation = 3.14159
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
@@ -433,7 +474,7 @@ debug_color = Color(0.863437, 0, 0.0125558, 0.42)
 position = Vector2(-9.99996, -16)
 
 [node name="Hand R" type="Polygon2D" parent="PlayerCharacterBody2D"]
-position = Vector2(280, 16)
+position = Vector2(150, 16)
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
@@ -507,6 +548,10 @@ one_shot = true
 wait_time = 0.5
 one_shot = true
 
+[node name="Timer_throw" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand R/AreaHandR2D" to="PlayerCharacterBody2D" method="_on_area_hand_r_2d_body_entered"]
 [connection signal="area_entered" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_entered"]
@@ -517,3 +562,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_grab" to="PlayerCharacterBody2D" method="_on_timer_grab_timeout"]
 [connection signal="timeout" from="Timer_grab_connected" to="PlayerCharacterBody2D" method="_on_timer_grab_connected_timeout"]
 [connection signal="timeout" from="Timer_pull" to="PlayerCharacterBody2D" method="_on_timer_pull_timeout"]
+[connection signal="timeout" from="Timer_throw" to="PlayerCharacterBody2D" method="_on_timer_throw_timeout"]

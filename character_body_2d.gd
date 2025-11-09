@@ -12,7 +12,8 @@ var some_zero: Vector2
 @onready var timer_grab = $"../Timer_grab"
 @onready var timer_grab_connected = $"../Timer_grab_connected"
 @onready var timer_pull = $"../Timer_pull"
-
+@onready var timer_throw = $"../Timer_throw"
+@onready var marker_hand = $"Hand L/Marker2D"
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
 
@@ -24,6 +25,7 @@ var block_state = false
 var grab_state = false
 var pull_state = false
 var clinch_state = false
+var throw_state = false
 var in_buffer = false
 var action_to_block_transition = false
 var present_action = "new"
@@ -43,6 +45,8 @@ var EnemySquare
 var EnemyArray
 var enemy_body_ID
 var enemy_area_ID
+var enemy_raycast_collided
+
 
 func _ready() -> void:
 	EnemySquare = get_tree().get_first_node_in_group("Enemy")
@@ -58,6 +62,7 @@ func _physics_process(delta: float) -> void:
 	attack()
 	block()
 	grab()
+	throw()
 	get_hurt()
 	Global_variables_functions.player_position = get_position()
 
@@ -70,9 +75,9 @@ func move():
 	
 	velocity = input_direction * speed
 	
-	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false):
+	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
 		animation.play("Move")
-	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false):
+	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
 		animation.play("Idle")
 
 
@@ -94,7 +99,7 @@ func attack_seq():
 
 func attack():
 	
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
 		attack_seq() 
 	if (Input.is_action_just_pressed("attack")):
 		left_click_number = left_click_number + 1
@@ -117,7 +122,11 @@ func block_seq():
 	
 	attack_state = false
 	grab_state = false
-	#print("Block")
+	pull_state = false
+	clinch_state = false
+	throw_state = false
+	enemy_raycast_collided = null
+	timer_pull.stop()
 	animation.stop()
 	animation.play("Block")
 	timer_attack.stop()
@@ -155,7 +164,7 @@ func grab_seq():
 
 func grab():
 	
-	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false):
+	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
 		grab_seq()
 		
 	if (Input.is_action_just_pressed("grab")):
@@ -177,6 +186,17 @@ func get_hurt():
 		#print ("Player Hurt")
 		HitPoints -= damage_per_hit
 
+
+func throw():
+	
+	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)):
+		pull_state = false
+		clinch_state = false
+		throw_state = true
+		timer_pull.stop()
+		animation.play("Throw")
+		timer_throw.start(0.3)
+	
 
 func buffer():
 	
@@ -268,6 +288,7 @@ func _on_timer_grab_timeout() -> void:
 func _on_timer_grab_connected_timeout() -> void:
 	
 	if (raycast.is_colliding()):
+		enemy_raycast_collided = raycast.get_collider()
 		grab_state = false
 		pull_state = true
 		timer_grab.stop()
@@ -282,3 +303,7 @@ func _on_timer_pull_timeout() -> void:
 	clinch_state = true
 	animation.play("Clinch")
 	
+
+func _on_timer_throw_timeout() -> void:
+	throw_state = false
+	enemy_raycast_collided = null
