@@ -33,6 +33,7 @@ var attack_damage = 20
 @onready var Player_array = get_tree().get_nodes_in_group("Player")
 @onready var enemy_timer_get_parried = $"../EnemyTimerGetParried"
 @onready var enemy_timer_thrown = $"../EnemyTimerThrown"
+@onready var path_thrown_backward = $Path2D/PathFollow2D
 
 func _ready():
 	
@@ -122,16 +123,9 @@ func enemy_thrown():
 		thrown_state = true
 		grabbed_state = false
 		corect_retreat_direction()
-		print(retreat_pos)
-		player_pos = Player.get_global_position()
-		enemy_pos = get_global_position()
-		
-		if (Player.velocity != Vector2.ZERO):
-			velocity = (enemy_pos - player_pos) + Player.velocity * 3
-		else:
-			velocity = (enemy_pos - player_pos) * 3
-			
-		enemy_timer_thrown.start(0.3)
+		set_global_position(path_thrown_backward.global_position)
+		enemy_timer_thrown.start(0.1)
+
 
 func attack_seq():
 	
@@ -147,6 +141,9 @@ func attack_seq():
 
 
 func corect_retreat_direction():
+	
+	player_pos = Player.get_global_position()
+	enemy_pos = get_global_position()
 	
 	if(player_pos.x < enemy_pos.x) && (player_pos.y < enemy_pos.y):
 		retreat_pos = Vector2(1,1)
