@@ -9,7 +9,7 @@ func _ready() -> void:
 	pass
 
 func _physics_process(delta: float) -> void:
-	if (nr < 1):
+	if (nr < 3):
 		inst()
 		nr += 1
 		
