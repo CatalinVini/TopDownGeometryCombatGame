@@ -59,7 +59,6 @@ func _ready():
 	player_pos = Player.get_global_position()
 	enemy_pos = get_global_position()
 	
-	
 func _physics_process(delta: float) -> void:
 	
 	move()
@@ -298,7 +297,7 @@ func _on_enemy_timer_attack_timeout() -> void:
 func _on_enemy_timer_hit_timeout() -> void:
 	
 	if (Player.block_state == false)&&((area_detection == true)):
-		attack_hit = true
+		Global_variables_functions.enemy_attack_hit = true
 	
 	enemy_get_parried()
 

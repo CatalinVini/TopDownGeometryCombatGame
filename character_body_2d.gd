@@ -40,7 +40,7 @@ var right_click_number = 0
 var grab_button_pressed_number = 0
 var successfull_parry = false
 var HitPoints = 100
-var damage_per_hit = 25
+var damage_per_hit = 20
 var EnemySquare
 var EnemyArray
 var enemy_body_ID
@@ -181,11 +181,11 @@ func grab_buffer():
 
 func get_hurt():
 	
-	if (successfull_parry == false) && (EnemySquare.attack_hit == true):
-		EnemySquare.attack_hit = false
-		#print ("Player Hurt")
+	if (successfull_parry == false) && (Global_variables_functions.enemy_attack_hit == true):
+		Global_variables_functions.enemy_attack_hit = false
+		print ("Player Hurt")
 		HitPoints -= damage_per_hit
-
+		
 
 func throw():
 	
