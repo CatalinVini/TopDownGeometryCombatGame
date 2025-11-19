@@ -47,6 +47,7 @@ var attack_damage = 20
 @onready var knockbackpathsw = $KnockBackPathSW/PathFollow2D
 @onready var knockbackpathnw = $KnockBackPathNW/PathFollow2D
 @onready var knockbackpathne = $KnockBackPathNE/PathFollow2D
+@onready var canvaslayer = $"../NodeForCanvas"
 
 func _ready():
 	
@@ -67,6 +68,7 @@ func _physics_process(delta: float) -> void:
 	enemy_thrown()
 	knockback_direction()
 	move_and_slide()
+	canvaslayer.set_global_position(self.get_global_position())
 
 
 func move():

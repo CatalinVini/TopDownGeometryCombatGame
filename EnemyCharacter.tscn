@@ -1,7 +1,6 @@
-[gd_scene load_steps=20 format=3 uid="uid://d4kj7q43vr1kr"]
+[gd_scene load_steps=21 format=3 uid="uid://d4kj7q43vr1kr"]
 
 [ext_resource type="Script" uid="uid://0h8ga7ggwy4a" path="res://enemy_script.gd" id="1_d6you"]
-[ext_resource type="PackedScene" uid="uid://nk2war87clhf" path="res://HUD_Enemy.tscn" id="2_kbrm0"]
 
 [sub_resource type="Curve2D" id="Curve2D_ayvk7"]
 _data = {
@@ -415,6 +414,11 @@ _data = {
 &"RESET": SubResource("Animation_kbrm0")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kbrm0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_16xks"]
+bg_color = Color(0.898301, 0, 0.0121484, 1)
+
 [node name="Node2D" type="Node2D"]
 
 [node name="EnemyCharacterBody2D" type="CharacterBody2D" parent="." groups=["Enemy"]]
@@ -494,10 +498,6 @@ collision_layer = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/DetectionArea2D"]
 shape = SubResource("RectangleShape2D_d6you")
 debug_color = Color(1, 0, 0.0888976, 0.42)
-
-[node name="CanvasLayer" type="CanvasLayer" parent="EnemyCharacterBody2D"]
-
-[node name="Control" parent="EnemyCharacterBody2D/CanvasLayer" instance=ExtResource("2_kbrm0")]
 
 [node name="AreaNW" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(-72, 16)
@@ -581,6 +581,26 @@ one_shot = true
 [node name="EnemyTimerThrown" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
+
+[node name="NodeForCanvas" type="Node2D" parent="."]
+
+[node name="Control" type="Control" parent="NodeForCanvas"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -120.0
+offset_top = -96.0
+offset_right = 120.0
+offset_bottom = -64.0
+
+[node name="ProgressBar" type="ProgressBar" parent="NodeForCanvas/Control"]
+layout_mode = 0
+offset_right = 240.0
+offset_bottom = 27.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/background = SubResource("StyleBoxFlat_kbrm0")
+theme_override_styles/fill = SubResource("StyleBoxFlat_16xks")
+value = 100.0
+fill_mode = 1
 
 [connection signal="area_entered" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_detection_area_2d_area_entered"]
 [connection signal="area_exited" from="EnemyCharacterBody2D/DetectionArea2D" to="EnemyCharacterBody2D" method="_on_detection_area_2d_area_exited"]
