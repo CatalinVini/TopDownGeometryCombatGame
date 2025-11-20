@@ -31,12 +31,13 @@ var attack_damage = 20
 @onready var enemy_timer_retreat = $"../EnemyTimerRetreat"
 @onready var enemy_timer_get_hurt = $"../EnemyTimerGetHurt"
 @onready var enemy_timer_knocked_back = $"../EnemyTimerGetKnockedBack"
+@onready var enemy_timer_get_parried = $"../EnemyTimerGetParried"
+@onready var enemy_timer_thrown = $"../EnemyTimerThrown"
+@onready var enemy_timer_visible_HP = $"../EnemyTimerVisibleHP"
 
 @onready var enemy_detection_area2d =  $DetectionArea2D
 @onready var Player = get_tree().get_first_node_in_group("Player")
 @onready var Player_array = get_tree().get_nodes_in_group("Player")
-@onready var enemy_timer_get_parried = $"../EnemyTimerGetParried"
-@onready var enemy_timer_thrown = $"../EnemyTimerThrown"
 @onready var path_thrown_backward = $EnemyThrownPath/PathFollow2D
 @onready var area_hit_other_enemies = $AreaHitAnotherEnemies
 @onready var area_hit_areanw = $AreaNW
@@ -48,6 +49,7 @@ var attack_damage = 20
 @onready var knockbackpathnw = $KnockBackPathNW/PathFollow2D
 @onready var knockbackpathne = $KnockBackPathNE/PathFollow2D
 @onready var canvaslayer = $"../NodeForCanvas"
+@onready var progress_bar = $"../NodeForCanvas/Control/ProgressBar"
 
 func _ready():
 	
@@ -68,8 +70,8 @@ func _physics_process(delta: float) -> void:
 	enemy_thrown()
 	knockback_direction()
 	move_and_slide()
-	canvaslayer.set_global_position(self.get_global_position())
-
+	canvaslayer.set_global_position(self.get_global_position()+Vector2(0, -50))
+	
 
 func move():
 	
@@ -98,7 +100,16 @@ func enemy_hurt():
 		enemy_timer_get_parried.stop()
 		velocity = Vector2(0, 0)
 		enemy_timer_get_hurt.start(0.5)
-		HitPoints = HitPoints - attack_damage
+		
+		take_damage()
+
+
+func take_damage():
+	
+	progress_bar.visible = true
+	HitPoints = HitPoints - attack_damage
+	progress_bar.value = HitPoints
+	enemy_timer_visible_HP.start(2)
 
 
 func enemy_get_parried():
@@ -332,3 +343,8 @@ func _on_enemy_timer_get_knocked_back_timeout() -> void:
 	area_hit_arease.monitoring = true
 	area_hit_areasw.monitoring = true
 	knockback_by_thrown_state = false
+
+
+func _on_enemy_timer_visible_hp_timeout() -> void:
+	
+	progress_bar.visible = false

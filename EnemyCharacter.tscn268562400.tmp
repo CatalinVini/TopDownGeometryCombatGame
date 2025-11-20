@@ -582,10 +582,6 @@ one_shot = true
 wait_time = 0.3
 one_shot = true
 
-[node name="EnemyTimerVisibleHP" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
-
 [node name="NodeForCanvas" type="Node2D" parent="."]
 
 [node name="Control" type="Control" parent="NodeForCanvas"]
@@ -597,7 +593,6 @@ offset_right = 120.0
 offset_bottom = -64.0
 
 [node name="ProgressBar" type="ProgressBar" parent="NodeForCanvas/Control"]
-visible = false
 layout_mode = 0
 offset_right = 240.0
 offset_bottom = 27.0
@@ -622,4 +617,3 @@ fill_mode = 1
 [connection signal="timeout" from="EnemyTimerGetParried" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_parried_timeout"]
 [connection signal="timeout" from="EnemyTimerGetKnockedBack" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_knocked_back_timeout"]
 [connection signal="timeout" from="EnemyTimerThrown" to="EnemyCharacterBody2D" method="_on_enemy_timer_thrown_timeout"]
-[connection signal="timeout" from="EnemyTimerVisibleHP" to="EnemyCharacterBody2D" method="_on_enemy_timer_visible_hp_timeout"]
