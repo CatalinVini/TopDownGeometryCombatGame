@@ -66,6 +66,7 @@ func _physics_process(delta: float) -> void:
 	
 	move()
 	enemy_hurt()
+	enemy_death()
 	enemy_grabbed()
 	enemy_thrown()
 	knockback_direction()
@@ -111,6 +112,12 @@ func take_damage():
 	progress_bar.value = HitPoints
 	enemy_timer_visible_HP.start(2)
 
+
+func enemy_death():
+	if (HitPoints <= 0):
+		canvaslayer.queue_free()
+		queue_free()
+		
 
 func enemy_get_parried():
 	
@@ -213,7 +220,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	
 	if (body.name == Player.name) && (grabbed_state == false) && (thrown_state == false):
 		attack_seq()
-
+		detection = true
 
 func _on_area_2d_body_exited(body: Node2D) -> void:
 	
@@ -224,16 +231,16 @@ func _on_area_2d_body_exited(body: Node2D) -> void:
 
 func _on_detection_area_2d_area_entered(area: Area2D) -> void:
 	
-	if(area.name == Player_array[1].name):
+	if (area.name == Player_array[1].name):
 		#print("AREA2D detected by ENEMY")
 		area_detection = true
 	
 
 func _on_detection_area_2d_area_exited(area: Area2D) -> void:
 	
-	if(area.name == Player_array[1].name):
+	if (area.name == Player_array[1].name):
 		area_detection = false
-	
+		
 	
 ##############################-----KNOCK BACK ZONES-----###########################################
 
@@ -309,9 +316,9 @@ func _on_enemy_timer_attack_timeout() -> void:
 
 func _on_enemy_timer_hit_timeout() -> void:
 	
-	if (Player.block_state == false)&&((area_detection == true)):
+	if (Player.block_state == false) && (detection == true):
 		Global_variables_functions.enemy_attack_hit = true
-	
+		
 	enemy_get_parried()
 
 
