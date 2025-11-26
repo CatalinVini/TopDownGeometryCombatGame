@@ -9,7 +9,7 @@ func _ready() -> void:
 	pass
 
 func _physics_process(delta: float) -> void:
-	if (nr < 3):
+	if (nr < 1):
 		inst()
 		nr += 1
 		
@@ -18,5 +18,15 @@ func inst():
 	pos = Vector2(-300,-300)
 	instance.position = pos
 	add_child(instance)
-	
-	
+	instance = enemy.instantiate()
+	pos = Vector2(-300,300)
+	instance.position = pos
+	add_child(instance)
+	instance = enemy.instantiate()
+	pos = Vector2(300,-300)
+	instance.position = pos
+	add_child(instance)
+	instance = enemy.instantiate()
+	pos = Vector2(300,300)
+	instance.position = pos
+	add_child(instance)

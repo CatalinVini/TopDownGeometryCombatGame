@@ -13,6 +13,7 @@ var some_zero: Vector2
 @onready var timer_grab_connected = $"../Timer_grab_connected"
 @onready var timer_pull = $"../Timer_pull"
 @onready var timer_throw = $"../Timer_throw"
+@onready var timer_grab_punch = $"../Timer_grab_punch"
 @onready var marker_hand = $"Hand L/Marker2D"
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
@@ -25,6 +26,7 @@ var block_state = false
 var grab_state = false
 var pull_state = false
 var clinch_state = false
+var grab_punch_state = false
 var throw_state = false
 var in_buffer = false
 var action_to_block_transition = false
@@ -62,6 +64,7 @@ func _physics_process(delta: float) -> void:
 	attack()
 	block()
 	grab()
+	grab_punch()
 	throw()
 	get_hurt()
 	Global_variables_functions.player_position = get_position()
@@ -179,13 +182,25 @@ func grab_buffer():
 		grab_seq()
 
 
-func get_hurt():
+func grab_punch():
 	
-	if (successfull_parry == false) && (Global_variables_functions.enemy_attack_hit == true):
-		Global_variables_functions.enemy_attack_hit = false
-		print ("Player Hurt")
-		HitPoints -= damage_per_hit
+	if (Input.is_action_just_pressed("attack")) && (clinch_state == true) && (grab_punch_state == false):
+		grab_punch_state = true
+		animation.play("Grab_punch")
+		timer_grab_punch.start(0.5)
+	
+	if (Input.is_action_just_pressed("attack")) && (pull_state == true) && (grab_punch_state == false):
+		grab_punch_state = true
+		animation.play("Grab_punch")
+		timer_grab_punch.start(0.5)
+		timer_pull.stop()
 		
+func grab_punch_buffer():
+	
+	grab_punch_state = true
+	animation.play("Grab_punch")
+	timer_grab_punch.start(0.5)
+
 
 func throw():
 	
@@ -196,16 +211,29 @@ func throw():
 		timer_pull.stop()
 		animation.play("Throw")
 		timer_throw.start(0.3)
+
+
+func get_hurt():
 	
+	if (successfull_parry == false) && (Global_variables_functions.enemy_attack_hit == true):
+		Global_variables_functions.enemy_attack_hit = false
+		print ("Player Hurt")
+		HitPoints -= damage_per_hit
+
 
 func buffer():
 	
 	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false):
 		if(Input.is_action_just_pressed("attack")):
-			print("ATTACK")
-			nr += 1
-			last_action = "attack"
-		
+			
+			if (clinch_state == false):
+				print("ATTACK")
+				nr += 1
+				last_action = "attack"
+			else:
+				nr += 1
+				last_action = "grab_punch"
+			
 		if(Input.is_action_just_pressed("block")):
 			print("BLOCK")
 			nr += 1
@@ -229,6 +257,9 @@ func choose_action_buffer():
 		
 	if (last_action == "grab"):
 		grab_buffer()
+	
+	if (last_action == "grab_punch"):
+		grab_punch_buffer()
 	
 	last_action = "new"
 	nr = 0
@@ -307,3 +338,8 @@ func _on_timer_pull_timeout() -> void:
 func _on_timer_throw_timeout() -> void:
 	throw_state = false
 	enemy_raycast_collided = null
+
+
+func _on_timer_grab_punch_timeout() -> void:
+	
+	grab_punch_state = false
