@@ -120,7 +120,7 @@ func block_seq():
 	
 	block_state = true
 	
-	if (attack_state == true) || (grab_state == true):
+	if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
 		action_to_block_transition = true
 	
 	attack_state = false
@@ -178,39 +178,57 @@ func grab():
 
 func grab_buffer():
 	
-	if (block_state == false):
+	if (block_state == false)&& (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
 		grab_seq()
 
 
 func grab_punch():
 	
-	if (Input.is_action_just_pressed("attack")) && (clinch_state == true) && (grab_punch_state == false):
+	if (Input.is_action_just_pressed("attack")) && (clinch_state == true) && (pull_state == false) && (grab_punch_state == false):
 		grab_punch_state = true
+		animation.stop()
 		animation.play("Grab_punch")
 		timer_grab_punch.start(0.5)
 	
-	if (Input.is_action_just_pressed("attack")) && (pull_state == true) && (grab_punch_state == false):
+	if (Input.is_action_just_pressed("attack")) && (clinch_state == false) && (pull_state == true) && (grab_punch_state == false):
+		pull_state = false
+		clinch_state = true
 		grab_punch_state = true
+		animation.stop()
 		animation.play("Grab_punch")
 		timer_grab_punch.start(0.5)
 		timer_pull.stop()
-		
+
+
 func grab_punch_buffer():
 	
-	grab_punch_state = true
-	animation.play("Grab_punch")
-	timer_grab_punch.start(0.5)
+	if (clinch_state == true) && (pull_state == false) && (grab_punch_state == false):
+		grab_punch_state = true
+		animation.stop()
+		animation.play("Grab_punch")
+		timer_grab_punch.start(0.5)
+		timer_pull.stop()
 
 
 func throw():
 	
-	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)):
+	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)) && (grab_punch_state == false):
 		pull_state = false
 		clinch_state = false
 		throw_state = true
 		timer_pull.stop()
 		animation.play("Throw")
 		timer_throw.start(0.3)
+
+
+func throw_buffer():
+	
+	pull_state = false
+	clinch_state = false
+	throw_state = true
+	timer_pull.stop()
+	animation.play("Throw")
+	timer_throw.start(0.3)
 
 
 func get_hurt():
@@ -223,7 +241,8 @@ func get_hurt():
 
 func buffer():
 	
-	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false):
+	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false):
+		
 		if(Input.is_action_just_pressed("attack")):
 			
 			if (clinch_state == false):
@@ -231,6 +250,7 @@ func buffer():
 				nr += 1
 				last_action = "attack"
 			else:
+				#print("GRAB_PUNCH", nr)
 				nr += 1
 				last_action = "grab_punch"
 			
@@ -240,17 +260,22 @@ func buffer():
 			last_action = "block"
 			
 		if(Input.is_action_just_pressed("grab")):
-			print("GRAB")
-			nr += 1
-			last_action = "grab"
-	
-	
+			if (clinch_state == false) && (pull_state == false):
+				print("GRAB")
+				nr += 1
+				last_action = "grab"
+			else:
+				print("THROW")
+				nr += 1
+				last_action = "throw"
+		
+		
 func choose_action_buffer():
 	
 	if (last_action == "attack"):
 		attack_buffer()
 	
-	if (last_action == "block") && (action_to_block_transition == true) && (nr < 2):
+	if (last_action == "block")  && (action_to_block_transition == true) && (nr < 2):
 		action_to_block_transition = false
 	elif (last_action == "block"):
 		block_buffer()
@@ -259,8 +284,12 @@ func choose_action_buffer():
 		grab_buffer()
 	
 	if (last_action == "grab_punch"):
+		print("GRAB_PUNCH ", nr)
 		grab_punch_buffer()
 	
+	if (last_action == "throw"):
+		throw_buffer()
+		
 	last_action = "new"
 	nr = 0
 	
@@ -336,6 +365,7 @@ func _on_timer_pull_timeout() -> void:
 	
 
 func _on_timer_throw_timeout() -> void:
+	
 	throw_state = false
 	enemy_raycast_collided = null
 
@@ -343,3 +373,4 @@ func _on_timer_throw_timeout() -> void:
 func _on_timer_grab_punch_timeout() -> void:
 	
 	grab_punch_state = false
+	choose_action_buffer()
