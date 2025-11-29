@@ -491,7 +491,7 @@ polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D"]
 shape = SubResource("RectangleShape2D_qan7t")
 
-[node name="DetectionArea2D" type="Area2D" parent="EnemyCharacterBody2D"]
+[node name="DetectionArea2D" type="Area2D" parent="EnemyCharacterBody2D" groups=["Enemy"]]
 position = Vector2(128, 0)
 collision_layer = 3
 

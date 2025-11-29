@@ -15,6 +15,7 @@ var hurt_state = false
 var parried_state = false
 var grabbed_state = false
 var thrown_state = false
+var enemy_grabbed_canceled_actions = false
 var knockback_by_thrown_state = false
 var area_detection = false
 var area_direction = "."
@@ -22,6 +23,7 @@ var attack_connected = false
 var attack_area_collided = false
 var block_window = false
 var attack_hit = false
+var death = false
 var HitPoints = 100
 var attack_damage = 20
 
@@ -61,6 +63,8 @@ func _ready():
 	#print(enemy_detection_area2d)
 	player_pos = Player.get_global_position()
 	enemy_pos = get_global_position()
+	add_to_group("Enemy")
+	
 	
 func _physics_process(delta: float) -> void:
 	
@@ -68,6 +72,7 @@ func _physics_process(delta: float) -> void:
 	enemy_hurt()
 	enemy_death()
 	enemy_grabbed()
+	enemy_grabbed_hurt()
 	enemy_thrown()
 	knockback_direction()
 	move_and_slide()
@@ -86,7 +91,7 @@ func move():
 
 func enemy_hurt():
 	
-	if (Player.attack_connection == true) && (Player.enemy_body_ID == self):
+	if (Player.attack_connection == true) && (Player.enemy_body_ID == self) && (grabbed_state == false):
 		#print("ENEMY HURT")
 		Player.attack_connection = false
 		hurt_state = true
@@ -95,11 +100,33 @@ func enemy_hurt():
 		parried_state = false
 		enemy_detection_area2d.monitoring = false
 		animation.stop()
+		print("ENEMY_HURT")
 		animation.play("GettingHurt")
 		enemy_timer_attack.stop()
 		enemy_timer_hit.stop()
 		enemy_timer_get_parried.stop()
 		velocity = Vector2(0, 0)
+		enemy_timer_get_hurt.start(0.5)
+		
+		take_damage()
+
+
+func enemy_grabbed_hurt():
+	
+	if (Player.attack_connection == true) && (Player.enemy_body_ID == self) && (grabbed_state == true):
+		#print("ENEMY HURT")
+		Player.attack_connection = false
+		hurt_state = true
+		attack_state = false
+		detection = false
+		parried_state = false
+		enemy_detection_area2d.monitoring = false
+		print("ENEMY_HURT")
+		animation.stop()
+		animation.play("GettingHurt")
+		enemy_timer_attack.stop()
+		enemy_timer_hit.stop()
+		enemy_timer_get_parried.stop()
 		enemy_timer_get_hurt.start(0.5)
 		
 		take_damage()
@@ -115,9 +142,10 @@ func take_damage():
 
 func enemy_death():
 	if (HitPoints <= 0):
+		death = true
 		canvaslayer.queue_free()
 		queue_free()
-		
+
 
 func enemy_get_parried():
 	
@@ -142,7 +170,11 @@ func enemy_grabbed():
 	if ((Player.grab_state == true) || (Player.pull_state == true) || (Player.clinch_state == true)) && (Player.enemy_raycast_collided == self) && (thrown_state == false)  && (knockback_by_thrown_state == false):
 		grabbed_state = true
 		attack_state = false
-		animation.stop()
+		
+		if (enemy_grabbed_canceled_actions == false):
+			enemy_grabbed_canceled_actions = true
+			animation.stop()
+			
 		enemy_timer_attack.stop()
 		enemy_timer_hit.stop()
 		look_at(Global_variables_functions.player_position)
@@ -342,6 +374,7 @@ func _on_enemy_timer_get_parried_timeout() -> void:
 func _on_enemy_timer_thrown_timeout() -> void:
 	
 	thrown_state = false
+	enemy_grabbed_canceled_actions = false
 	area_hit_other_enemies.monitorable = false
 
 

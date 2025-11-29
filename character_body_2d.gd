@@ -41,6 +41,7 @@ var left_click_number = 0
 var right_click_number = 0
 var grab_button_pressed_number = 0
 var successfull_parry = false
+var killing_blow = false
 var HitPoints = 100
 var damage_per_hit = 20
 var EnemySquare
@@ -53,7 +54,7 @@ var enemy_raycast_collided
 func _ready() -> void:
 	EnemySquare = get_tree().get_first_node_in_group("Enemy")
 	EnemyArray = get_tree().get_nodes_in_group("Enemy")
-
+	
 
 func _physics_process(delta: float) -> void:
 	
@@ -159,6 +160,12 @@ func block_buffer():
 
 func grab_seq():
 	
+	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
+	
+	for enemy in EnemyArrayLocal:
+		if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1):
+			killing_blow = true
+	
 	grab_state = true
 	animation.play("Grab")
 	timer_grab.start(0.5)
@@ -166,6 +173,7 @@ func grab_seq():
 	
 
 func grab():
+	
 	
 	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
 		grab_seq()
@@ -210,11 +218,36 @@ func grab_punch_buffer():
 		timer_pull.stop()
 
 
+func grab_punch_connection():
+	
+	if (raycast.is_colliding()):
+		enemy_body_ID = raycast.get_collider()
+		attack_connection = true
+	else:
+		attack_connection = false
+
+	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
+	nr = 0
+		
+	for enemy in EnemyArrayLocal:
+		#print(enemy)
+		
+		if (killing_blow == true):
+			killing_blow = false
+			clinch_state = false
+			
+		elif (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1) && (clinch_state == true):
+			killing_blow = true
+		
+		nr += 1
+
+
 func throw():
 	
 	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)) && (grab_punch_state == false):
 		pull_state = false
 		clinch_state = false
+		killing_blow = false
 		throw_state = true
 		timer_pull.stop()
 		animation.play("Throw")
@@ -225,6 +258,7 @@ func throw_buffer():
 	
 	pull_state = false
 	clinch_state = false
+	killing_blow = false
 	throw_state = true
 	timer_pull.stop()
 	animation.play("Throw")
