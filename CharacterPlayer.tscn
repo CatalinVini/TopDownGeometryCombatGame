@@ -273,22 +273,6 @@ tracks/2/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_druoj"]
-resource_name = "Grab_punch_grab_transition"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(128, 41), Vector2(150, 16)]
-}
-
 [sub_resource type="Animation" id="Animation_kxtsn"]
 resource_name = "Idle"
 loop_mode = 1
@@ -433,7 +417,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(150, -16)]
+"values": [Vector2(0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -476,6 +460,48 @@ tracks/1/keys = {
 "values": [Vector2(150, 16), Vector2(250, 16), Vector2(240, 180), Vector2(88, 150), Vector2(8, 136)]
 }
 
+[sub_resource type="Animation" id="Animation_druoj"]
+resource_name = "Grab_punch_idle_transition"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(150, -16), Vector2(8, -136)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(128, 41), Vector2(8, 136)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.166667),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"grab_punch_idle_transition"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kxtsn"]
 _data = {
 &"Attack_L": SubResource("Animation_kprj8"),
@@ -484,7 +510,7 @@ _data = {
 &"Clinch": SubResource("Animation_f16rc"),
 &"Grab": SubResource("Animation_0wu8n"),
 &"Grab_punch": SubResource("Animation_iggsx"),
-&"Grab_punch_grab_transition": SubResource("Animation_druoj"),
+&"Grab_punch_idle_transition": SubResource("Animation_druoj"),
 &"Idle": SubResource("Animation_kxtsn"),
 &"Move": SubResource("Animation_pgxrt"),
 &"Pull": SubResource("Animation_q5ktn"),
@@ -529,7 +555,6 @@ offset = Vector2(0, -55)
 polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.006, -38.2858, 103.425, -57.4286, 55, -38.2858, 6.08384, -8.64781e-20, -18.006, 38.2858, 6.08384)
 
 [node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D"]
-position = Vector2(150, -16)
 rotation = 3.14159
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)

@@ -42,6 +42,7 @@ var right_click_number = 0
 var grab_button_pressed_number = 0
 var successfull_parry = false
 var killing_blow = false
+var grab_idle_transition_state = false
 var HitPoints = 100
 var damage_per_hit = 20
 var EnemySquare
@@ -79,9 +80,9 @@ func move():
 	
 	velocity = input_direction * speed
 	
-	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
+	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
 		animation.play("Move")
-	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
+	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
 		animation.play("Idle")
 
 
@@ -103,7 +104,7 @@ func attack_seq():
 
 func attack():
 	
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
 		attack_seq() 
 	if (Input.is_action_just_pressed("attack")):
 		left_click_number = left_click_number + 1
@@ -129,6 +130,8 @@ func block_seq():
 	pull_state = false
 	clinch_state = false
 	throw_state = false
+	killing_blow = false
+	grab_idle_transition_state = false
 	enemy_raycast_collided = null
 	timer_pull.stop()
 	animation.stop()
@@ -137,8 +140,8 @@ func block_seq():
 	timer_attack_connected.stop()
 	timer_grab.stop()
 	timer_block.start(0.5)
-	
-	
+
+
 func block():
 	
 	if(Input.is_action_just_pressed("block")) && (block_state == false):
@@ -170,19 +173,19 @@ func grab_seq():
 	animation.play("Grab")
 	timer_grab.start(0.5)
 	timer_grab_connected.start(0.23)
-	
+
 
 func grab():
 	
 	
-	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
+	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
 		grab_seq()
 		
 	if (Input.is_action_just_pressed("grab")):
 		grab_button_pressed_number += 1
 		left_click_number = 0
 		right_click_number = 0
-		
+
 
 func grab_buffer():
 	
@@ -192,13 +195,13 @@ func grab_buffer():
 
 func grab_punch():
 	
-	if (Input.is_action_just_pressed("attack")) && (clinch_state == true) && (pull_state == false) && (grab_punch_state == false):
+	if (Input.is_action_just_pressed("attack")) && (clinch_state == true) && (pull_state == false) && (grab_punch_state == false) && (grab_idle_transition_state == false):
 		grab_punch_state = true
 		animation.stop()
 		animation.play("Grab_punch")
 		timer_grab_punch.start(0.5)
 	
-	if (Input.is_action_just_pressed("attack")) && (clinch_state == false) && (pull_state == true) && (grab_punch_state == false):
+	if (Input.is_action_just_pressed("attack")) && (clinch_state == false) && (pull_state == true) && (grab_punch_state == false) && (grab_idle_transition_state == false):
 		pull_state = false
 		clinch_state = true
 		grab_punch_state = true
@@ -228,23 +231,31 @@ func grab_punch_connection():
 
 	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
 	nr = 0
-		
+	
+	if (killing_blow == true):
+		killing_blow = false
+		clinch_state = false
+		grab_idle_transition_state = true
+		animation.play("Grab_punch_idle_transition")
+
 	for enemy in EnemyArrayLocal:
 		#print(enemy)
-		
-		if (killing_blow == true):
-			killing_blow = false
-			clinch_state = false
 			
-		elif (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1) && (clinch_state == true):
+		if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage * 2 + 1) && (clinch_state == true):
 			killing_blow = true
+			print("KILLING BLOW")
 		
 		nr += 1
 
 
+func grab_punch_idle_transition():
+	
+	grab_idle_transition_state = false
+
+
 func throw():
 	
-	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)) && (grab_punch_state == false):
+	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)) && (grab_punch_state == false) && (grab_idle_transition_state == false):
 		pull_state = false
 		clinch_state = false
 		killing_blow = false
@@ -256,13 +267,14 @@ func throw():
 
 func throw_buffer():
 	
-	pull_state = false
-	clinch_state = false
-	killing_blow = false
-	throw_state = true
-	timer_pull.stop()
-	animation.play("Throw")
-	timer_throw.start(0.3)
+	if ((pull_state == true) || (clinch_state == true)) && (grab_punch_state == false) && (grab_idle_transition_state == false):
+		pull_state = false
+		clinch_state = false
+		killing_blow = false
+		throw_state = true
+		timer_pull.stop()
+		animation.play("Throw")
+		timer_throw.start(0.3)
 
 
 func get_hurt():
@@ -302,8 +314,8 @@ func buffer():
 				print("THROW")
 				nr += 1
 				last_action = "throw"
-		
-		
+
+
 func choose_action_buffer():
 	
 	if (last_action == "attack"):
@@ -326,8 +338,8 @@ func choose_action_buffer():
 		
 	last_action = "new"
 	nr = 0
-	
-	
+
+
 ##########################-----Areas-------###############################
 
 
@@ -396,7 +408,7 @@ func _on_timer_pull_timeout() -> void:
 	pull_state = false
 	clinch_state = true
 	animation.play("Clinch")
-	
+
 
 func _on_timer_throw_timeout() -> void:
 	
