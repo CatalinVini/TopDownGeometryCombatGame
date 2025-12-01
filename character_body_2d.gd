@@ -18,6 +18,7 @@ var some_zero: Vector2
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
 
+
 var action_buffer = ["1","2","3","4","5","6","7","8","9","10"]
 var nr = 0
 
@@ -130,8 +131,9 @@ func block_seq():
 	pull_state = false
 	clinch_state = false
 	throw_state = false
-	killing_blow = false
+	killing_blow = false 
 	grab_idle_transition_state = false
+	grab_punch_state = false
 	enemy_raycast_collided = null
 	timer_pull.stop()
 	animation.stop()
@@ -202,9 +204,9 @@ func grab_punch():
 		timer_grab_punch.start(0.5)
 	
 	if (Input.is_action_just_pressed("attack")) && (clinch_state == false) && (pull_state == true) && (grab_punch_state == false) && (grab_idle_transition_state == false):
+		grab_punch_state = true
 		pull_state = false
 		clinch_state = true
-		grab_punch_state = true
 		animation.stop()
 		animation.play("Grab_punch")
 		timer_grab_punch.start(0.5)
@@ -221,33 +223,6 @@ func grab_punch_buffer():
 		timer_pull.stop()
 
 
-func grab_punch_connection():
-	
-	if (raycast.is_colliding()):
-		enemy_body_ID = raycast.get_collider()
-		attack_connection = true
-	else:
-		attack_connection = false
-
-	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
-	nr = 0
-	
-	if (killing_blow == true):
-		killing_blow = false
-		clinch_state = false
-		grab_idle_transition_state = true
-		animation.play("Grab_punch_idle_transition")
-
-	for enemy in EnemyArrayLocal:
-		#print(enemy)
-			
-		if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage * 2 + 1) && (clinch_state == true):
-			killing_blow = true
-			print("KILLING BLOW")
-		
-		nr += 1
-
-
 func grab_punch_idle_transition():
 	
 	grab_idle_transition_state = false
@@ -255,24 +230,30 @@ func grab_punch_idle_transition():
 
 func throw():
 	
-	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)) && (grab_punch_state == false) && (grab_idle_transition_state == false):
+	if (Input.is_action_just_pressed("grab")) && ((pull_state == true) || (clinch_state == true)):
+		throw_state = true
 		pull_state = false
 		clinch_state = false
 		killing_blow = false
-		throw_state = true
+		grab_punch_state = false
+		grab_idle_transition_state = false
 		timer_pull.stop()
+		timer_grab_punch.stop()
 		animation.play("Throw")
 		timer_throw.start(0.3)
 
 
 func throw_buffer():
 	
-	if ((pull_state == true) || (clinch_state == true)) && (grab_punch_state == false) && (grab_idle_transition_state == false):
+	if ((pull_state == true) || (clinch_state == true)):
+		throw_state = true
 		pull_state = false
 		clinch_state = false
 		killing_blow = false
-		throw_state = true
+		grab_punch_state = false
+		grab_idle_transition_state = false
 		timer_pull.stop()
+		timer_grab_punch.stop()
 		animation.play("Throw")
 		timer_throw.start(0.3)
 
@@ -419,4 +400,28 @@ func _on_timer_throw_timeout() -> void:
 func _on_timer_grab_punch_timeout() -> void:
 	
 	grab_punch_state = false
+	
+	if (raycast.is_colliding()):
+		enemy_body_ID = raycast.get_collider()
+		attack_connection = true
+	else:
+		attack_connection = false
+
+	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
+	nr = 0
+	
+	if (killing_blow == true):
+		killing_blow = false
+		clinch_state = false
+		grab_idle_transition_state = true
+		animation.play("Grab_punch_idle_transition")
+
+	for enemy in EnemyArrayLocal:
+			
+		if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage * 2 + 1) && (clinch_state == true):
+			killing_blow = true
+			print("KILLING BLOW")
+		
+		nr += 1
+	
 	choose_action_buffer()

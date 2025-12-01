@@ -141,6 +141,7 @@ func take_damage():
 
 
 func enemy_death():
+	
 	if (HitPoints <= 0):
 		death = true
 		canvaslayer.queue_free()
