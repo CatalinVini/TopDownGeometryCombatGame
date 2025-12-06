@@ -1,6 +1,10 @@
 extends CharacterBody2D
 
 @export var speed = 400
+@export var combo_metter = 1.0
+@export var combo_multiplier = 1
+@export var damage = 1
+
 var some_zero: Vector2
 
 @onready var hand_left = $"Hand L/AreaHandL2D"
@@ -18,9 +22,12 @@ var some_zero: Vector2
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
 
-
-var action_buffer = ["1","2","3","4","5","6","7","8","9","10"]
+var fr = ["attack", "throw", "grab", "grab_punch"]
+var action_array = ["attack", "throw", "grab", "grab_punch"]
+var act_arr_length = action_array.size()
 var nr = 0
+var index_ac_arr = 0
+var nr_fr = 0
 
 var attack_state = false
 var block_state = false
@@ -56,7 +63,7 @@ var enemy_raycast_collided
 func _ready() -> void:
 	EnemySquare = get_tree().get_first_node_in_group("Enemy")
 	EnemyArray = get_tree().get_nodes_in_group("Enemy")
-	
+
 
 func _physics_process(delta: float) -> void:
 	
@@ -107,6 +114,7 @@ func attack():
 	
 	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
 		attack_seq() 
+		
 	if (Input.is_action_just_pressed("attack")):
 		left_click_number = left_click_number + 1
 		right_click_number = 0
@@ -195,32 +203,30 @@ func grab_buffer():
 		grab_seq()
 
 
+func grab_punch_seq():
+	
+	grab_punch_state = true
+	animation.stop()
+	animation.play("Grab_punch")
+	timer_grab_punch.start(0.5)
+
+
 func grab_punch():
 	
 	if (Input.is_action_just_pressed("attack")) && (clinch_state == true) && (pull_state == false) && (grab_punch_state == false) && (grab_idle_transition_state == false):
-		grab_punch_state = true
-		animation.stop()
-		animation.play("Grab_punch")
-		timer_grab_punch.start(0.5)
+		grab_punch_seq()
 	
 	if (Input.is_action_just_pressed("attack")) && (clinch_state == false) && (pull_state == true) && (grab_punch_state == false) && (grab_idle_transition_state == false):
-		grab_punch_state = true
+		grab_punch_seq()
+		timer_pull.stop()
 		pull_state = false
 		clinch_state = true
-		animation.stop()
-		animation.play("Grab_punch")
-		timer_grab_punch.start(0.5)
-		timer_pull.stop()
 
 
 func grab_punch_buffer():
 	
 	if (clinch_state == true) && (pull_state == false) && (grab_punch_state == false):
-		grab_punch_state = true
-		animation.stop()
-		animation.play("Grab_punch")
-		timer_grab_punch.start(0.5)
-		timer_pull.stop()
+		grab_punch_seq()
 
 
 func grab_punch_idle_transition():
@@ -237,6 +243,10 @@ func throw():
 		killing_blow = false
 		grab_punch_state = false
 		grab_idle_transition_state = false
+		action_array[index_ac_arr] = "throw"
+		index_ac_arr += 1
+		if (index_ac_arr >= action_array.size()):
+			index_ac_arr = 0
 		timer_pull.stop()
 		timer_grab_punch.stop()
 		animation.play("Throw")
@@ -354,6 +364,12 @@ func _on_timer_attack_hit_timeout() -> void:
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
+		combo_metter += 0.1
+		action_array[index_ac_arr] = "attack"
+		index_ac_arr += 1
+		if (index_ac_arr >= action_array.size()):
+			index_ac_arr = 0
+		print(combo_metter)
 	else:
 		attack_connection = false
 
@@ -378,6 +394,10 @@ func _on_timer_grab_connected_timeout() -> void:
 		enemy_raycast_collided = raycast.get_collider()
 		grab_state = false
 		pull_state = true
+		action_array[index_ac_arr] = "grab"
+		index_ac_arr += 1
+		if (index_ac_arr >= action_array.size()):
+			index_ac_arr = 0
 		timer_grab.stop()
 		animation.play("Pull")
 		timer_pull.start(0.5)
@@ -404,11 +424,36 @@ func _on_timer_grab_punch_timeout() -> void:
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
+		action_array[index_ac_arr] = "grab_punch"
+		index_ac_arr += 1
+		
+		if (index_ac_arr >= action_array.size()):
+			index_ac_arr = 0
+			
+		##################################################
+		
+		for i in range(0, action_array.size()):
+			for j in range(0, action_array.size()):
+				if (fr[i] == action_array[j]):
+					if (act_arr_length > 0) && (nr_fr == 1):
+						act_arr_length -= 1
+					nr_fr += 1
+			nr_fr = 0
+				
+		print(action_array)
+		print(act_arr_length)
+		print(action_array.size())
+		act_arr_length = action_array.size()
+		
+		##################################################
+		
+		combo_metter += 0.1
+		#print(combo_metter)
 	else:
 		attack_connection = false
 
 	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
-	nr = 0
+	
 	
 	if (killing_blow == true):
 		killing_blow = false
@@ -420,8 +465,8 @@ func _on_timer_grab_punch_timeout() -> void:
 			
 		if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage * 2 + 1) && (clinch_state == true):
 			killing_blow = true
-			print("KILLING BLOW")
+			#print("KILLING BLOW")
+			break
 		
-		nr += 1
 	
 	choose_action_buffer()

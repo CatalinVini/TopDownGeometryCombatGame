@@ -28,7 +28,7 @@ position = Vector2(592, 504)
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 show_behind_parent = true
-position = Vector2(-744, -152)
+position = Vector2(-648, -176)
 scale = Vector2(1.32639, 1.25926)
 color = Color(1, 0.254902, 1, 1)
 texture = SubResource("GradientTexture1D_2dftf")

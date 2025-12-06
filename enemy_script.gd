@@ -53,6 +53,7 @@ var attack_damage = 20
 @onready var canvaslayer = $"../NodeForCanvas"
 @onready var progress_bar = $"../NodeForCanvas/Control/ProgressBar"
 
+
 func _ready():
 	
 	enemy_position.x = 0
@@ -64,8 +65,8 @@ func _ready():
 	player_pos = Player.get_global_position()
 	enemy_pos = get_global_position()
 	add_to_group("Enemy")
-	
-	
+
+
 func _physics_process(delta: float) -> void:
 	
 	move()
@@ -77,7 +78,7 @@ func _physics_process(delta: float) -> void:
 	knockback_direction()
 	move_and_slide()
 	canvaslayer.set_global_position(self.get_global_position()+Vector2(0, -50))
-	
+
 
 func move():
 	
@@ -152,7 +153,7 @@ func enemy_get_parried():
 	
 	#print("Player:", Player.enemy_area_ID, " Enemy: ", enemy_detection_area2d)
 	
-	if((Player.block_state == true) && (hurt_state == false)) && (area_detection == true):
+	if ((Player.block_state == true) && (hurt_state == false)) && (area_detection == true):
 		print("PARRIED")
 		Player.successfull_parry = false
 		parried_state = true
@@ -163,7 +164,7 @@ func enemy_get_parried():
 		enemy_timer_attack.stop()
 		enemy_timer_hit.stop()
 		enemy_timer_get_hurt.stop()
-		enemy_timer_get_parried.start(1)
+		enemy_timer_get_parried.start(3)
 
 
 func enemy_grabbed():
@@ -196,7 +197,7 @@ func enemy_thrown():
 		
 	if (thrown_state == true):
 		set_global_position(path_thrown_backward.global_position)
-		
+
 
 func knockback_direction():
 	
@@ -213,7 +214,7 @@ func knockback_direction():
 		if(area_direction == "sw"):
 			set_global_position(knockbackpathne.global_position)
 			#print("SW")
-			
+
 
 func attack_seq():
 	
@@ -221,8 +222,8 @@ func attack_seq():
 		velocity = zero_momentum
 		attack_state = true
 		animation.play("Attack")
-		enemy_timer_attack.start(0.6)
-		enemy_timer_hit.start(0.33)
+		enemy_timer_attack.start(1)
+		enemy_timer_hit.start(0.6)
 		
 		if (area_detection == true):
 			attack_area_collided = true
@@ -268,14 +269,14 @@ func _on_detection_area_2d_area_entered(area: Area2D) -> void:
 	if (area.name == Player_array[1].name):
 		#print("AREA2D detected by ENEMY")
 		area_detection = true
-	
+
 
 func _on_detection_area_2d_area_exited(area: Area2D) -> void:
 	
 	if (area.name == Player_array[1].name):
 		area_detection = false
-		
-	
+
+
 ##############################-----KNOCK BACK ZONES-----###########################################
 
 func _on_area_nw_area_entered(area: Area2D) -> void:
@@ -289,7 +290,7 @@ func _on_area_nw_area_entered(area: Area2D) -> void:
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "nw"
 		print(area_hit_other_enemies)
-		
+
 func _on_area_ne_area_entered(area: Area2D) -> void:
 	
 	if (area != self.area_hit_other_enemies):
@@ -301,7 +302,7 @@ func _on_area_ne_area_entered(area: Area2D) -> void:
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "ne"
 		print(area_hit_other_enemies)
-		
+
 func _on_area_se_area_entered(area: Area2D) -> void:
 	
 	if (area != self.area_hit_other_enemies):
@@ -313,7 +314,7 @@ func _on_area_se_area_entered(area: Area2D) -> void:
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "se"
 		print(area_hit_other_enemies)
-		
+
 func _on_area_sw_area_entered(area: Area2D) -> void:
 	
 	if (area != self.area_hit_other_enemies):
@@ -325,7 +326,7 @@ func _on_area_sw_area_entered(area: Area2D) -> void:
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "sw"
 		print(area_hit_other_enemies)
-		
+
 ##############################-----KNOCK BACK ZONES-----###########################################
 #########################################################################
 
