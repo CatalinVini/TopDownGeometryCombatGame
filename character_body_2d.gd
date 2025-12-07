@@ -28,6 +28,7 @@ var act_arr_length = action_array.size()
 var nr = 0
 var index_ac_arr = 0
 var nr_fr = 0
+var variety
 
 var attack_state = false
 var block_state = false
@@ -243,10 +244,7 @@ func throw():
 		killing_blow = false
 		grab_punch_state = false
 		grab_idle_transition_state = false
-		action_array[index_ac_arr] = "throw"
-		index_ac_arr += 1
-		if (index_ac_arr >= action_array.size()):
-			index_ac_arr = 0
+		comboVariety("throw")
 		timer_pull.stop()
 		timer_grab_punch.stop()
 		animation.play("Throw")
@@ -331,6 +329,33 @@ func choose_action_buffer():
 	nr = 0
 
 
+func comboVariety(action_name):
+	
+	action_array[index_ac_arr] = action_name
+	index_ac_arr += 1
+	
+	if (index_ac_arr >= action_array.size()):
+		index_ac_arr = 0
+		
+	##################################################
+	
+	for i in range(0, action_array.size()):
+		for j in range(0, action_array.size()):
+			if (fr[i] == action_array[j]):
+				if (act_arr_length > 0) && (nr_fr >= 1):
+					act_arr_length -= 1
+					print("act_arr: ", act_arr_length)
+				nr_fr += 1
+		nr_fr = 0
+	variety = act_arr_length
+	print(action_array)
+	print(variety)
+	print(action_array.size())
+	act_arr_length = action_array.size()
+	
+	##################################################
+
+
 ##########################-----Areas-------###############################
 
 
@@ -364,11 +389,7 @@ func _on_timer_attack_hit_timeout() -> void:
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
-		combo_metter += 0.1
-		action_array[index_ac_arr] = "attack"
-		index_ac_arr += 1
-		if (index_ac_arr >= action_array.size()):
-			index_ac_arr = 0
+		comboVariety("attack")
 		print(combo_metter)
 	else:
 		attack_connection = false
@@ -394,10 +415,7 @@ func _on_timer_grab_connected_timeout() -> void:
 		enemy_raycast_collided = raycast.get_collider()
 		grab_state = false
 		pull_state = true
-		action_array[index_ac_arr] = "grab"
-		index_ac_arr += 1
-		if (index_ac_arr >= action_array.size()):
-			index_ac_arr = 0
+		comboVariety("grab")
 		timer_grab.stop()
 		animation.play("Pull")
 		timer_pull.start(0.5)
@@ -424,31 +442,8 @@ func _on_timer_grab_punch_timeout() -> void:
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
-		action_array[index_ac_arr] = "grab_punch"
-		index_ac_arr += 1
+		comboVariety("grab_punch")
 		
-		if (index_ac_arr >= action_array.size()):
-			index_ac_arr = 0
-			
-		##################################################
-		
-		for i in range(0, action_array.size()):
-			for j in range(0, action_array.size()):
-				if (fr[i] == action_array[j]):
-					if (act_arr_length > 0) && (nr_fr == 1):
-						act_arr_length -= 1
-					nr_fr += 1
-			nr_fr = 0
-				
-		print(action_array)
-		print(act_arr_length)
-		print(action_array.size())
-		act_arr_length = action_array.size()
-		
-		##################################################
-		
-		combo_metter += 0.1
-		#print(combo_metter)
 	else:
 		attack_connection = false
 
