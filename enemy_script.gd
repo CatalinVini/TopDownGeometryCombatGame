@@ -136,7 +136,7 @@ func enemy_grabbed_hurt():
 func take_damage():
 	
 	progress_bar.visible = true
-	HitPoints = HitPoints - attack_damage
+	HitPoints = HitPoints - Player.damage
 	progress_bar.value = HitPoints
 	enemy_timer_visible_HP.start(2)
 

@@ -3,7 +3,10 @@ extends CharacterBody2D
 @export var speed = 400
 @export var combo_metter = 1.0
 @export var combo_multiplier = 1
-@export var damage = 1
+@export var damage_base = 5
+@export var parry_hit_damage = 50
+
+var damage = 5
 
 var some_zero: Vector2
 
@@ -22,13 +25,14 @@ var some_zero: Vector2
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
 
-var fr = ["attack", "throw", "grab", "grab_punch"]
-var action_array = ["attack", "throw", "grab", "grab_punch"]
+var fr = ["attackL", "attackR", "throw", "grab", "grab_punch"]
+var action_array = ["attackL", "attackR", "throw", "grab", "grab_punch"]
 var act_arr_length = action_array.size()
 var nr = 0
 var index_ac_arr = 0
 var nr_fr = 0
-var variety
+var variety = 5
+var parry_ok = false
 
 var attack_state = false
 var block_state = false
@@ -74,6 +78,7 @@ func _physics_process(delta: float) -> void:
 	buffer() #it needs to be called before other actions
 	attack()
 	block()
+	parryCondition()
 	grab()
 	grab_punch()
 	throw()
@@ -100,6 +105,7 @@ func attack_seq():
 	attack_state = true
 	timer_attack.start(0.5)
 	timer_attack_connected.start(0.23)
+	
 	if (right_left_hand == true):
 		animation.play("Attack_R")
 		right_left_hand = false
@@ -167,6 +173,18 @@ func block():
 		grab_button_pressed_number = 0
 
 
+func parryCondition():
+	
+	var EnemyArray = get_tree().get_nodes_in_group("Enemy")
+	
+	if (block_state == true):
+		for enemy_paried in EnemyArray:
+			if (enemy_paried.parried_state == true):
+				parry_ok = true
+				print("POK")
+				break
+			
+
 func block_buffer():
 	
 	block_seq()
@@ -177,9 +195,13 @@ func grab_seq():
 	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
 	
 	for enemy in EnemyArrayLocal:
-		if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1):
-			killing_blow = true
-	
+		if (parry_ok == false):
+			if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1):
+				killing_blow = true
+		else:
+			if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1 + parry_hit_damage):
+				killing_blow = true
+		
 	grab_state = true
 	animation.play("Grab")
 	timer_grab.start(0.5)
@@ -342,16 +364,23 @@ func comboVariety(action_name):
 	for i in range(0, action_array.size()):
 		for j in range(0, action_array.size()):
 			if (fr[i] == action_array[j]):
-				if (act_arr_length > 0) && (nr_fr >= 1):
-					act_arr_length -= 1
-					print("act_arr: ", act_arr_length)
+				if (variety > 0) && (nr_fr >= 1):
+					variety -= 1
+					print("act_arr: ", variety)
 				nr_fr += 1
 		nr_fr = 0
-	variety = act_arr_length
+	
+	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch")):
+		parry_ok = false
+		damage = damage_base * variety + parry_hit_damage
+		print("PARRY_HIT")
+	else:
+		damage = damage_base * variety
+		
 	print(action_array)
-	print(variety)
+	print(damage)
 	print(action_array.size())
-	act_arr_length = action_array.size()
+	variety = action_array.size()
 	
 	##################################################
 
@@ -389,7 +418,10 @@ func _on_timer_attack_hit_timeout() -> void:
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
-		comboVariety("attack")
+		if (right_left_hand == true):
+			comboVariety("attackL")
+		else:
+			comboVariety("attackR")	
 		print(combo_metter)
 	else:
 		attack_connection = false
@@ -457,11 +489,12 @@ func _on_timer_grab_punch_timeout() -> void:
 		animation.play("Grab_punch_idle_transition")
 
 	for enemy in EnemyArrayLocal:
-			
-		if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage * 2 + 1) && (clinch_state == true):
-			killing_blow = true
-			#print("KILLING BLOW")
-			break
 		
-	
+		if (parry_ok == false):
+			if (enemy == raycast.get_collider()) && (enemy.HitPoints < damage * 2 + 1) && (clinch_state == true):
+				killing_blow = true
+		else:
+			if (enemy == raycast.get_collider()) && (enemy.HitPoints < damage * 2 + parry_hit_damage) && (clinch_state == true):
+				killing_blow = true
+				
 	choose_action_buffer()
