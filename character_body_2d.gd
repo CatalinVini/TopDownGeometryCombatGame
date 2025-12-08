@@ -81,8 +81,10 @@ func _physics_process(delta: float) -> void:
 	parryCondition()
 	grab()
 	grab_punch()
+	letGoOfTheDead()
 	throw()
 	get_hurt()
+	
 	Global_variables_functions.player_position = get_position()
 
 
@@ -192,16 +194,6 @@ func block_buffer():
 
 func grab_seq():
 	
-	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
-	
-	for enemy in EnemyArrayLocal:
-		if (parry_ok == false):
-			if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1):
-				killing_blow = true
-		else:
-			if (enemy == raycast.get_collider()) && (enemy.HitPoints < enemy.attack_damage + 1 + parry_hit_damage):
-				killing_blow = true
-		
 	grab_state = true
 	animation.play("Grab")
 	timer_grab.start(0.5)
@@ -250,6 +242,19 @@ func grab_punch_buffer():
 	
 	if (clinch_state == true) && (pull_state == false) && (grab_punch_state == false):
 		grab_punch_seq()
+
+
+func letGoOfTheDead():
+	
+	if ((clinch_state == true) || (pull_state == true)):
+		var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
+		for enemy in EnemyArrayLocal:
+			if (enemy == raycast.get_collider()) && (enemy.HitPoints <= 0):
+				pull_state = false
+				clinch_state = false
+				grab_idle_transition_state = true
+				timer_grab_punch.stop()
+				animation.play("Grab_punch_idle_transition")
 
 
 func grab_punch_idle_transition():
@@ -479,22 +484,4 @@ func _on_timer_grab_punch_timeout() -> void:
 	else:
 		attack_connection = false
 
-	var EnemyArrayLocal = get_tree().get_nodes_in_group("Enemy")
-	
-	
-	if (killing_blow == true):
-		killing_blow = false
-		clinch_state = false
-		grab_idle_transition_state = true
-		animation.play("Grab_punch_idle_transition")
-
-	for enemy in EnemyArrayLocal:
-		
-		if (parry_ok == false):
-			if (enemy == raycast.get_collider()) && (enemy.HitPoints < damage * 2 + 1) && (clinch_state == true):
-				killing_blow = true
-		else:
-			if (enemy == raycast.get_collider()) && (enemy.HitPoints < damage * 2 + parry_hit_damage) && (clinch_state == true):
-				killing_blow = true
-				
 	choose_action_buffer()
