@@ -32,7 +32,9 @@ var nr = 0
 var index_ac_arr = 0
 var nr_fr = 0
 var variety = 5
+var variety_for_text = 5
 var parry_ok = false
+
 
 var attack_state = false
 var block_state = false
@@ -252,6 +254,7 @@ func letGoOfTheDead():
 			if (enemy == raycast.get_collider()) && (enemy.HitPoints <= 0):
 				pull_state = false
 				clinch_state = false
+				grab_punch_state = false
 				grab_idle_transition_state = true
 				timer_grab_punch.stop()
 				animation.play("Grab_punch_idle_transition")
@@ -268,7 +271,6 @@ func throw():
 		throw_state = true
 		pull_state = false
 		clinch_state = false
-		killing_blow = false
 		grab_punch_state = false
 		grab_idle_transition_state = false
 		comboVariety("throw")
@@ -385,6 +387,7 @@ func comboVariety(action_name):
 	print(action_array)
 	print(damage)
 	print(action_array.size())
+	variety_for_text = variety
 	variety = action_array.size()
 	
 	##################################################

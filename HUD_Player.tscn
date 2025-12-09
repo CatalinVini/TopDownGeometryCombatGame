@@ -33,3 +33,11 @@ step = 1.0
 value = 100.0
 fill_mode = 1
 script = ExtResource("1_vp1rp")
+
+[node name="CodeEdit" type="CodeEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 0.012
+offset_left = 816.0
+offset_right = 1144.0
+offset_bottom = 64.224
