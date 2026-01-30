@@ -100,10 +100,12 @@ func aiming():
 	if (ALOCT_mode_switch == false):
 		if (Input.get_last_mouse_velocity()):
 			look_at(get_global_mouse_position())
-		elif(Input.is_action_pressed("aimjoypad")):
+			print("mouse control")
+		else:
 			#print(Input.get_joy_axis(0,JOY_AXIS_RIGHT_X), Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y))
-			controllerAngle=(Vector2(self.position.x + Input.get_joy_axis(0,JOY_AXIS_RIGHT_X), self.position.y + Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y)))
-			print(controllerAngle)
+			
+			controllerAngle=(Vector2(self.global_position.x + Input.get_joy_axis(0,JOY_AXIS_RIGHT_X), self.global_position.y + Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y)))
+			print("X: ",Input.get_joy_axis(0,JOY_AXIS_RIGHT_X)," Y: ", Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y))
 			look_at(controllerAngle)
 
 
@@ -115,7 +117,7 @@ func lockOnTargetClosest():
 	if (ALOCT_mode_switch == true) && (ALOCT.get_collider(0)):
 		print(ALOCT.get_collision_point(0))
 		look_at(ALOCT.get_collision_point(0))
-		
+
 
 func move():
 	
