@@ -9,6 +9,7 @@ extends CharacterBody2D
 var damage = 5
 
 var some_zero: Vector2
+var controllerAngle = Vector2.ZERO
 
 @onready var hand_left = $"Hand L/AreaHandL2D"
 @onready var hand_right = $"Hand R/AreaHandR2D"
@@ -24,6 +25,7 @@ var some_zero: Vector2
 @onready var marker_hand = $"Hand L/Marker2D"
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
+@onready var ALOCT = $AutoLockOnClosestTarget
 
 var fr = ["attackL", "attackR", "throw", "grab", "grab_punch"]
 var action_array = ["attackL", "attackR", "throw", "grab", "grab_punch"]
@@ -60,6 +62,7 @@ var killing_blow = false
 var grab_idle_transition_state = false
 var HitPoints = 100
 var damage_per_hit = 20
+var ALOCT_mode_switch = false
 var EnemySquare
 var EnemyArray
 var enemy_body_ID
@@ -74,7 +77,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	
-	look_at(get_global_mouse_position())
+	lockOnTargetClosest()
+	aiming()
 	move()
 	move_and_slide()
 	buffer() #it needs to be called before other actions
@@ -89,6 +93,29 @@ func _physics_process(delta: float) -> void:
 	
 	Global_variables_functions.player_position = get_position()
 
+
+func aiming():
+	
+	
+	if (ALOCT_mode_switch == false):
+		if (Input.get_last_mouse_velocity()):
+			look_at(get_global_mouse_position())
+		elif(Input.is_action_pressed("aimjoypad")):
+			#print(Input.get_joy_axis(0,JOY_AXIS_RIGHT_X), Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y))
+			controllerAngle=(Vector2(self.position.x + Input.get_joy_axis(0,JOY_AXIS_RIGHT_X), self.position.y + Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y)))
+			print(controllerAngle)
+			look_at(controllerAngle)
+
+
+func lockOnTargetClosest():
+	
+	if (Input.is_action_just_pressed("AutoLockOnMode")):
+		ALOCT_mode_switch = !ALOCT_mode_switch
+	
+	if (ALOCT_mode_switch == true) && (ALOCT.get_collider(0)):
+		print(ALOCT.get_collision_point(0))
+		look_at(ALOCT.get_collision_point(0))
+		
 
 func move():
 	

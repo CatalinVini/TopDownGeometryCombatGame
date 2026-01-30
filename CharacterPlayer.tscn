@@ -18,7 +18,7 @@ size = Vector2(158.436, 336)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_opd46"]
 size = Vector2(226, 96)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_kxtsn"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_kprj8"]
 
 [sub_resource type="Animation" id="Animation_kprj8"]
 resource_name = "Attack_L"
@@ -590,15 +590,12 @@ position = Vector2(80, 0)
 target_position = Vector2(240, 0)
 hit_from_inside = true
 
-[node name="ShapeCast2D" type="ShapeCast2D" parent="PlayerCharacterBody2D"]
+[node name="AutoLockOnClosestTarget" type="ShapeCast2D" parent="PlayerCharacterBody2D"]
 visible = false
-position = Vector2(80, -120)
-scale = Vector2(8.01479, 4.80467)
-enabled = false
-shape = SubResource("RectangleShape2D_kxtsn")
-collision_mask = 2
-collide_with_areas = true
-collide_with_bodies = false
+position = Vector2(-1.52588e-05, -3.05176e-05)
+scale = Vector2(46.1748, 46.0047)
+shape = SubResource("CircleShape2D_kprj8")
+target_position = Vector2(3.87134e-07, 8.32797e-07)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../PlayerCharacterBody2D")
