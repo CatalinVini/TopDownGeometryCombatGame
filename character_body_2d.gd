@@ -95,17 +95,14 @@ func _physics_process(delta: float) -> void:
 
 
 func aiming():
-	
-	
+
 	if (ALOCT_mode_switch == false):
 		if (Input.get_last_mouse_velocity()):
 			look_at(get_global_mouse_position())
-			print("mouse control")
-		else:
-			#print(Input.get_joy_axis(0,JOY_AXIS_RIGHT_X), Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y))
-			
+			#print("mouse control")
+		elif(Input.get_vector("lookleft","lookright","lookup","lookdown")):
 			controllerAngle=(Vector2(self.global_position.x + Input.get_joy_axis(0,JOY_AXIS_RIGHT_X), self.global_position.y + Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y)))
-			print("X: ",Input.get_joy_axis(0,JOY_AXIS_RIGHT_X)," Y: ", Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y))
+			#print("X: ",Input.get_joy_axis(0,JOY_AXIS_RIGHT_X)," Y: ", Input.get_joy_axis(0,JOY_AXIS_RIGHT_Y))
 			look_at(controllerAngle)
 
 
@@ -169,11 +166,13 @@ func attack_buffer():
 
 func block_seq():
 	
+	areaparry.monitoring = true
 	block_state = true
 	
 	if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
 		action_to_block_transition = true
-	
+		last_action = "new"
+		
 	attack_state = false
 	grab_state = false
 	pull_state = false
@@ -184,11 +183,12 @@ func block_seq():
 	grab_punch_state = false
 	enemy_raycast_collided = null
 	timer_pull.stop()
-	animation.stop()
-	animation.play("Block")
 	timer_attack.stop()
 	timer_attack_connected.stop()
 	timer_grab.stop()
+	timer_grab_punch.stop()
+	animation.stop()
+	animation.play("Block")
 	timer_block.start(0.5)
 
 
@@ -197,7 +197,6 @@ func block():
 	if(Input.is_action_just_pressed("block")) && (block_state == false):
 		hand_right.monitoring = false
 		hand_left.monitoring = false
-		areaparry.monitoring = true
 		block_seq()
 
 	if (Input.is_action_just_pressed("block")):
@@ -339,7 +338,7 @@ func buffer():
 		if(Input.is_action_just_pressed("attack")):
 			
 			if (clinch_state == false):
-				print("ATTACK")
+				#print("ATTACK")
 				nr += 1
 				last_action = "attack"
 			else:
@@ -348,13 +347,14 @@ func buffer():
 				last_action = "grab_punch"
 			
 		if(Input.is_action_just_pressed("block")):
-			print("BLOCK")
+			#print("BLOCK")
 			nr += 1
 			last_action = "block"
 			
 		if(Input.is_action_just_pressed("grab")):
+			
 			if (clinch_state == false) && (pull_state == false):
-				print("GRAB")
+				#print("GRAB")
 				nr += 1
 				last_action = "grab"
 			else:
@@ -368,16 +368,17 @@ func choose_action_buffer():
 	if (last_action == "attack"):
 		attack_buffer()
 	
-	if (last_action == "block")  && (action_to_block_transition == true) && (nr < 2):
-		action_to_block_transition = false
-	elif (last_action == "block"):
+	#if (last_action == "block") && (action_to_block_transition == true):
+		#action_to_block_transition = false
+		#print("transition")
+	if (last_action == "block"):
 		block_buffer()
+		print("block_buffer")
 		
 	if (last_action == "grab"):
 		grab_buffer()
 	
 	if (last_action == "grab_punch"):
-		print("GRAB_PUNCH ", nr)
 		grab_punch_buffer()
 	
 	if (last_action == "throw"):
