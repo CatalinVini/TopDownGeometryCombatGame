@@ -22,10 +22,15 @@ var controllerAngle = Vector2.ZERO
 @onready var timer_pull = $"../Timer_pull"
 @onready var timer_throw = $"../Timer_throw"
 @onready var timer_grab_punch = $"../Timer_grab_punch"
+@onready var timer_dash = $"../Timer_dash"
 @onready var marker_hand = $"Hand L/Marker2D"
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
 @onready var ALOCT = $AutoLockOnClosestTarget
+@onready var path_node = $"../PathNode"
+@onready var dodge_path = $"../PathNode/DodgePath"
+@onready var dodge_path_to_fallow = $"../PathNode/DodgePath/PathFollow2D"
+@onready var AKBS = $AreaKnockBackStaggered
 
 var fr = ["attackL", "attackR", "throw", "grab", "grab_punch"]
 var action_array = ["attackL", "attackR", "throw", "grab", "grab_punch"]
@@ -45,6 +50,7 @@ var pull_state = false
 var clinch_state = false
 var grab_punch_state = false
 var throw_state = false
+var dash_state = false
 var in_buffer = false
 var action_to_block_transition = false
 var present_action = "new"
@@ -82,6 +88,7 @@ func _physics_process(delta: float) -> void:
 	move()
 	move_and_slide()
 	buffer() #it needs to be called before other actions
+	dash()
 	attack()
 	block()
 	parryCondition()
@@ -93,6 +100,19 @@ func _physics_process(delta: float) -> void:
 	
 	Global_variables_functions.player_position = get_position()
 
+
+func dash():
+	path_node.global_position = self.global_position
+	dodge_path.curve.set_point_position(1, Input.get_vector("left", "right", "up", "down") * 320)
+	
+	if(Input.is_action_just_pressed("dash")) && (dash_state == false) && (block_state == false):
+		dash_state = true
+		timer_dash.start(0.2)
+		
+	if(dash_state == true):
+		set_global_position(dodge_path_to_fallow.global_position)
+		AKBS.monitorable = true
+		print(dodge_path_to_fallow.global_position)
 
 func aiming():
 
@@ -123,6 +143,7 @@ func move():
 	some_zero.y = 0
 	
 	velocity = input_direction * speed
+	#print(Input.get_vector("left", "right", "up", "down"))
 	
 	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
 		animation.play("Move")
@@ -194,7 +215,7 @@ func block_seq():
 
 func block():
 	
-	if(Input.is_action_just_pressed("block")) && (block_state == false):
+	if(Input.is_action_just_pressed("block")) && (block_state == false) && (dash_state == false):
 		hand_right.monitoring = false
 		hand_left.monitoring = false
 		block_seq()
@@ -518,3 +539,8 @@ func _on_timer_grab_punch_timeout() -> void:
 		attack_connection = false
 
 	choose_action_buffer()
+
+
+func _on_timer_dash_timeout() -> void:
+	dash_state = false
+	AKBS.monitorable = false

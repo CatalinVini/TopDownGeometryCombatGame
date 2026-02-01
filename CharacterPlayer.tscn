@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cddoam1hokn8w"]
+[gd_scene load_steps=24 format=3 uid="uid://cddoam1hokn8w"]
 
 [ext_resource type="Script" uid="uid://bwnsu5utej4x2" path="res://character_body_2d.gd" id="1_pgxrt"]
 [ext_resource type="PackedScene" uid="uid://civc7devo31tv" path="res://HUD_Player.tscn" id="2_opd46"]
@@ -19,6 +19,15 @@ size = Vector2(158.436, 336)
 size = Vector2(226, 96)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kprj8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_h0mou"]
+radius = 89.4427
+
+[sub_resource type="Curve2D" id="Curve2D_opd46"]
+_data = {
+"points": PackedVector2Array(0, 0, 0.53, 0, 0, 0, 0, 0, 0, 0, 320, 0)
+}
+point_count = 2
 
 [sub_resource type="Animation" id="Animation_kprj8"]
 resource_name = "Attack_L"
@@ -597,6 +606,26 @@ scale = Vector2(46.1748, 46.0047)
 shape = SubResource("CircleShape2D_kprj8")
 target_position = Vector2(3.87134e-07, 8.32797e-07)
 
+[node name="AreaKnockBackStaggered" type="Area2D" parent="PlayerCharacterBody2D"]
+collision_layer = 8
+collision_mask = 8
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaKnockBackStaggered"]
+shape = SubResource("CircleShape2D_h0mou")
+debug_color = Color(0.977996, 0, 0.399711, 0.42)
+
+[node name="PathNode" type="Node2D" parent="."]
+
+[node name="DodgePath" type="Path2D" parent="PathNode"]
+curve = SubResource("Curve2D_opd46")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="PathNode/DodgePath"]
+position = Vector2(29.9921, 0)
+progress = 30.0
+loop = false
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../PlayerCharacterBody2D")
 libraries = {
@@ -635,6 +664,10 @@ one_shot = true
 wait_time = 0.5
 one_shot = true
 
+[node name="Timer_dash" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand R/AreaHandR2D" to="PlayerCharacterBody2D" method="_on_area_hand_r_2d_body_entered"]
 [connection signal="area_entered" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_entered"]
@@ -647,3 +680,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_pull" to="PlayerCharacterBody2D" method="_on_timer_pull_timeout"]
 [connection signal="timeout" from="Timer_throw" to="PlayerCharacterBody2D" method="_on_timer_throw_timeout"]
 [connection signal="timeout" from="Timer_grab_punch" to="PlayerCharacterBody2D" method="_on_timer_grab_punch_timeout"]
+[connection signal="timeout" from="Timer_dash" to="PlayerCharacterBody2D" method="_on_timer_dash_timeout"]
