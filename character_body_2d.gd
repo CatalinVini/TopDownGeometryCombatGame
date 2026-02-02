@@ -31,6 +31,7 @@ var controllerAngle = Vector2.ZERO
 @onready var dodge_path = $"../PathNode/DodgePath"
 @onready var dodge_path_to_fallow = $"../PathNode/DodgePath/PathFollow2D"
 @onready var AKBS = $AreaKnockBackStaggered
+@onready var timer_dash_recovery = $"../Timer_dash_recovery"
 
 var fr = ["attackL", "attackR", "throw", "grab", "grab_punch"]
 var action_array = ["attackL", "attackR", "throw", "grab", "grab_punch"]
@@ -41,7 +42,7 @@ var nr_fr = 0
 var variety = 5
 var variety_for_text = 5
 var parry_ok = false
-
+var dash_nr = 2
 
 var attack_state = false
 var block_state = false
@@ -101,18 +102,50 @@ func _physics_process(delta: float) -> void:
 	Global_variables_functions.player_position = get_position()
 
 
+func dash_seq():
+	
+	if (dash_nr > 0):
+		if (Input.is_action_just_pressed("dash")) && (dash_state == false) && (block_state == false):
+			
+			dash_state = true
+			
+			if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
+				last_action = "new"
+				
+			attack_state = false
+			grab_state = false
+			pull_state = false
+			clinch_state = false
+			throw_state = false
+			killing_blow = false 
+			grab_idle_transition_state = false
+			grab_punch_state = false
+			enemy_raycast_collided = null
+			timer_pull.stop()
+			timer_attack.stop()
+			timer_attack_connected.stop()
+			timer_grab.stop()
+			timer_grab_punch.stop()
+			animation.stop()
+			timer_dash.start(0.2)
+			
+			
+		if (dash_state == true):
+			set_global_position(dodge_path_to_fallow.global_position)
+			AKBS.monitorable = true
+			
+			
+	if (Input.is_action_just_pressed("dash")) && (block_state == false):
+		dash_nr = dash_nr - 1
+		timer_dash_recovery.start(1)
+		
+
 func dash():
 	path_node.global_position = self.global_position
 	dodge_path.curve.set_point_position(1, Input.get_vector("left", "right", "up", "down") * 320)
 	
-	if(Input.is_action_just_pressed("dash")) && (dash_state == false) && (block_state == false):
-		dash_state = true
-		timer_dash.start(0.2)
-		
-	if(dash_state == true):
-		set_global_position(dodge_path_to_fallow.global_position)
-		AKBS.monitorable = true
-		print(dodge_path_to_fallow.global_position)
+	dash_seq()
+
 
 func aiming():
 
@@ -191,7 +224,6 @@ func block_seq():
 	block_state = true
 	
 	if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
-		action_to_block_transition = true
 		last_action = "new"
 		
 	attack_state = false
@@ -354,7 +386,7 @@ func get_hurt():
 
 func buffer():
 	
-	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false):
+	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false):
 		
 		if(Input.is_action_just_pressed("attack")):
 			
@@ -382,6 +414,10 @@ func buffer():
 				print("THROW")
 				nr += 1
 				last_action = "throw"
+		
+		if(Input.is_action_just_pressed("dash")):
+			nr += 1
+			last_action = "dash"
 
 
 func choose_action_buffer():
@@ -389,12 +425,9 @@ func choose_action_buffer():
 	if (last_action == "attack"):
 		attack_buffer()
 	
-	#if (last_action == "block") && (action_to_block_transition == true):
-		#action_to_block_transition = false
-		#print("transition")
 	if (last_action == "block"):
 		block_buffer()
-		print("block_buffer")
+		print("Block buffer")
 		
 	if (last_action == "grab"):
 		grab_buffer()
@@ -404,6 +437,10 @@ func choose_action_buffer():
 	
 	if (last_action == "throw"):
 		throw_buffer()
+	
+	if (last_action == "dash"):
+		dash_seq()
+		print("Dash buffer")
 		
 	last_action = "new"
 	nr = 0
@@ -542,5 +579,19 @@ func _on_timer_grab_punch_timeout() -> void:
 
 
 func _on_timer_dash_timeout() -> void:
+	
 	dash_state = false
 	AKBS.monitorable = false
+	choose_action_buffer()
+
+
+func _on_timer_dash_recovery_timeout() -> void:
+	
+	dash_nr += 1
+	print("dash_nr + 1: ", dash_nr)
+	
+	if (dash_nr >= 2):
+		print("dash recovered")
+		timer_dash_recovery.stop()
+	else:
+		timer_dash_recovery.start(1)

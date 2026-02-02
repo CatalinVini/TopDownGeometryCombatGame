@@ -668,6 +668,9 @@ one_shot = true
 wait_time = 0.3
 one_shot = true
 
+[node name="Timer_dash_recovery" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand R/AreaHandR2D" to="PlayerCharacterBody2D" method="_on_area_hand_r_2d_body_entered"]
 [connection signal="area_entered" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_entered"]
@@ -681,3 +684,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_throw" to="PlayerCharacterBody2D" method="_on_timer_throw_timeout"]
 [connection signal="timeout" from="Timer_grab_punch" to="PlayerCharacterBody2D" method="_on_timer_grab_punch_timeout"]
 [connection signal="timeout" from="Timer_dash" to="PlayerCharacterBody2D" method="_on_timer_dash_timeout"]
+[connection signal="timeout" from="Timer_dash_recovery" to="PlayerCharacterBody2D" method="_on_timer_dash_recovery_timeout"]
