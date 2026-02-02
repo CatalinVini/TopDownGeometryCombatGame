@@ -106,9 +106,9 @@ func dash_seq():
 	
 	if (dash_nr > 0):
 		if (Input.is_action_just_pressed("dash")) && (dash_state == false) && (block_state == false):
-			
+		
 			dash_state = true
-			
+			print("entered")
 			if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
 				last_action = "new"
 				
@@ -128,14 +128,15 @@ func dash_seq():
 			timer_grab_punch.stop()
 			animation.stop()
 			timer_dash.start(0.2)
-			
-			
-		if (dash_state == true):
-			set_global_position(dodge_path_to_fallow.global_position)
-			AKBS.monitorable = true
-			
-			
-	if (Input.is_action_just_pressed("dash")) && (block_state == false):
+	
+	else: 
+		print("Cooldown")
+	
+	if (dash_state == true):
+		set_global_position(dodge_path_to_fallow.global_position)
+		AKBS.monitorable = true
+		
+	if (Input.is_action_just_pressed("dash")) && (block_state == false) && (dash_nr > 0):
 		dash_nr = dash_nr - 1
 		timer_dash_recovery.start(1)
 		
