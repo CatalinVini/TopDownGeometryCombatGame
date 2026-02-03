@@ -32,6 +32,8 @@ var controllerAngle = Vector2.ZERO
 @onready var dodge_path_to_fallow = $"../PathNode/DodgePath/PathFollow2D"
 @onready var AKBS = $AreaKnockBackStaggered
 @onready var timer_dash_recovery = $"../Timer_dash_recovery"
+@onready var grab_dash_enemy = $"../PathNode/GrabDashOverEnemy"
+@onready var timer_IFRAMES = $"../Timer_iframes"
 
 var fr = ["attackL", "attackR", "throw", "grab", "grab_punch"]
 var action_array = ["attackL", "attackR", "throw", "grab", "grab_punch"]
@@ -80,7 +82,7 @@ var enemy_raycast_collided
 func _ready() -> void:
 	EnemySquare = get_tree().get_first_node_in_group("Enemy")
 	EnemyArray = get_tree().get_nodes_in_group("Enemy")
-
+	grab_dash_enemy.add_exception(self)
 
 func _physics_process(delta: float) -> void:
 	
@@ -90,6 +92,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	buffer() #it needs to be called before other actions
 	dash()
+	dash_vault_over()
 	attack()
 	block()
 	parryCondition()
@@ -105,10 +108,9 @@ func _physics_process(delta: float) -> void:
 func dash_seq():
 	
 	if (dash_nr > 0):
-		if (Input.is_action_just_pressed("dash")) && (dash_state == false) && (block_state == false):
-		
+		if (Input.is_action_just_pressed("dash")) && ((grab_dash_enemy.get_collider() != enemy_raycast_collided)||(grab_dash_enemy.is_colliding() == false)) && (dash_state == false) && (block_state == false):
+			
 			dash_state = true
-			print("entered")
 			if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
 				last_action = "new"
 				
@@ -139,14 +141,48 @@ func dash_seq():
 	if (Input.is_action_just_pressed("dash")) && (block_state == false) && (dash_nr > 0):
 		dash_nr = dash_nr - 1
 		timer_dash_recovery.start(1)
-		
+
 
 func dash():
+	
 	path_node.global_position = self.global_position
 	dodge_path.curve.set_point_position(1, Input.get_vector("left", "right", "up", "down") * 320)
+	grab_dash_enemy.target_position = Input.get_vector("left", "right", "up", "down") * 320
 	
 	dash_seq()
 
+
+func dash_vault_over():
+	
+	if (Input.is_action_just_pressed("dash")) && (grab_dash_enemy.get_collider() == enemy_raycast_collided) && ((clinch_state == true) || (pull_state == true)) && (dash_state == false): 
+		self.set_collision_layer_value(1, false)
+		self.set_collision_mask_value(1, false)
+		self.set_collision_layer_value(8, true)
+		self.set_collision_mask_value(8, true)
+		timer_IFRAMES.start(0.2)
+		
+		print("DASH OVER")
+		dash_state = true
+		if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
+			last_action = "new"
+			
+		attack_state = false
+		grab_state = false
+		pull_state = false
+		clinch_state = false
+		throw_state = false
+		killing_blow = false 
+		grab_idle_transition_state = false
+		grab_punch_state = false
+		enemy_raycast_collided = null
+		timer_pull.stop()
+		timer_attack.stop()
+		timer_attack_connected.stop()
+		timer_grab.stop()
+		timer_grab_punch.stop()
+		animation.stop()
+		timer_dash.start(0.2)
+		
 
 func aiming():
 
@@ -204,7 +240,7 @@ func attack_seq():
 
 func attack():
 	
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false):
 		attack_seq() 
 		
 	if (Input.is_action_just_pressed("attack")):
@@ -269,7 +305,7 @@ func parryCondition():
 				parry_ok = true
 				print("POK")
 				break
-			
+
 
 func block_buffer():
 	
@@ -287,7 +323,7 @@ func grab_seq():
 func grab():
 	
 	
-	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
+	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false):
 		grab_seq()
 		
 	if (Input.is_action_just_pressed("grab")):
@@ -425,7 +461,8 @@ func choose_action_buffer():
 	
 	if (last_action == "attack"):
 		attack_buffer()
-	
+		print("Attack buffer")
+		
 	if (last_action == "block"):
 		block_buffer()
 		print("Block buffer")
@@ -515,6 +552,7 @@ func _on_timer_attack_hit_timeout() -> void:
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
+		print(enemy_body_ID)
 		if (right_left_hand == true):
 			comboVariety("attackL")
 		else:
@@ -596,3 +634,11 @@ func _on_timer_dash_recovery_timeout() -> void:
 		timer_dash_recovery.stop()
 	else:
 		timer_dash_recovery.start(1)
+
+
+func _on_timer_iframes_timeout() -> void:
+	
+	self.set_collision_layer_value(1, true)
+	self.set_collision_mask_value(1, true)
+	self.set_collision_layer_value(8, false)
+	self.set_collision_mask_value(8, false)

@@ -626,6 +626,11 @@ position = Vector2(29.9921, 0)
 progress = 30.0
 loop = false
 
+[node name="GrabDashOverEnemy" type="RayCast2D" parent="PathNode"]
+modulate = Color(0.915832, 0.00022891, 0.80102, 1)
+target_position = Vector2(320, 0)
+hit_from_inside = true
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../PlayerCharacterBody2D")
 libraries = {
@@ -671,6 +676,9 @@ one_shot = true
 [node name="Timer_dash_recovery" type="Timer" parent="."]
 one_shot = true
 
+[node name="Timer_iframes" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand R/AreaHandR2D" to="PlayerCharacterBody2D" method="_on_area_hand_r_2d_body_entered"]
 [connection signal="area_entered" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_entered"]
@@ -685,3 +693,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_grab_punch" to="PlayerCharacterBody2D" method="_on_timer_grab_punch_timeout"]
 [connection signal="timeout" from="Timer_dash" to="PlayerCharacterBody2D" method="_on_timer_dash_timeout"]
 [connection signal="timeout" from="Timer_dash_recovery" to="PlayerCharacterBody2D" method="_on_timer_dash_recovery_timeout"]
+[connection signal="timeout" from="Timer_iframes" to="PlayerCharacterBody2D" method="_on_timer_iframes_timeout"]
