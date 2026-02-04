@@ -72,12 +72,13 @@ var grab_idle_transition_state = false
 var HitPoints = 100
 var damage_per_hit = 20
 var ALOCT_mode_switch = false
+var dash_over_stun = false
 var EnemySquare
 var EnemyArray
 var enemy_body_ID
 var enemy_area_ID
 var enemy_raycast_collided
-
+var aux_enemy_raycast_collided
 
 func _ready() -> void:
 	EnemySquare = get_tree().get_first_node_in_group("Enemy")
@@ -131,9 +132,6 @@ func dash_seq():
 			animation.stop()
 			timer_dash.start(0.2)
 	
-	else: 
-		print("Cooldown")
-	
 	if (dash_state == true):
 		set_global_position(dodge_path_to_fallow.global_position)
 		AKBS.monitorable = true
@@ -155,11 +153,13 @@ func dash():
 func dash_vault_over():
 	
 	if (Input.is_action_just_pressed("dash")) && (grab_dash_enemy.get_collider() == enemy_raycast_collided) && ((clinch_state == true) || (pull_state == true)) && (dash_state == false): 
+		
 		self.set_collision_layer_value(1, false)
 		self.set_collision_mask_value(1, false)
 		self.set_collision_layer_value(8, true)
 		self.set_collision_mask_value(8, true)
 		timer_IFRAMES.start(0.2)
+		dash_over_stun = true
 		
 		print("DASH OVER")
 		dash_state = true
@@ -174,6 +174,7 @@ func dash_vault_over():
 		killing_blow = false 
 		grab_idle_transition_state = false
 		grab_punch_state = false
+		aux_enemy_raycast_collided = enemy_raycast_collided
 		enemy_raycast_collided = null
 		timer_pull.stop()
 		timer_attack.stop()
@@ -182,7 +183,7 @@ func dash_vault_over():
 		timer_grab_punch.stop()
 		animation.stop()
 		timer_dash.start(0.2)
-		
+
 
 func aiming():
 

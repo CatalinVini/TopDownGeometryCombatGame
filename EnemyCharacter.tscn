@@ -705,6 +705,9 @@ one_shot = true
 wait_time = 3.0
 one_shot = true
 
+[node name="EnemyTimerAreasMonitoribleRecovery" type="Timer" parent="."]
+one_shot = true
+
 [node name="NodeForCanvas" type="Node2D" parent="."]
 
 [node name="Control" type="Control" parent="NodeForCanvas"]
@@ -743,3 +746,4 @@ fill_mode = 1
 [connection signal="timeout" from="EnemyTimerGetKnockedBack" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_knocked_back_timeout"]
 [connection signal="timeout" from="EnemyTimerThrown" to="EnemyCharacterBody2D" method="_on_enemy_timer_thrown_timeout"]
 [connection signal="timeout" from="EnemyTimerVisibleHP" to="EnemyCharacterBody2D" method="_on_enemy_timer_visible_hp_timeout"]
+[connection signal="timeout" from="EnemyTimerAreasMonitoribleRecovery" to="EnemyCharacterBody2D" method="_on_enemy_timer_areas_monitorible_recovery_timeout"]

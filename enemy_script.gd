@@ -52,7 +52,7 @@ var attack_damage = 20
 @onready var knockbackpathne = $KnockBackPathNE/PathFollow2D
 @onready var canvaslayer = $"../NodeForCanvas"
 @onready var progress_bar = $"../NodeForCanvas/Control/ProgressBar"
-
+@onready var ETAMR = $"../EnemyTimerAreasMonitoribleRecovery"
 
 func _ready():
 	
@@ -71,6 +71,7 @@ func _physics_process(delta: float) -> void:
 	
 	move()
 	enemy_hurt()
+	enemy_get_parried_dashed()
 	enemy_death()
 	enemy_grabbed()
 	enemy_grabbed_hurt()
@@ -165,6 +166,31 @@ func enemy_get_parried():
 		enemy_timer_hit.stop()
 		enemy_timer_get_hurt.stop()
 		enemy_timer_get_parried.start(3)
+
+
+func enemy_get_parried_dashed():
+	
+	#print(self, Player.aux_enemy_raycast_collided)
+	if (Player.dash_over_stun == true) && (self == Player.aux_enemy_raycast_collided):
+		Player.aux_enemy_raycast_collided = null
+		self.area_hit_areanw.monitoring = false
+		self.area_hit_areane.monitoring = false
+		self.area_hit_arease.monitoring = false
+		self.area_hit_areasw.monitoring = false
+		
+		print("PARRIED")
+		Player.dash_over_stun = false
+		Player.successfull_parry = false
+		parried_state = true
+		attack_state = false
+		detection = false
+		enemy_detection_area2d.monitoring = false
+		animation.play("Parried") 
+		enemy_timer_attack.stop()
+		enemy_timer_hit.stop()
+		enemy_timer_get_hurt.stop()
+		enemy_timer_get_parried.start(3)
+		ETAMR.start(0.2)
 
 
 func enemy_grabbed():
@@ -391,3 +417,10 @@ func _on_enemy_timer_get_knocked_back_timeout() -> void:
 func _on_enemy_timer_visible_hp_timeout() -> void:
 	
 	progress_bar.visible = false
+
+
+func _on_enemy_timer_areas_monitorible_recovery_timeout() -> void:
+	self.area_hit_areanw.monitoring = true
+	self.area_hit_areane.monitoring = true
+	self.area_hit_arease.monitoring = true
+	self.area_hit_areasw.monitoring = true
