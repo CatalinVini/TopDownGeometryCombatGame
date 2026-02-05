@@ -85,6 +85,7 @@ func _ready() -> void:
 	EnemyArray = get_tree().get_nodes_in_group("Enemy")
 	grab_dash_enemy.add_exception(self)
 
+
 func _physics_process(delta: float) -> void:
 	
 	lockOnTargetClosest()

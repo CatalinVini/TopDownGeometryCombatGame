@@ -305,6 +305,7 @@ func _on_detection_area_2d_area_exited(area: Area2D) -> void:
 
 ##############################-----KNOCK BACK ZONES-----###########################################
 
+
 func _on_area_nw_area_entered(area: Area2D) -> void:
 	
 	if ((area != Player.AKBS) && (area != self.area_hit_other_enemies)) || ((area == Player.AKBS) && (parried_state == true)):
@@ -352,6 +353,7 @@ func _on_area_sw_area_entered(area: Area2D) -> void:
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "sw"
 		print(area_hit_other_enemies)
+
 
 ##############################-----KNOCK BACK ZONES-----###########################################
 #########################################################################
