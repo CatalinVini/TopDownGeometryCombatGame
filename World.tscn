@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c628tofermk1k"]
+[gd_scene format=3 uid="uid://c628tofermk1k"]
 
 [ext_resource type="Script" uid="uid://b7jjit1tmw32a" path="res://world.gd" id="1_bcbcq"]
 [ext_resource type="PackedScene" uid="uid://cddoam1hokn8w" path="res://CharacterPlayer.tscn" id="1_c6gwx"]
@@ -18,15 +18,15 @@ colors = PackedColorArray(0, 0, 0, 1, 0.536796, 0.373401, 0.207788, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_js7pq"]
 gradient = SubResource("Gradient_bcbcq")
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="Node2D" unique_id=1923794580]
 script = ExtResource("1_bcbcq")
 
-[node name="CharacterPlayer" parent="." instance=ExtResource("1_c6gwx")]
+[node name="CharacterPlayer" parent="." unique_id=371327042 instance=ExtResource("1_c6gwx")]
 
-[node name="EnemyCharacter" parent="." instance=ExtResource("2_2dftf")]
+[node name="EnemyCharacter" parent="." unique_id=540579421 instance=ExtResource("2_2dftf")]
 position = Vector2(592, 504)
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1230801434]
 show_behind_parent = true
 position = Vector2(-648, -160)
 scale = Vector2(1.32639, 1.25926)
@@ -34,7 +34,7 @@ color = Color(1, 0.254902, 1, 1)
 texture = SubResource("GradientTexture1D_2dftf")
 polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
 
-[node name="Polygon2D" type="Polygon2D" parent="Polygon2D"]
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=1043003400]
 position = Vector2(352, 144)
 color = Color(0.0728426, 0.0728426, 0.0728426, 1)
 texture = SubResource("GradientTexture1D_js7pq")
