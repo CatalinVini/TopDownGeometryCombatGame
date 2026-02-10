@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://d4kj7q43vr1kr"]
+[gd_scene load_steps=25 format=3 uid="uid://d4kj7q43vr1kr"]
 
 [ext_resource type="Script" uid="uid://0h8ga7ggwy4a" path="res://enemy_script.gd" id="1_d6you"]
 
@@ -89,770 +89,282 @@ size = Vector2(40, 40)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ge8j7"]
 size = Vector2(48, 40)
 
-[sub_resource type="Animation" id="Animation_ayvk7"]
-resource_name = "Attack"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.333333, 0.6, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0, 128), Vector2(-48, 176), Vector2(208, 16), Vector2(0, 128)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.333333, 0.6, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0, -128), Vector2(-48, -176), Vector2(208, -16), Vector2(0, -128)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("EnemyCharacterBody2D/Hand R:color")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.333333, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 1, 1)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("EnemyCharacterBody2D/Hand L:color")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.333333, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_kpxg6"]
-resource_name = "GettingHurt"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0333333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(0, 0), Vector2(-80, 0), Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("EnemyCharacterBody2D/Hand R:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 128)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("EnemyCharacterBody2D/Hand L:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, -128)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("EnemyCharacterBody2D/Hand R:rotation")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("EnemyCharacterBody2D/Hand L:rotation")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("EnemyCharacterBody2D/Hand R:color")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("EnemyCharacterBody2D/Hand L:color")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_d6you"]
-resource_name = "Idle"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(0, 128), Vector2(-8, 128), Vector2(0, 128)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(0, -128), Vector2(-8, -128), Vector2(0, -128)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("EnemyCharacterBody2D/Hand L:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("EnemyCharacterBody2D/Hand R:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("EnemyCharacterBody2D/Hand R:color")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("EnemyCharacterBody2D/Hand L:color")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_16xks"]
-resource_name = "Move"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.466667, 0.733333, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0, 128), Vector2(-48, 128), Vector2(0, 128), Vector2(48, 128), Vector2(0, 128)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.466667, 0.733333, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0, -128), Vector2(48, -128), Vector2(0, -128), Vector2(-48, -128), Vector2(0, -128)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("EnemyCharacterBody2D/Hand R:color")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("EnemyCharacterBody2D/Hand L:color")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_s84lq"]
-resource_name = "Parried"
-length = 3.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.233333, 3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(0, 0), Vector2(-64, 0), Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.233333, 3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.0, 3.14159, 9.42478]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("EnemyCharacterBody2D/Hand R:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 128)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("EnemyCharacterBody2D/Hand L:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, -128)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("EnemyCharacterBody2D/Hand R:color")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("EnemyCharacterBody2D/Hand L:color")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_kbrm0"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("EnemyCharacterBody2D/Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 128)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("EnemyCharacterBody2D/Hand L:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, -128)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("EnemyCharacterBody2D/Hand L:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("EnemyCharacterBody2D/Hand R:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("EnemyCharacterBody2D/EnemySquare:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("EnemyCharacterBody2D/EnemySquare:rotation")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("EnemyCharacterBody2D/Hand R:color")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("EnemyCharacterBody2D/Hand L:color")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_16xks"]
-_data = {
-&"Attack": SubResource("Animation_ayvk7"),
-&"GettingHurt": SubResource("Animation_kpxg6"),
-&"Idle": SubResource("Animation_d6you"),
-&"Move": SubResource("Animation_16xks"),
-&"Parried": SubResource("Animation_s84lq"),
-&"RESET": SubResource("Animation_kbrm0")
-}
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kbrm0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_16xks"]
 bg_color = Color(0.898301, 0, 0.0121484, 1)
 
-[node name="Node2D" type="Node2D" unique_id=236920853]
+[node name="Node2D" type="Node2D"]
 
-[node name="EnemyCharacterBody2D" type="CharacterBody2D" parent="." unique_id=1415204714 groups=["Enemy"]]
+[node name="EnemyCharacterBody2D" type="CharacterBody2D" parent="." groups=["Enemy"]]
 script = ExtResource("1_d6you")
 
-[node name="KnockBackPathE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1568674918]
+[node name="KnockBackPathE" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_d6you")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathE" unique_id=13200296]
-position = Vector2(0, -34.98427)
-rotation = -1.5707964
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathE"]
+position = Vector2(0, -34.9843)
+rotation = -1.5708
 progress = 35.0
 rotates = false
 
-[node name="KnockBackPathW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=2064771739]
+[node name="KnockBackPathW" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_j0e86")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathW" unique_id=406823710]
-position = Vector2(0, 34.98427)
-rotation = 1.5707964
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathW"]
+position = Vector2(0, 34.9843)
+rotation = 1.5708
 progress = 35.0
 rotates = false
 
-[node name="KnockBackPathS" type="Path2D" parent="EnemyCharacterBody2D" unique_id=44185035]
+[node name="KnockBackPathS" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_j7lw2")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathS" unique_id=366144798]
-position = Vector2(34.98427, 0)
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathS"]
+position = Vector2(34.9843, 0)
 progress = 35.0
 rotates = false
 
-[node name="KnockBackPathSE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1934043939]
+[node name="KnockBackPathSE" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_ayvk7")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSE" unique_id=333857426]
-position = Vector2(24.730452, -24.730452)
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSE"]
+position = Vector2(24.7305, -24.7305)
 rotation = -0.785398
 progress = 35.0
 rotates = false
 
-[node name="KnockBackPathSW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=515124932]
+[node name="KnockBackPathSW" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_kpxg6")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSW" unique_id=1106962155]
-position = Vector2(24.730452, 24.730452)
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSW"]
+position = Vector2(24.7305, 24.7305)
 rotation = 0.785398
 progress = 35.0
 rotates = false
 
-[node name="KnockBackPathNW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=964906609]
+[node name="KnockBackPathNW" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_s84lq")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNW" unique_id=348327358]
-position = Vector2(-24.730452, 24.730452)
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNW"]
+position = Vector2(-24.7305, 24.7305)
 rotation = 2.35619
 progress = 35.0
 rotates = false
 
-[node name="KnockBackPathNE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=812377220]
+[node name="KnockBackPathNE" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_16xks")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNE" unique_id=548313375]
-position = Vector2(-24.730452, -24.730452)
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNE"]
+position = Vector2(-24.7305, -24.7305)
 rotation = -2.35619
 progress = 35.0
 rotates = false
 
-[node name="EnemyThrownPath" type="Path2D" parent="EnemyCharacterBody2D" unique_id=993682206]
+[node name="EnemyThrownPath" type="Path2D" parent="EnemyCharacterBody2D"]
 curve = SubResource("Curve2D_kbrm0")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/EnemyThrownPath" unique_id=1723733704]
-position = Vector2(-44.783215, 0)
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/EnemyThrownPath"]
+position = Vector2(-44.7832, 0)
 rotation = 3.14159
 progress = 44.8
 rotates = false
 loop = false
 
-[node name="EnemyCharacterArea" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1632261028]
+[node name="EnemyCharacterArea" type="Area2D" parent="EnemyCharacterBody2D"]
 collision_layer = 2
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/EnemyCharacterArea" unique_id=1880180150]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/EnemyCharacterArea"]
 shape = SubResource("RectangleShape2D_kbrm0")
 
-[node name="EnemySquare" type="Polygon2D" parent="EnemyCharacterBody2D" unique_id=1785260667]
+[node name="EnemySquare" type="Polygon2D" parent="EnemyCharacterBody2D"]
 polygon = PackedVector2Array(-64, 64, -64, -64, 64, -64, 64, 64)
 
-[node name="Hand R" type="Polygon2D" parent="EnemyCharacterBody2D" unique_id=1516708793]
+[node name="Hand R" type="Polygon2D" parent="EnemyCharacterBody2D"]
 position = Vector2(0, 128)
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
-[node name="Hand L" type="Polygon2D" parent="EnemyCharacterBody2D" unique_id=524426033]
+[node name="Hand L" type="Polygon2D" parent="EnemyCharacterBody2D"]
 position = Vector2(0, -128)
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D" unique_id=1877330173]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D"]
 shape = SubResource("RectangleShape2D_qan7t")
 
-[node name="DetectionArea2D" type="Area2D" parent="EnemyCharacterBody2D" unique_id=307014085]
+[node name="DetectionArea2D" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(128, 0)
 collision_layer = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/DetectionArea2D" unique_id=954668475]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/DetectionArea2D"]
 shape = SubResource("RectangleShape2D_d6you")
 debug_color = Color(1, 0, 0.0888976, 0.42)
 
-[node name="AreaNW" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1543743949]
+[node name="AreaNW" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(-72, 16)
 collision_layer = 4
 collision_mask = 8
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaNW" unique_id=1169034947]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaNW"]
 position = Vector2(40, 16)
 shape = SubResource("RectangleShape2D_16xks")
 debug_color = Color(0.873609, 0.0586251, 0.822484, 0.42)
 
-[node name="AreaNE" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1688796595]
+[node name="AreaNE" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(-64, -64)
 collision_layer = 4
 collision_mask = 8
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaNE" unique_id=2138272407]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaNE"]
 position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_16xks")
 debug_color = Color(0.873609, 0.0586251, 0.822484, 0.42)
 
-[node name="AreaSE" type="Area2D" parent="EnemyCharacterBody2D" unique_id=657207428]
+[node name="AreaSE" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(0, -64)
 collision_layer = 4
 collision_mask = 8
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaSE" unique_id=17736316]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaSE"]
 position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_16xks")
 debug_color = Color(0.873609, 0.0586251, 0.822484, 0.42)
 
-[node name="AreaSW" type="Area2D" parent="EnemyCharacterBody2D" unique_id=2084934069]
+[node name="AreaSW" type="Area2D" parent="EnemyCharacterBody2D"]
 collision_layer = 4
 collision_mask = 8
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaSW" unique_id=1580383402]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaSW"]
 position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_16xks")
 debug_color = Color(0.873609, 0.0586251, 0.822484, 0.42)
 
-[node name="AreaHitAnotherEnemies" type="Area2D" parent="EnemyCharacterBody2D" unique_id=406007052]
+[node name="AreaHitAnotherEnemies" type="Area2D" parent="EnemyCharacterBody2D"]
 collision_layer = 8
 collision_mask = 8
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaHitAnotherEnemies" unique_id=1932158884]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyCharacterBody2D/AreaHitAnotherEnemies"]
 shape = SubResource("CircleShape2D_kbrm0")
 debug_color = Color(0.977996, 0, 0.399711, 0.42)
 
-[node name="Area2HitByPunchSE" type="Area2D" parent="EnemyCharacterBody2D" unique_id=616710380]
+[node name="Area2HitByPunchSE" type="Area2D" parent="EnemyCharacterBody2D"]
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColSE" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchSE" unique_id=157210296]
+[node name="ColSE" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchSE"]
 position = Vector2(44, -44)
 shape = SubResource("RectangleShape2D_ayvk7")
 
-[node name="Area2HitByPunchS" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1441943713]
+[node name="Area2HitByPunchS" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(0, -44)
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColS" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchS" unique_id=216478227]
+[node name="ColS" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchS"]
 position = Vector2(44, 44)
 shape = SubResource("RectangleShape2D_7sh7c")
 
-[node name="Area2HitByPunchSW" type="Area2D" parent="EnemyCharacterBody2D" unique_id=116503771]
+[node name="Area2HitByPunchSW" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(0, -44)
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColSW" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchSW" unique_id=1724248523]
+[node name="ColSW" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchSW"]
 position = Vector2(44, 88)
 shape = SubResource("RectangleShape2D_c5473")
 
-[node name="Area2HitByPunchW" type="Area2D" parent="EnemyCharacterBody2D" unique_id=109261988]
+[node name="Area2HitByPunchW" type="Area2D" parent="EnemyCharacterBody2D"]
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColW" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchW" unique_id=1252885929]
+[node name="ColW" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchW"]
 position = Vector2(0, 44)
 shape = SubResource("RectangleShape2D_lfudb")
 
-[node name="Area2HitByPunchNW" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1956717251]
+[node name="Area2HitByPunchNW" type="Area2D" parent="EnemyCharacterBody2D"]
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColNW" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchNW" unique_id=506563377]
+[node name="ColNW" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchNW"]
 position = Vector2(-44, 44)
 shape = SubResource("RectangleShape2D_xqrho")
 
-[node name="Area2HitByPunchN" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1525385324]
+[node name="Area2HitByPunchN" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(-44, 44)
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColN" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchN" unique_id=1305726794]
+[node name="ColN" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchN"]
 position = Vector2(0, -44)
 shape = SubResource("RectangleShape2D_38iuv")
 
-[node name="Area2HitByPunchNE" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1129699086]
+[node name="Area2HitByPunchNE" type="Area2D" parent="EnemyCharacterBody2D"]
 position = Vector2(-44, 0)
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColNE" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchNE" unique_id=1196490822]
+[node name="ColNE" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchNE"]
 position = Vector2(0, -44)
 shape = SubResource("RectangleShape2D_47kga")
 
-[node name="Area2HitByPunchE" type="Area2D" parent="EnemyCharacterBody2D" unique_id=57099463]
+[node name="Area2HitByPunchE" type="Area2D" parent="EnemyCharacterBody2D"]
 collision_layer = 16
 collision_mask = 16
 monitorable = false
 
-[node name="ColE" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchE" unique_id=940590571]
+[node name="ColE" type="CollisionShape2D" parent="EnemyCharacterBody2D/Area2HitByPunchE"]
 position = Vector2(0, -44)
 shape = SubResource("RectangleShape2D_ge8j7")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=778109804]
-libraries/ = SubResource("AnimationLibrary_16xks")
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
-[node name="EnemyTimerAttack" type="Timer" parent="." unique_id=855244119]
+[node name="EnemyTimerAttack" type="Timer" parent="."]
 one_shot = true
 
-[node name="EnemyTimerHit" type="Timer" parent="." unique_id=479283541]
+[node name="EnemyTimerHit" type="Timer" parent="."]
 wait_time = 0.33
 one_shot = true
 
-[node name="EnemyTimerRetreat" type="Timer" parent="." unique_id=1483836045]
+[node name="EnemyTimerRetreat" type="Timer" parent="."]
 one_shot = true
 
-[node name="EnemyTimerGetHurt" type="Timer" parent="." unique_id=655658325]
+[node name="EnemyTimerGetHurt" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
 
-[node name="EnemyTimerGetParried" type="Timer" parent="." unique_id=950116849]
+[node name="EnemyTimerGetParried" type="Timer" parent="."]
 one_shot = true
 
-[node name="EnemyTimerGetKnockedBack" type="Timer" parent="." unique_id=1191471336]
+[node name="EnemyTimerGetKnockedBack" type="Timer" parent="."]
 one_shot = true
 
-[node name="EnemyTimerThrown" type="Timer" parent="." unique_id=480607791]
+[node name="EnemyTimerThrown" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
 
-[node name="EnemyTimerVisibleHP" type="Timer" parent="." unique_id=1336839987]
+[node name="EnemyTimerVisibleHP" type="Timer" parent="."]
 wait_time = 3.0
 one_shot = true
 
-[node name="EnemyTimerAreasMonitoribleRecovery" type="Timer" parent="." unique_id=1733210505]
+[node name="EnemyTimerAreasMonitoribleRecovery" type="Timer" parent="."]
 one_shot = true
 
-[node name="NodeForCanvas" type="Node2D" parent="." unique_id=1630898529]
+[node name="NodeForCanvas" type="Node2D" parent="."]
 
-[node name="Control" type="Control" parent="NodeForCanvas" unique_id=1657030744]
+[node name="Control" type="Control" parent="NodeForCanvas"]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -120.0
@@ -861,7 +373,7 @@ offset_right = 120.0
 offset_bottom = -64.0
 metadata/_edit_use_anchors_ = true
 
-[node name="ProgressBar" type="ProgressBar" parent="NodeForCanvas/Control" unique_id=1254835679]
+[node name="ProgressBar" type="ProgressBar" parent="NodeForCanvas/Control"]
 visible = false
 layout_mode = 0
 offset_right = 240.0

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cddoam1hokn8w"]
+[gd_scene load_steps=11 format=3 uid="uid://cddoam1hokn8w"]
 
 [ext_resource type="Script" uid="uid://bwnsu5utej4x2" path="res://character_body_2d.gd" id="1_pgxrt"]
 [ext_resource type="PackedScene" uid="uid://civc7devo31tv" path="res://HUD_Player.tscn" id="2_opd46"]
@@ -29,505 +29,21 @@ _data = {
 }
 point_count = 2
 
-[sub_resource type="Animation" id="Animation_kprj8"]
-resource_name = "Attack_L"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.233333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(8, -136), Vector2(216, -16), Vector2(8, -136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand L:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [3.14159]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Hand R:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, 136)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hand R:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
+[node name="Node2D" type="Node2D"]
 
-[sub_resource type="Animation" id="Animation_h0mou"]
-resource_name = "Attack_R"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.233333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(8, 136), Vector2(216, 16), Vector2(8, 136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Hand L:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, -136)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hand L:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [3.14159]
-}
-
-[sub_resource type="Animation" id="Animation_86mt1"]
-resource_name = "Block"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(8, 136), Vector2(98, 104), Vector2(128, 32), Vector2(98, 104), Vector2(8, 136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 3.14159, 6.28319, 3.14159, 0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Hand L:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(8, -136), Vector2(98, -104), Vector2(128, -32), Vector2(98, -104), Vector2(8, -136)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hand L:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.233333, 0.333333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [3.14159, 0.0, 3.14159, 6.28319, 3.14159]
-}
-
-[sub_resource type="Animation" id="Animation_f16rc"]
-resource_name = "Clinch"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(150, -16)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(150, 16)]
-}
-
-[sub_resource type="Animation" id="Animation_0wu8n"]
-resource_name = "Grab"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.233333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(8, -136), Vector2(280, -16), Vector2(8, -136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.233333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(8, 136), Vector2(280, 16), Vector2(8, 136)]
-}
-
-[sub_resource type="Animation" id="Animation_iggsx"]
-resource_name = "Grab_punch"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(150, -16)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.333333, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(128, 41), Vector2(8, 136), Vector2(128, 41)]
-}
-
-[sub_resource type="Animation" id="Animation_druoj"]
-resource_name = "Grab_punch_idle_transition"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(150, -16), Vector2(8, -136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(128, 41), Vector2(8, 136)]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.2),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"grab_punch_idle_transition"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_kxtsn"]
-resource_name = "Idle"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, 136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand L:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, -136)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Hand R:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hand L:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [3.14159]
-}
-
-[sub_resource type="Animation" id="Animation_pgxrt"]
-resource_name = "Move"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand R:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.233333, 0.500988, 0.733333, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(8, 136), Vector2(72, 136), Vector2(8, 136), Vector2(-72, 136), Vector2(8, 136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand L:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.232579, 0.502728, 0.733333, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(8, -136), Vector2(-72, -136), Vector2(8, -136), Vector2(72, -136), Vector2(8, -136)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Hand R:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hand L:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [3.14159]
-}
-
-[sub_resource type="Animation" id="Animation_q5ktn"]
-resource_name = "Pull"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0001, 0.266667, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(280, -16), Vector2(280, -16), Vector2(200, -16), Vector2(150, -16)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.266667, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(280, 16), Vector2(200, 16), Vector2(150, 16)]
-}
-
-[sub_resource type="Animation" id="Animation_opd46"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_f243m"]
-resource_name = "Throw"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hand L:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(150, -16), Vector2(250, -16), Vector2(240, -180), Vector2(88, -150), Vector2(8, -136)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hand R:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(150, 16), Vector2(250, 16), Vector2(240, 180), Vector2(88, 150), Vector2(8, 136)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_kxtsn"]
-_data = {
-&"Attack_L": SubResource("Animation_kprj8"),
-&"Attack_R": SubResource("Animation_h0mou"),
-&"Block": SubResource("Animation_86mt1"),
-&"Clinch": SubResource("Animation_f16rc"),
-&"Grab": SubResource("Animation_0wu8n"),
-&"Grab_punch": SubResource("Animation_iggsx"),
-&"Grab_punch_idle_transition": SubResource("Animation_druoj"),
-&"Idle": SubResource("Animation_kxtsn"),
-&"Move": SubResource("Animation_pgxrt"),
-&"Pull": SubResource("Animation_q5ktn"),
-&"RESET": SubResource("Animation_opd46"),
-&"Throw": SubResource("Animation_f243m")
-}
-
-[node name="Node2D" type="Node2D" unique_id=43623279]
-
-[node name="PlayerCharacterBody2D" type="CharacterBody2D" parent="." unique_id=1455987543 groups=["Player"]]
+[node name="PlayerCharacterBody2D" type="CharacterBody2D" parent="." groups=["Player"]]
 script = ExtResource("1_pgxrt")
 
-[node name="Camera2D" type="Camera2D" parent="PlayerCharacterBody2D" unique_id=190883592]
+[node name="Camera2D" type="Camera2D" parent="PlayerCharacterBody2D"]
 zoom = Vector2(0.5, 0.5)
 process_callback = 0
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
-[node name="CanvasLayer" type="CanvasLayer" parent="PlayerCharacterBody2D/Camera2D" unique_id=1184563332]
+[node name="CanvasLayer" type="CanvasLayer" parent="PlayerCharacterBody2D/Camera2D"]
 follow_viewport_scale = 0.001
 
-[node name="HUD_Player" parent="PlayerCharacterBody2D/Camera2D/CanvasLayer" unique_id=1182612125 instance=ExtResource("2_opd46")]
+[node name="HUD_Player" parent="PlayerCharacterBody2D/Camera2D/CanvasLayer" instance=ExtResource("2_opd46")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -540,142 +56,141 @@ offset_bottom = 252.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D" unique_id=1406406037]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D"]
 shape = SubResource("CircleShape2D_opd46")
 
-[node name="Body" type="Polygon2D" parent="PlayerCharacterBody2D/CollisionShape2D" unique_id=176638106]
+[node name="Body" type="Polygon2D" parent="PlayerCharacterBody2D/CollisionShape2D"]
 position = Vector2(1.0842e-19, 0)
 scale = Vector2(1.25373, 1.31496)
 offset = Vector2(0, -55)
 polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.006, -38.2858, 103.425, -57.4286, 55, -38.2858, 6.08384, -8.64781e-20, -18.006, 38.2858, 6.08384)
 
-[node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D" unique_id=1061505594]
+[node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D"]
 rotation = 3.14159
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
-[node name="AreaHandL2D" type="Area2D" parent="PlayerCharacterBody2D/Hand L" unique_id=708191515]
+[node name="AreaHandL2D" type="Area2D" parent="PlayerCharacterBody2D/Hand L"]
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand L/AreaHandL2D" unique_id=1658030426]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand L/AreaHandL2D"]
 shape = SubResource("CircleShape2D_pgxrt")
 debug_color = Color(0.863437, 0, 0.0125558, 0.42)
 
-[node name="Marker2D" type="Marker2D" parent="PlayerCharacterBody2D/Hand L" unique_id=1348502641]
+[node name="Marker2D" type="Marker2D" parent="PlayerCharacterBody2D/Hand L"]
 position = Vector2(-9.99996, -16)
 
-[node name="Hand R" type="Polygon2D" parent="PlayerCharacterBody2D" unique_id=1919870115]
+[node name="Hand R" type="Polygon2D" parent="PlayerCharacterBody2D"]
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
-[node name="AreaHandR2D" type="Area2D" parent="PlayerCharacterBody2D/Hand R" unique_id=2024971719]
+[node name="AreaHandR2D" type="Area2D" parent="PlayerCharacterBody2D/Hand R"]
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand R/AreaHandR2D" unique_id=1371040002]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand R/AreaHandR2D"]
 shape = SubResource("CircleShape2D_kxtsn")
 debug_color = Color(0.862745, 0, 0.0117647, 0.419608)
 
-[node name="AreaParry2D" type="Area2D" parent="PlayerCharacterBody2D" unique_id=268797522 groups=["Player"]]
+[node name="AreaParry2D" type="Area2D" parent="PlayerCharacterBody2D" groups=["Player"]]
 position = Vector2(0.450001, 0)
 scale = Vector2(1.00987, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaParry2D" unique_id=2093923499]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaParry2D"]
 position = Vector2(78.7725, 0)
 shape = SubResource("RectangleShape2D_pgxrt")
 debug_color = Color(0.882353, 0.784314, 0, 0.513726)
 
-[node name="Area2D" type="Area2D" parent="PlayerCharacterBody2D" unique_id=1087644340]
+[node name="Area2D" type="Area2D" parent="PlayerCharacterBody2D"]
 collision_layer = 16
 collision_mask = 16
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Area2D" unique_id=1465302810]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Area2D"]
 position = Vector2(200, 0)
 shape = SubResource("RectangleShape2D_opd46")
 debug_color = Color(0, 0.506061, 0.132974, 0.42)
 
-[node name="RayCast2D" type="RayCast2D" parent="PlayerCharacterBody2D" unique_id=1462907661]
+[node name="RayCast2D" type="RayCast2D" parent="PlayerCharacterBody2D"]
 position = Vector2(80, 0)
 target_position = Vector2(240, 0)
 hit_from_inside = true
 
-[node name="AutoLockOnClosestTarget" type="ShapeCast2D" parent="PlayerCharacterBody2D" unique_id=861885855]
+[node name="AutoLockOnClosestTarget" type="ShapeCast2D" parent="PlayerCharacterBody2D"]
 visible = false
 position = Vector2(-1.52588e-05, -3.05176e-05)
 scale = Vector2(46.1748, 46.0047)
 shape = SubResource("CircleShape2D_kprj8")
 target_position = Vector2(3.87134e-07, 8.32797e-07)
 
-[node name="AreaKnockBackStaggered" type="Area2D" parent="PlayerCharacterBody2D" unique_id=1212659838]
+[node name="AreaKnockBackStaggered" type="Area2D" parent="PlayerCharacterBody2D"]
 collision_layer = 8
 collision_mask = 8
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaKnockBackStaggered" unique_id=1045353229]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaKnockBackStaggered"]
 shape = SubResource("CircleShape2D_h0mou")
 debug_color = Color(0.977996, 0, 0.399711, 0.42)
 
-[node name="PathNode" type="Node2D" parent="." unique_id=206686604]
+[node name="PathNode" type="Node2D" parent="."]
 
-[node name="DodgePath" type="Path2D" parent="PathNode" unique_id=2091056376]
+[node name="DodgePath" type="Path2D" parent="PathNode"]
 curve = SubResource("Curve2D_opd46")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="PathNode/DodgePath" unique_id=145054610]
-position = Vector2(29.992104, 0)
+[node name="PathFollow2D" type="PathFollow2D" parent="PathNode/DodgePath"]
+position = Vector2(29.9921, 0)
 progress = 30.0
 loop = false
 
-[node name="GrabDashOverEnemy" type="RayCast2D" parent="PathNode" unique_id=730004535]
+[node name="GrabDashOverEnemy" type="RayCast2D" parent="PathNode"]
 modulate = Color(0.915832, 0.00022891, 0.80102, 1)
 target_position = Vector2(320, 0)
 hit_from_inside = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1268213861]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../PlayerCharacterBody2D")
-libraries/ = SubResource("AnimationLibrary_kxtsn")
 
-[node name="Timer_attack" type="Timer" parent="." unique_id=1220260493]
+[node name="Timer_attack" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_attack_hit" type="Timer" parent="." unique_id=1786026617]
+[node name="Timer_attack_hit" type="Timer" parent="."]
 wait_time = 0.23
 one_shot = true
 
-[node name="Timer_block" type="Timer" parent="." unique_id=908226505]
+[node name="Timer_block" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_grab" type="Timer" parent="." unique_id=1187375106]
+[node name="Timer_grab" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_grab_connected" type="Timer" parent="." unique_id=167602295]
+[node name="Timer_grab_connected" type="Timer" parent="."]
 wait_time = 0.23
 one_shot = true
 
-[node name="Timer_pull" type="Timer" parent="." unique_id=1334892969]
+[node name="Timer_pull" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_throw" type="Timer" parent="." unique_id=153604755]
+[node name="Timer_throw" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
 
-[node name="Timer_grab_punch" type="Timer" parent="." unique_id=1979848960]
+[node name="Timer_grab_punch" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_dash" type="Timer" parent="." unique_id=46053485]
+[node name="Timer_dash" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
 
-[node name="Timer_dash_recovery" type="Timer" parent="." unique_id=1208213413]
+[node name="Timer_dash_recovery" type="Timer" parent="."]
 one_shot = true
 
-[node name="Timer_iframes" type="Timer" parent="." unique_id=167049533]
+[node name="Timer_iframes" type="Timer" parent="."]
 one_shot = true
 
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]

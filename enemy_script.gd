@@ -64,6 +64,7 @@ var y
 @onready var progress_bar = $"../NodeForCanvas/Control/ProgressBar"
 @onready var ETAMR = $"../EnemyTimerAreasMonitoribleRecovery"
 
+var zonesArray = [area_hit_by_punchSE, area_hit_by_punchS ,area_hit_by_punchSW ,area_hit_by_punchW ,area_hit_by_punchNW, area_hit_by_punchN, area_hit_by_punchNE, area_hit_by_punchE]
 
 func _ready():
 	
@@ -386,7 +387,9 @@ func _on_area_2_hit_by_punch_se_area_entered(area: Area2D) -> void:
 	
 func _on_area_2_hit_by_punch_s_area_entered(area: Area2D) -> void:
 	print("S")
-	print(area_hit_by_punchS.global_position)
+	#print(area_hit_by_punchS.global_position)
+	closestKnockBackZone()
+	
 func _on_area_2_hit_by_punch_sw_area_entered(area: Area2D) -> void:
 	print("SW")
 
@@ -405,6 +408,14 @@ func _on_area_2_hit_by_punch_ne_area_entered(area: Area2D) -> void:
 func _on_area_2_hit_by_punch_e_area_entered(area: Area2D) -> void:
 	print("E")
 
+func closestKnockBackZone():
+	var min
+	for i in zonesArray:
+		if (i.global_position - Player.global_position):
+			print(i.global_position - Player.global_position)
+	
+	
+	
 
 ##############################-----KNOCK BACK ZONES-----###########################################
 #########################################################################
