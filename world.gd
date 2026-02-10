@@ -8,17 +8,16 @@ var pos: Vector2
 func _ready() -> void:
 	pass
 
-
 func _physics_process(delta: float) -> void:
 	
-	if (nr < 0):
+	if (nr < 1):
 		inst()
 		nr += 1
 	
 	if(Input.is_action_just_pressed("respawn enemies")):
 		inst()
-
-
+	
+		
 func inst():
 	var instance = enemy.instantiate()
 	pos = Vector2(-300,-300)

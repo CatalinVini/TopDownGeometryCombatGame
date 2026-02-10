@@ -26,8 +26,6 @@ var attack_hit = false
 var death = false
 var HitPoints = 100
 var attack_damage = 20
-var x
-var y
 
 @onready var animation = $"../AnimationPlayer"
 @onready var enemy_timer_attack = $"../EnemyTimerAttack"
@@ -52,20 +50,15 @@ var y
 @onready var knockbackpathsw = $KnockBackPathSW/PathFollow2D
 @onready var knockbackpathnw = $KnockBackPathNW/PathFollow2D
 @onready var knockbackpathne = $KnockBackPathNE/PathFollow2D
-@onready var area_hit_by_punchSE = $Area2HitByPunchSE
-@onready var area_hit_by_punchS = $Area2HitByPunchS
-@onready var area_hit_by_punchSW = $Area2HitByPunchSW
-@onready var area_hit_by_punchW = $Area2HitByPunchW
-@onready var area_hit_by_punchNW = $Area2HitByPunchNW
-@onready var area_hit_by_punchN = $Area2HitByPunchN
-@onready var area_hit_by_punchNE = $Area2HitByPunchNE
-@onready var area_hit_by_punchE = $Area2HitByPunchE
 @onready var canvaslayer = $"../NodeForCanvas"
 @onready var progress_bar = $"../NodeForCanvas/Control/ProgressBar"
 @onready var ETAMR = $"../EnemyTimerAreasMonitoribleRecovery"
 
+<<<<<<< HEAD
 var zonesArray = [area_hit_by_punchSE, area_hit_by_punchS ,area_hit_by_punchSW ,area_hit_by_punchW ,area_hit_by_punchNW, area_hit_by_punchN, area_hit_by_punchNE, area_hit_by_punchE]
 
+=======
+>>>>>>> parent of b36b5f8 (Implemted heavy attack)
 func _ready():
 	
 	enemy_position.x = 0
@@ -98,24 +91,8 @@ func move():
 	if (detection == false) && (attack_state == false) && (retreat_state == false) && (hurt_state == false) && (parried_state == false) && (grabbed_state == false) && (thrown_state == false) && (knockback_by_thrown_state == false):
 		enemy_position = get_global_position()
 		look_at(Global_variables_functions.player_position)
-		
-		if (Player.global_position.x < 0):
-			x = - 1
-		else:
-			x = 1
-		
-		if (Player.global_position.y < 0):
-			y = - 1
-		else:
-			y = 1
-		
-		direction = Vector2(x, y)
-		
-		velocity = (Global_variables_functions.player_position - self.global_position) * speed
-		
-		#velocity = direction * 20
-		#print(direction * speed)
-		
+		direction = Global_variables_functions.player_position - enemy_position
+		velocity = direction * speed
 		animation.play("Move")
 
 
@@ -382,6 +359,7 @@ func _on_area_sw_area_entered(area: Area2D) -> void:
 		area_direction = "sw"
 		print(area_hit_other_enemies)
 
+<<<<<<< HEAD
 func _on_area_2_hit_by_punch_se_area_entered(area: Area2D) -> void:
 	print("SE")
 	
@@ -416,6 +394,8 @@ func closestKnockBackZone():
 	
 	
 	
+=======
+>>>>>>> parent of b36b5f8 (Implemted heavy attack)
 
 ##############################-----KNOCK BACK ZONES-----###########################################
 #########################################################################
