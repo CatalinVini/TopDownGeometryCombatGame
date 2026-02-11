@@ -162,7 +162,7 @@ func dash_vault_over():
 		timer_IFRAMES.start(0.2)
 		dash_over_stun = true
 		
-		print("DASH OVER")
+		#print("DASH OVER")
 		dash_state = true
 		if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
 			last_action = "new"
@@ -204,7 +204,7 @@ func lockOnTargetClosest():
 		ALOCT_mode_switch = !ALOCT_mode_switch
 	
 	if (ALOCT_mode_switch == true) && (ALOCT.get_collider(0)):
-		print(ALOCT.get_collision_point(0))
+		#print(ALOCT.get_collision_point(0))
 		look_at(ALOCT.get_collision_point(0))
 
 
@@ -305,7 +305,7 @@ func parryCondition():
 		for enemy_paried in EnemyArray:
 			if (enemy_paried.parried_state == true):
 				parry_ok = true
-				print("POK")
+				#print("POK")
 				break
 
 
@@ -419,7 +419,7 @@ func get_hurt():
 	
 	if (successfull_parry == false) && (Global_variables_functions.enemy_attack_hit == true):
 		Global_variables_functions.enemy_attack_hit = false
-		print ("Player Hurt")
+		#print ("Player Hurt")
 		HitPoints -= damage_per_hit
 
 
@@ -450,7 +450,7 @@ func buffer():
 				nr += 1
 				last_action = "grab"
 			else:
-				print("THROW")
+				#print("THROW")
 				nr += 1
 				last_action = "throw"
 		
@@ -463,11 +463,11 @@ func choose_action_buffer():
 	
 	if (last_action == "attack"):
 		attack_buffer()
-		print("Attack buffer")
+		#print("Attack buffer")
 		
 	if (last_action == "block"):
 		block_buffer()
-		print("Block buffer")
+		#print("Block buffer")
 		
 	if (last_action == "grab"):
 		grab_buffer()
@@ -480,7 +480,7 @@ func choose_action_buffer():
 	
 	if (last_action == "dash"):
 		dash_seq()
-		print("Dash buffer")
+		#print("Dash buffer")
 		
 	last_action = "new"
 	nr = 0
@@ -501,20 +501,20 @@ func comboVariety(action_name):
 			if (fr[i] == action_array[j]):
 				if (variety > 0) && (nr_fr >= 1):
 					variety -= 1
-					print("act_arr: ", variety)
+					#print("act_arr: ", variety)
 				nr_fr += 1
 		nr_fr = 0
 	
 	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch")):
 		parry_ok = false
 		damage = damage_base * variety + parry_hit_damage
-		print("PARRY_HIT")
+		#print("PARRY_HIT")
 	else:
 		damage = damage_base * variety
 		
-	print(action_array)
-	print(damage)
-	print(action_array.size())
+	#print(action_array)
+	#print(damage)
+	#print(action_array.size())
 	variety_for_text = variety
 	variety = action_array.size()
 	
@@ -554,12 +554,12 @@ func _on_timer_attack_hit_timeout() -> void:
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
-		print(enemy_body_ID)
+		#print(enemy_body_ID)
 		if (right_left_hand == true):
 			comboVariety("attackL")
 		else:
 			comboVariety("attackR")	
-		print(combo_metter)
+		#print(combo_metter)
 	else:
 		attack_connection = false
 
@@ -588,7 +588,7 @@ func _on_timer_grab_connected_timeout() -> void:
 		timer_grab.stop()
 		animation.play("Pull")
 		timer_pull.start(0.5)
-		print("Grab HIT")
+		#print("Grab HIT")
 
 
 func _on_timer_pull_timeout() -> void:
@@ -629,10 +629,10 @@ func _on_timer_dash_timeout() -> void:
 func _on_timer_dash_recovery_timeout() -> void:
 	
 	dash_nr += 1
-	print("dash_nr + 1: ", dash_nr)
+	#print("dash_nr + 1: ", dash_nr)
 	
 	if (dash_nr >= 2):
-		print("dash recovered")
+		#print("dash recovered")
 		timer_dash_recovery.stop()
 	else:
 		timer_dash_recovery.start(1)

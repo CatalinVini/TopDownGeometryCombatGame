@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cddoam1hokn8w"]
+[gd_scene format=3 uid="uid://cddoam1hokn8w"]
 
 [ext_resource type="Script" uid="uid://bwnsu5utej4x2" path="res://character_body_2d.gd" id="1_pgxrt"]
 [ext_resource type="PackedScene" uid="uid://civc7devo31tv" path="res://HUD_Player.tscn" id="2_opd46"]
@@ -16,7 +16,7 @@ radius = 32.0
 size = Vector2(158.436, 336)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_opd46"]
-size = Vector2(226, 96)
+size = Vector2(240, 16)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kprj8"]
 
@@ -513,21 +513,21 @@ _data = {
 &"Throw": SubResource("Animation_f243m")
 }
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="Node2D" unique_id=1404614081]
 
-[node name="PlayerCharacterBody2D" type="CharacterBody2D" parent="." groups=["Player"]]
+[node name="PlayerCharacterBody2D" type="CharacterBody2D" parent="." unique_id=1918581060 groups=["Player"]]
 script = ExtResource("1_pgxrt")
 
-[node name="Camera2D" type="Camera2D" parent="PlayerCharacterBody2D"]
+[node name="Camera2D" type="Camera2D" parent="PlayerCharacterBody2D" unique_id=898446564]
 zoom = Vector2(0.5, 0.5)
 process_callback = 0
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
-[node name="CanvasLayer" type="CanvasLayer" parent="PlayerCharacterBody2D/Camera2D"]
+[node name="CanvasLayer" type="CanvasLayer" parent="PlayerCharacterBody2D/Camera2D" unique_id=2081355650]
 follow_viewport_scale = 0.001
 
-[node name="HUD_Player" parent="PlayerCharacterBody2D/Camera2D/CanvasLayer" instance=ExtResource("2_opd46")]
+[node name="HUD_Player" parent="PlayerCharacterBody2D/Camera2D/CanvasLayer" unique_id=1141525512 instance=ExtResource("2_opd46")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -540,143 +540,142 @@ offset_bottom = 252.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D" unique_id=382574345]
 shape = SubResource("CircleShape2D_opd46")
 
-[node name="Body" type="Polygon2D" parent="PlayerCharacterBody2D/CollisionShape2D"]
+[node name="Body" type="Polygon2D" parent="PlayerCharacterBody2D/CollisionShape2D" unique_id=1607699044]
 position = Vector2(1.0842e-19, 0)
 scale = Vector2(1.25373, 1.31496)
 offset = Vector2(0, -55)
 polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.006, -38.2858, 103.425, -57.4286, 55, -38.2858, 6.08384, -8.64781e-20, -18.006, 38.2858, 6.08384)
 
-[node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D"]
+[node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D" unique_id=1933392510]
 rotation = 3.14159
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
-[node name="AreaHandL2D" type="Area2D" parent="PlayerCharacterBody2D/Hand L"]
+[node name="AreaHandL2D" type="Area2D" parent="PlayerCharacterBody2D/Hand L" unique_id=567885813]
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand L/AreaHandL2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand L/AreaHandL2D" unique_id=423570502]
 shape = SubResource("CircleShape2D_pgxrt")
 debug_color = Color(0.863437, 0, 0.0125558, 0.42)
 
-[node name="Marker2D" type="Marker2D" parent="PlayerCharacterBody2D/Hand L"]
+[node name="Marker2D" type="Marker2D" parent="PlayerCharacterBody2D/Hand L" unique_id=912573470]
 position = Vector2(-9.99996, -16)
 
-[node name="Hand R" type="Polygon2D" parent="PlayerCharacterBody2D"]
+[node name="Hand R" type="Polygon2D" parent="PlayerCharacterBody2D" unique_id=1681585008]
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
-[node name="AreaHandR2D" type="Area2D" parent="PlayerCharacterBody2D/Hand R"]
+[node name="AreaHandR2D" type="Area2D" parent="PlayerCharacterBody2D/Hand R" unique_id=2106892755]
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand R/AreaHandR2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Hand R/AreaHandR2D" unique_id=431823055]
 shape = SubResource("CircleShape2D_kxtsn")
 debug_color = Color(0.862745, 0, 0.0117647, 0.419608)
 
-[node name="AreaParry2D" type="Area2D" parent="PlayerCharacterBody2D" groups=["Player"]]
+[node name="AreaParry2D" type="Area2D" parent="PlayerCharacterBody2D" unique_id=1111576296 groups=["Player"]]
 position = Vector2(0.450001, 0)
 scale = Vector2(1.00987, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaParry2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaParry2D" unique_id=1044837573]
 position = Vector2(78.7725, 0)
 shape = SubResource("RectangleShape2D_pgxrt")
 debug_color = Color(0.882353, 0.784314, 0, 0.513726)
 
-[node name="Area2D" type="Area2D" parent="PlayerCharacterBody2D"]
-monitorable = false
+[node name="Area2D" type="Area2D" parent="PlayerCharacterBody2D" unique_id=1725354830]
+collision_layer = 16
+collision_mask = 16
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Area2D"]
-position = Vector2(192, 0)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/Area2D" unique_id=1939621351]
+position = Vector2(200, 0)
 shape = SubResource("RectangleShape2D_opd46")
 debug_color = Color(0, 0.506061, 0.132974, 0.42)
 
-[node name="RayCast2D" type="RayCast2D" parent="PlayerCharacterBody2D"]
+[node name="RayCast2D" type="RayCast2D" parent="PlayerCharacterBody2D" unique_id=1932179634]
 position = Vector2(80, 0)
 target_position = Vector2(240, 0)
 hit_from_inside = true
 
-[node name="AutoLockOnClosestTarget" type="ShapeCast2D" parent="PlayerCharacterBody2D"]
+[node name="AutoLockOnClosestTarget" type="ShapeCast2D" parent="PlayerCharacterBody2D" unique_id=1203025299]
 visible = false
 position = Vector2(-1.52588e-05, -3.05176e-05)
 scale = Vector2(46.1748, 46.0047)
 shape = SubResource("CircleShape2D_kprj8")
 target_position = Vector2(3.87134e-07, 8.32797e-07)
 
-[node name="AreaKnockBackStaggered" type="Area2D" parent="PlayerCharacterBody2D"]
+[node name="AreaKnockBackStaggered" type="Area2D" parent="PlayerCharacterBody2D" unique_id=1745889696]
 collision_layer = 8
 collision_mask = 8
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaKnockBackStaggered"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCharacterBody2D/AreaKnockBackStaggered" unique_id=1993633175]
 shape = SubResource("CircleShape2D_h0mou")
 debug_color = Color(0.977996, 0, 0.399711, 0.42)
 
-[node name="PathNode" type="Node2D" parent="."]
+[node name="PathNode" type="Node2D" parent="." unique_id=2089951926]
 
-[node name="DodgePath" type="Path2D" parent="PathNode"]
+[node name="DodgePath" type="Path2D" parent="PathNode" unique_id=1422709328]
 curve = SubResource("Curve2D_opd46")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="PathNode/DodgePath"]
-position = Vector2(29.9921, 0)
+[node name="PathFollow2D" type="PathFollow2D" parent="PathNode/DodgePath" unique_id=1199995701]
+position = Vector2(29.992104, 0)
 progress = 30.0
 loop = false
 
-[node name="GrabDashOverEnemy" type="RayCast2D" parent="PathNode"]
+[node name="GrabDashOverEnemy" type="RayCast2D" parent="PathNode" unique_id=1662610417]
 modulate = Color(0.915832, 0.00022891, 0.80102, 1)
 target_position = Vector2(320, 0)
 hit_from_inside = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1969414649]
 root_node = NodePath("../PlayerCharacterBody2D")
-libraries = {
-&"": SubResource("AnimationLibrary_kxtsn")
-}
+libraries/ = SubResource("AnimationLibrary_kxtsn")
 
-[node name="Timer_attack" type="Timer" parent="."]
+[node name="Timer_attack" type="Timer" parent="." unique_id=701304396]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_attack_hit" type="Timer" parent="."]
+[node name="Timer_attack_hit" type="Timer" parent="." unique_id=2132448867]
 wait_time = 0.23
 one_shot = true
 
-[node name="Timer_block" type="Timer" parent="."]
+[node name="Timer_block" type="Timer" parent="." unique_id=252008251]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_grab" type="Timer" parent="."]
+[node name="Timer_grab" type="Timer" parent="." unique_id=1661409685]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_grab_connected" type="Timer" parent="."]
+[node name="Timer_grab_connected" type="Timer" parent="." unique_id=1089937317]
 wait_time = 0.23
 one_shot = true
 
-[node name="Timer_pull" type="Timer" parent="."]
+[node name="Timer_pull" type="Timer" parent="." unique_id=752903737]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_throw" type="Timer" parent="."]
+[node name="Timer_throw" type="Timer" parent="." unique_id=895948231]
 wait_time = 0.3
 one_shot = true
 
-[node name="Timer_grab_punch" type="Timer" parent="."]
+[node name="Timer_grab_punch" type="Timer" parent="." unique_id=581937210]
 wait_time = 0.5
 one_shot = true
 
-[node name="Timer_dash" type="Timer" parent="."]
+[node name="Timer_dash" type="Timer" parent="." unique_id=1169546321]
 wait_time = 0.3
 one_shot = true
 
-[node name="Timer_dash_recovery" type="Timer" parent="."]
+[node name="Timer_dash_recovery" type="Timer" parent="." unique_id=137832799]
 one_shot = true
 
-[node name="Timer_iframes" type="Timer" parent="."]
+[node name="Timer_iframes" type="Timer" parent="." unique_id=1565744499]
 one_shot = true
 
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]

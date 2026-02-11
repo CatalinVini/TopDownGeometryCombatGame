@@ -26,6 +26,8 @@ var attack_hit = false
 var death = false
 var HitPoints = 100
 var attack_damage = 20
+var x
+var y
 
 @onready var animation = $"../AnimationPlayer"
 @onready var enemy_timer_attack = $"../EnemyTimerAttack"
@@ -50,9 +52,19 @@ var attack_damage = 20
 @onready var knockbackpathsw = $KnockBackPathSW/PathFollow2D
 @onready var knockbackpathnw = $KnockBackPathNW/PathFollow2D
 @onready var knockbackpathne = $KnockBackPathNE/PathFollow2D
+@onready var areaKnockBackZoneSE = $AreaKnockBackZoneSE
+@onready var areaKnockBackZoneS = $AreaKnockBackZoneS
+@onready var areaKnockBackZoneSW = $AreaKnockBackZoneSW
+@onready var areaKnockBackZoneW = $AreaKnockBackZoneW
+@onready var areaKnockBackZoneNW = $AreaKnockBackZoneNW
+@onready var areaKnockBackZoneN = $AreaKnockBackZoneN
+@onready var areaKnockBackZoneNE = $AreaKnockBackZoneNE
+@onready var areaKnockBackZoneE = $AreaKnockBackZoneE
 @onready var canvaslayer = $"../NodeForCanvas"
 @onready var progress_bar = $"../NodeForCanvas/Control/ProgressBar"
 @onready var ETAMR = $"../EnemyTimerAreasMonitoribleRecovery"
+
+var areaZone = []
 
 func _ready():
 	
@@ -79,15 +91,31 @@ func _physics_process(delta: float) -> void:
 	knockback_direction()
 	move_and_slide()
 	canvaslayer.set_global_position(self.get_global_position()+Vector2(0, -50))
-
+	CZTP()
 
 func move():
 	
 	if (detection == false) && (attack_state == false) && (retreat_state == false) && (hurt_state == false) && (parried_state == false) && (grabbed_state == false) && (thrown_state == false) && (knockback_by_thrown_state == false):
 		enemy_position = get_global_position()
 		look_at(Global_variables_functions.player_position)
-		direction = Global_variables_functions.player_position - enemy_position
-		velocity = direction * speed
+		
+		if (Player.global_position.x < 0):
+			x = - 1
+		else:
+			x = 1
+		
+		if (Player.global_position.y < 0):
+			y = - 1
+		else:
+			y = 1
+		
+		direction = Vector2(x, y)
+		
+		velocity = (Global_variables_functions.player_position - self.global_position) * speed
+		
+		#velocity = direction * 20
+		#print(direction * speed)
+		
 		animation.play("Move")
 
 
@@ -354,6 +382,80 @@ func _on_area_sw_area_entered(area: Area2D) -> void:
 		area_direction = "sw"
 		print(area_hit_other_enemies)
 
+
+func _on_area_knock_back_zone_se_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneSE)
+	#closestZoneToPlayer()
+func _on_area_knock_back_zone_s_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneS)
+	#closestZoneToPlayer()
+func _on_area_knock_back_zone_sw_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneSW)
+	#closestZoneToPlayer()
+func _on_area_knock_back_zone_w_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneW)
+	#closestZoneToPlayer()
+func _on_area_knock_back_zone_nw_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneNW)
+	#closestZoneToPlayer()
+func _on_area_knock_back_zone_n_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneN)
+	#closestZoneToPlayer()
+func _on_area_knock_back_zone_ne_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneNE)
+	#closestZoneToPlayer()
+func _on_area_knock_back_zone_e_area_entered(area: Area2D) -> void:
+	areaZone.append(areaKnockBackZoneE)
+	#closestZoneToPlayer()
+
+func _on_area_knock_back_zone_se_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneSE)
+
+func _on_area_knock_back_zone_s_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneS)
+
+func _on_area_knock_back_zone_sw_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneSW)
+
+func _on_area_knock_back_zone_w_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneW)
+
+func _on_area_knock_back_zone_nw_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneNW)
+
+func _on_area_knock_back_zone_n_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneN)
+
+func _on_area_knock_back_zone_ne_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneNE)
+
+func _on_area_knock_back_zone_e_area_exited(area: Area2D) -> void:
+	eraseUseless(areaKnockBackZoneE)
+
+func closestZoneToPlayer():
+	var min = Vector2.ZERO
+	var memorizedAreaZone = null
+	if !areaZone.is_empty():
+		min = areaZone[0].global_position
+		memorizedAreaZone = areaZone[0]
+		for i in areaZone:
+			if (abs(Player.global_position - i.global_position) < min):
+				min = abs(Player.global_position - i.global_position)
+				memorizedAreaZone = i
+				print("Min Moddified")
+	#print(areaZone)
+		print("MIN: ", min)
+		print("memorizedAreaZone: ", memorizedAreaZone)
+	else:
+		print("AreaZone EMPTY")
+	
+func eraseUseless(i):
+	areaZone.erase(i)
+	#print("erase")
+
+func CZTP():
+	if (Input.is_action_just_pressed("attack")):
+		closestZoneToPlayer()
 
 ##############################-----KNOCK BACK ZONES-----###########################################
 #########################################################################
