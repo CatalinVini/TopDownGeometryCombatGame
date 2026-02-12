@@ -8,9 +8,21 @@ _data = {
 }
 point_count = 2
 
+[sub_resource type="Curve2D" id="Curve2D_d6you"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192, 0)
+}
+point_count = 2
+
 [sub_resource type="Curve2D" id="Curve2D_kpxg6"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192, 192)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_j0e86"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192)
 }
 point_count = 2
 
@@ -20,15 +32,21 @@ _data = {
 }
 point_count = 2
 
+[sub_resource type="Curve2D" id="Curve2D_kbrm0"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -640, 0)
+}
+point_count = 2
+
 [sub_resource type="Curve2D" id="Curve2D_16xks"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -192, -192)
 }
 point_count = 2
 
-[sub_resource type="Curve2D" id="Curve2D_kbrm0"]
+[sub_resource type="Curve2D" id="Curve2D_j7lw2"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -640, 0)
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -184)
 }
 point_count = 2
 
@@ -577,6 +595,13 @@ rotation = -0.785398
 progress = 35.0
 rotates = false
 
+[node name="KnockBackPathS" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1743662203]
+curve = SubResource("Curve2D_d6you")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathS" unique_id=1653986055]
+position = Vector2(34.98427, 0)
+progress = 35.0
+
 [node name="KnockBackPathSW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1424884366]
 curve = SubResource("Curve2D_kpxg6")
 
@@ -586,21 +611,20 @@ rotation = 0.785398
 progress = 35.0
 rotates = false
 
+[node name="KnockBackPathW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=968028411]
+curve = SubResource("Curve2D_j0e86")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathW" unique_id=2039751569]
+position = Vector2(0, 34.98427)
+rotation = 1.5707964
+progress = 35.0
+
 [node name="KnockBackPathNW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=204186160]
 curve = SubResource("Curve2D_s84lq")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNW" unique_id=1533050206]
 position = Vector2(-24.730452, 24.730452)
 rotation = 2.35619
-progress = 35.0
-rotates = false
-
-[node name="KnockBackPathNE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=157186353]
-curve = SubResource("Curve2D_16xks")
-
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNE" unique_id=1376945875]
-position = Vector2(-24.730452, -24.730452)
-rotation = -2.35619
 progress = 35.0
 rotates = false
 
@@ -613,6 +637,23 @@ rotation = 3.14159
 progress = 44.8
 rotates = false
 loop = false
+
+[node name="KnockBackPathNE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=157186353]
+curve = SubResource("Curve2D_16xks")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNE" unique_id=1376945875]
+position = Vector2(-24.730452, -24.730452)
+rotation = -2.35619
+progress = 35.0
+rotates = false
+
+[node name="KnockBackPathE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1405894927]
+curve = SubResource("Curve2D_j7lw2")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathE" unique_id=339103730]
+position = Vector2(0, -34.992863)
+rotation = -1.5707964
+progress = 35.0
 
 [node name="EnemyCharacterArea" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1078124915]
 collision_layer = 2

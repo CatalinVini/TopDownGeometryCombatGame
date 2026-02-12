@@ -93,6 +93,7 @@ func _physics_process(delta: float) -> void:
 	canvaslayer.set_global_position(self.get_global_position()+Vector2(0, -50))
 	CZTP()
 
+
 func move():
 	
 	if (detection == false) && (attack_state == false) && (retreat_state == false) && (hurt_state == false) && (parried_state == false) && (grabbed_state == false) && (thrown_state == false) && (knockback_by_thrown_state == false):
