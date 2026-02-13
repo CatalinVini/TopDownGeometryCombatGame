@@ -34,6 +34,8 @@ var controllerAngle = Vector2.ZERO
 @onready var timer_dash_recovery = $"../Timer_dash_recovery"
 @onready var grab_dash_enemy = $"../PathNode/GrabDashOverEnemy"
 @onready var timer_IFRAMES = $"../Timer_iframes"
+@onready var timer_attack_charge = $"../Timer_attack_charge"
+
 
 var fr = ["attackL", "attackR", "throw", "grab", "grab_punch"]
 var action_array = ["attackL", "attackR", "throw", "grab", "grab_punch"]
@@ -54,6 +56,8 @@ var clinch_state = false
 var grab_punch_state = false
 var throw_state = false
 var dash_state = false
+var attack_charge_state = false
+var power_attack_release_state = false
 var in_buffer = false
 var action_to_block_transition = false
 var present_action = "new"
@@ -240,6 +244,28 @@ func attack_seq():
 		hand_left.monitoring = true
 
 
+func attack_charge():
+	
+	if(Input.is_action_pressed("attack")):
+		attack_charge_state = true
+		timer_attack_charge.start(0.8)
+
+
+func attack_release():
+	
+	if (Input.is_action_just_released("attack")) && (attack_charge_state == true):
+		attack_charge_state = false
+		if (timer_attack_charge.get_time_left() < 0.1):
+			power_attack_release_state = true
+			animation.stop()
+			if (right_left_hand == true):
+				animation.play("Power_attack_release_L")
+				right_left_hand = false
+			else:
+				animation.play("Power_attack_release_R")
+				right_left_hand = true
+
+
 func attack():
 	
 	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false):
@@ -307,7 +333,7 @@ func parryCondition():
 				parry_ok = true
 				#print("POK")
 				break
-
+	
 
 func block_buffer():
 	
@@ -547,7 +573,7 @@ func _on_timer_timeout() -> void:
 	hand_left.monitoring = false
 	
 	choose_action_buffer()
-
+	
 
 func _on_timer_attack_hit_timeout() -> void:
 	
@@ -644,3 +670,7 @@ func _on_timer_iframes_timeout() -> void:
 	self.set_collision_mask_value(1, true)
 	self.set_collision_layer_value(8, false)
 	self.set_collision_mask_value(8, false)
+
+
+func _on_timer_attack_charge_timeout() -> void:
+	pass

@@ -494,6 +494,88 @@ tracks/2/keys = {
 "values": [Color(1, 1, 1, 1), Color(0.8603069, 0, 0.033461366, 1)]
 }
 
+[sub_resource type="Animation" id="Animation_pnekh"]
+resource_name = "Power_attack_hold_L"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand L:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16666667, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-64, -170), Vector2(-60, -174), Vector2(-64, -170)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand R:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 136)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand L:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.8603069, 0, 0.033461392, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_3uwkx"]
+resource_name = "Power_attack_hold_R"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hand R:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16666667, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-64, 170), Vector2(-60, 174), Vector2(-64, 170)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hand L:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, -136)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hand R:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.8879108, 0, 0.049285464, 1)]
+}
+
 [sub_resource type="Animation" id="Animation_n43jf"]
 resource_name = "Power_attack_release_L"
 length = 0.5
@@ -640,6 +722,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 1)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Hand L:color")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.8603069, 0, 0.033461392, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_f243m"]
 resource_name = "Throw"
@@ -682,6 +776,8 @@ _data = {
 &"Move": SubResource("Animation_pgxrt"),
 &"Power_attack_charge_L": SubResource("Animation_0s5ye"),
 &"Power_attack_charge_R": SubResource("Animation_l230w"),
+&"Power_attack_hold_L": SubResource("Animation_pnekh"),
+&"Power_attack_hold_R": SubResource("Animation_3uwkx"),
 &"Power_attack_release_L": SubResource("Animation_n43jf"),
 &"Power_attack_release_R": SubResource("Animation_jmn3g"),
 &"Pull": SubResource("Animation_q5ktn"),
@@ -728,7 +824,7 @@ polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.00
 [node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D" unique_id=1933392510]
 position = Vector2(8, -136)
 rotation = 3.14159
-color = Color(0.8603069, 0, 0.033461366, 1)
+color = Color(0.8603069, 0, 0.033461392, 1)
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
@@ -857,6 +953,8 @@ one_shot = true
 [node name="Timer_iframes" type="Timer" parent="." unique_id=1565744499]
 one_shot = true
 
+[node name="Timer_attack_charge" type="Timer" parent="." unique_id=648533431]
+
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand L/AreaHandL2D" to="PlayerCharacterBody2D" method="_on_area_hand_l_2d_body_entered"]
 [connection signal="body_entered" from="PlayerCharacterBody2D/Hand R/AreaHandR2D" to="PlayerCharacterBody2D" method="_on_area_hand_r_2d_body_entered"]
 [connection signal="area_entered" from="PlayerCharacterBody2D/AreaParry2D" to="PlayerCharacterBody2D" method="_on_area_parry_2d_area_entered"]
@@ -872,3 +970,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_dash" to="PlayerCharacterBody2D" method="_on_timer_dash_timeout"]
 [connection signal="timeout" from="Timer_dash_recovery" to="PlayerCharacterBody2D" method="_on_timer_dash_recovery_timeout"]
 [connection signal="timeout" from="Timer_iframes" to="PlayerCharacterBody2D" method="_on_timer_iframes_timeout"]
+[connection signal="timeout" from="Timer_attack_charge" to="PlayerCharacterBody2D" method="_on_timer_attack_charge_timeout"]
