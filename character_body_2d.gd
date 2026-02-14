@@ -84,6 +84,7 @@ var enemy_area_ID
 var enemy_raycast_collided
 var aux_enemy_raycast_collided
 
+
 func _ready() -> void:
 	EnemySquare = get_tree().get_first_node_in_group("Enemy")
 	EnemyArray = get_tree().get_nodes_in_group("Enemy")
@@ -100,6 +101,7 @@ func _physics_process(delta: float) -> void:
 	dash()
 	dash_vault_over()
 	attack()
+	attack_release()
 	block()
 	parryCondition()
 	grab()
@@ -221,9 +223,9 @@ func move():
 	velocity = input_direction * speed
 	#print(Input.get_vector("left", "right", "up", "down"))
 	
-	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
+	if (input_direction) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
 		animation.play("Move")
-	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false):
+	elif (input_direction == some_zero) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
 		animation.play("Idle")
 
 
@@ -246,29 +248,55 @@ func attack_seq():
 
 func attack_charge():
 	
-	if(Input.is_action_pressed("attack")):
+	if(Input.is_action_pressed("attack")) && (attack_charge_state == false):
 		attack_charge_state = true
 		timer_attack_charge.start(0.8)
+		if (right_left_hand == true):
+			animation.play("Power_attack_charge_L")
+			
+		else:
+			animation.play("Power_attack_charge_R")
+			
+		print("Charge")
 
 
 func attack_release():
 	
 	if (Input.is_action_just_released("attack")) && (attack_charge_state == true):
+		print("Released")
 		attack_charge_state = false
-		if (timer_attack_charge.get_time_left() < 0.1):
+		
+		if (timer_attack_charge.get_time_left() < 0.3):
 			power_attack_release_state = true
+			timer_attack_charge.stop()
 			animation.stop()
 			if (right_left_hand == true):
 				animation.play("Power_attack_release_L")
-				right_left_hand = false
 			else:
 				animation.play("Power_attack_release_R")
-				right_left_hand = true
+		elif (timer_attack_charge.get_time_left() >= 0.3) && (timer_attack_charge.get_time_left() <= 0.5):
+			attack_state = true
+			timer_attack.start(0.5)
+			timer_attack_connected.start(0.23)
+			if (right_left_hand == true):
+				animation.play("Attack_R")
+			else:
+				animation.play("Attack_L")
+		elif (timer_attack_charge.get_time_left() > 0.5) && (timer_attack_charge.get_time_left() <= 0.9):
+			attack_seq()
+
+
+func attack_release_impact():
+	
+	power_attack_release_state = false
+	print(animation.current_animation)
+	choose_action_buffer()
+	attack_charge()
 
 
 func attack():
 	
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
 		attack_seq() 
 		
 	if (Input.is_action_just_pressed("attack")):
@@ -350,8 +378,7 @@ func grab_seq():
 
 func grab():
 	
-	
-	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false):
+	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
 		grab_seq()
 		
 	if (Input.is_action_just_pressed("grab")):
@@ -362,7 +389,7 @@ func grab():
 
 func grab_buffer():
 	
-	if (block_state == false)&& (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false):
+	if (block_state == false)&& (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (power_attack_release_state == false):
 		grab_seq()
 
 
@@ -451,7 +478,7 @@ func get_hurt():
 
 func buffer():
 	
-	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false):
+	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false) || (timer_attack_charge.is_stopped() == false) || (animation.current_animation == "Power_attack_release_L") || (animation.current_animation == "Power_attack_release_R"):
 		
 		if(Input.is_action_just_pressed("attack")):
 			
@@ -486,10 +513,11 @@ func buffer():
 
 
 func choose_action_buffer():
-	
+
+
 	if (last_action == "attack"):
 		attack_buffer()
-		#print("Attack buffer")
+		print("Attack buffer")
 		
 	if (last_action == "block"):
 		block_buffer()
@@ -507,7 +535,7 @@ func choose_action_buffer():
 	if (last_action == "dash"):
 		dash_seq()
 		#print("Dash buffer")
-		
+	
 	last_action = "new"
 	nr = 0
 
@@ -573,7 +601,8 @@ func _on_timer_timeout() -> void:
 	hand_left.monitoring = false
 	
 	choose_action_buffer()
-	
+	attack_charge()
+
 
 func _on_timer_attack_hit_timeout() -> void:
 	
