@@ -62,6 +62,7 @@ var in_buffer = false
 var action_to_block_transition = false
 var present_action = "new"
 var last_action = "new"
+var last_action_release = "new"
 var second_last_action = "new"
 var right_left_hand = false
 var block_detection = false
@@ -282,10 +283,20 @@ func attack_release():
 				animation.play("Attack_R")
 			else:
 				animation.play("Attack_L")
-		elif (timer_attack_charge.get_time_left() > 0.5) && (timer_attack_charge.get_time_left() <= 0.9):
+		elif (timer_attack_charge.get_time_left() > 0.5) && (timer_attack_charge.get_time_left() <= 0.9) && (last_action_release == "new"):
 			attack_seq()
-
-
+			print("LAR: ", last_action_release)
+		elif (timer_attack_charge.get_time_left() > 0.5) && (timer_attack_charge.get_time_left() <= 0.9) && (last_action_release == "attack"):
+			print("LAR BUFF: ", last_action_release)
+			last_action_release = "new"
+			attack_state = true
+			timer_attack.start(0.5)
+			timer_attack_connected.start(0.23)
+			if (right_left_hand == true):
+				animation.play("Attack_L")
+			else:
+				animation.play("Attack_R")
+				
 func attack_release_impact():
 	
 	power_attack_release_state = false
@@ -517,6 +528,7 @@ func choose_action_buffer():
 
 	if (last_action == "attack"):
 		attack_buffer()
+		last_action_release = "attack"
 		print("Attack buffer")
 		
 	if (last_action == "block"):
