@@ -622,11 +622,14 @@ tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.16666667, 0.5),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
 "method": &"attack_release_impact"
+}, {
+"args": [],
+"method": &"attack_release_finish"
 }]
 }
 
@@ -676,11 +679,14 @@ tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.16666667, 0.5),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
 "method": &"attack_release_impact"
+}, {
+"args": [],
+"method": &"attack_release_finish"
 }]
 }
 

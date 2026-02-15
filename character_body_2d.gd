@@ -251,6 +251,7 @@ func attack_charge():
 	
 	if(Input.is_action_pressed("attack")) && (attack_charge_state == false):
 		attack_charge_state = true
+		timer_attack.stop()
 		timer_attack_charge.start(0.8)
 		if (right_left_hand == true):
 			animation.play("Power_attack_charge_L")
@@ -266,16 +267,17 @@ func attack_release():
 	if (Input.is_action_just_released("attack")) && (attack_charge_state == true):
 		print("Released")
 		attack_charge_state = false
+		animation.stop()
 		
 		if (timer_attack_charge.get_time_left() < 0.3):
-			power_attack_release_state = true
 			timer_attack_charge.stop()
-			animation.stop()
+			power_attack_release_state = true
 			if (right_left_hand == true):
 				animation.play("Power_attack_release_L")
 			else:
 				animation.play("Power_attack_release_R")
 		elif (timer_attack_charge.get_time_left() >= 0.3) && (timer_attack_charge.get_time_left() <= 0.5):
+			timer_attack_charge.stop()
 			attack_state = true
 			timer_attack.start(0.5)
 			timer_attack_connected.start(0.23)
@@ -284,10 +286,10 @@ func attack_release():
 			else:
 				animation.play("Attack_L")
 		elif (timer_attack_charge.get_time_left() > 0.5) && (timer_attack_charge.get_time_left() <= 0.9) && (last_action_release == "new"):
+			timer_attack_charge.stop()
 			attack_seq()
-			print("LAR: ", last_action_release)
 		elif (timer_attack_charge.get_time_left() > 0.5) && (timer_attack_charge.get_time_left() <= 0.9) && (last_action_release == "attack"):
-			print("LAR BUFF: ", last_action_release)
+			timer_attack_charge.stop()
 			last_action_release = "new"
 			attack_state = true
 			timer_attack.start(0.5)
@@ -296,14 +298,30 @@ func attack_release():
 				animation.play("Attack_L")
 			else:
 				animation.play("Attack_R")
-				
+
+
 func attack_release_impact():
 	
+	if (raycast.is_colliding()):
+		enemy_body_ID = raycast.get_collider()
+		attack_connection = true
+		#print(enemy_body_ID)
+		if (right_left_hand == true):
+			comboVariety("attackL")
+		else:
+			comboVariety("attackR")	
+		#print(combo_metter)
+	else:
+		attack_connection = false
+	
+
+func attack_release_finish():
+	attack_state = false
 	power_attack_release_state = false
-	print(animation.current_animation)
 	choose_action_buffer()
 	attack_charge()
 
+	
 
 func attack():
 	
