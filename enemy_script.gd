@@ -131,7 +131,7 @@ func enemy_hurt():
 		parried_state = false
 		enemy_detection_area2d.monitoring = false
 		animation.stop()
-		print("ENEMY_HURT")
+		#print("ENEMY_HURT")
 		animation.play("GettingHurt")
 		enemy_timer_attack.stop()
 		enemy_timer_hit.stop()
@@ -152,7 +152,7 @@ func enemy_grabbed_hurt():
 		detection = false
 		parried_state = false
 		enemy_detection_area2d.monitoring = false
-		print("ENEMY_HURT")
+		#print("ENEMY_HURT")
 		animation.stop()
 		animation.play("GettingHurt")
 		enemy_timer_attack.stop()
@@ -184,7 +184,7 @@ func enemy_get_parried():
 	#print("Player:", Player.enemy_area_ID, " Enemy: ", enemy_detection_area2d)
 	
 	if ((Player.block_state == true) && (hurt_state == false)) && (area_detection == true):
-		print("PARRIED")
+		#print("PARRIED")
 		Player.successfull_parry = false
 		parried_state = true
 		attack_state = false
@@ -207,7 +207,7 @@ func enemy_get_parried_dashed():
 		self.area_hit_arease.monitoring = false
 		self.area_hit_areasw.monitoring = false
 		
-		print("PARRIED")
+		#print("PARRIED")
 		Player.dash_over_stun = false
 		Player.successfull_parry = false
 		parried_state = true
@@ -248,7 +248,7 @@ func enemy_thrown():
 		corect_retreat_direction()
 		area_hit_other_enemies.monitorable = true
 		enemy_timer_thrown.start(0.3)
-		print("Thrown")
+		#print("Thrown")
 		
 	if (thrown_state == true):
 		set_global_position(path_thrown_backward.global_position)
@@ -345,7 +345,7 @@ func _on_area_nw_area_entered(area: Area2D) -> void:
 		knockback_by_thrown_state = true
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "nw"
-		print(area_hit_other_enemies)
+		#print(area_hit_other_enemies)
 
 func _on_area_ne_area_entered(area: Area2D) -> void:
 	
@@ -357,7 +357,7 @@ func _on_area_ne_area_entered(area: Area2D) -> void:
 		knockback_by_thrown_state = true
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "ne"
-		print(area_hit_other_enemies)
+		#print(area_hit_other_enemies)
 
 func _on_area_se_area_entered(area: Area2D) -> void:
 	
@@ -369,7 +369,7 @@ func _on_area_se_area_entered(area: Area2D) -> void:
 		knockback_by_thrown_state = true
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "se"
-		print(area_hit_other_enemies)
+		#print(area_hit_other_enemies)
 
 func _on_area_sw_area_entered(area: Area2D) -> void:
 	
@@ -381,7 +381,7 @@ func _on_area_sw_area_entered(area: Area2D) -> void:
 		knockback_by_thrown_state = true
 		enemy_timer_knocked_back.start(0.3)
 		area_direction = "sw"
-		print(area_hit_other_enemies)
+		#print(area_hit_other_enemies)
 
 
 func _on_area_knock_back_zone_se_area_entered(area: Area2D) -> void:
@@ -443,12 +443,13 @@ func closestZoneToPlayer():
 			if (abs(Player.global_position - i.global_position) < min):
 				min = abs(Player.global_position - i.global_position)
 				memorizedAreaZone = i
-				print("Min Moddified")
+				#print("Min Moddified")
 	#print(areaZone)
-		print("MIN: ", min)
-		print("memorizedAreaZone: ", memorizedAreaZone)
+		#print("MIN: ", min)
+		#print("memorizedAreaZone: ", memorizedAreaZone)
 	else:
-		print("AreaZone EMPTY")
+		#print("AreaZone EMPTY")
+		pass
 	
 func eraseUseless(i):
 	areaZone.erase(i)

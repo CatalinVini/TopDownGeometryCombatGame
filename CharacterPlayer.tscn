@@ -823,6 +823,7 @@ _data = {
 
 [node name="PlayerCharacterBody2D" type="CharacterBody2D" parent="." unique_id=1918581060 groups=["Player"]]
 script = ExtResource("1_pgxrt")
+damage_base = 4
 
 [node name="Camera2D" type="Camera2D" parent="PlayerCharacterBody2D" unique_id=898446564]
 zoom = Vector2(0.5, 0.5)

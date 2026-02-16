@@ -37,14 +37,13 @@ var controllerAngle = Vector2.ZERO
 @onready var timer_attack_charge = $"../Timer_attack_charge"
 
 
-var fr = ["attackL", "attackR", "throw", "grab", "grab_punch"]
-var action_array = ["attackL", "attackR", "throw", "grab", "grab_punch"]
-var act_arr_length = action_array.size()
+var fr = ["attackL", "attackR","Power_attack_release_L", "Power_attack_release_R", "throw", "grab", "grab_punch"]
+var action_array = []
 var nr = 0
 var index_ac_arr = 0
 var nr_fr = 0
-var variety = 5
-var variety_for_text = 5
+var variety = 1
+var variety_for_text = 1
 var parry_ok = false
 var dash_nr = 2
 
@@ -90,7 +89,8 @@ func _ready() -> void:
 	EnemySquare = get_tree().get_first_node_in_group("Enemy")
 	EnemyArray = get_tree().get_nodes_in_group("Enemy")
 	grab_dash_enemy.add_exception(self)
-
+	action_array.resize(7)
+	action_array.fill("new")
 
 func _physics_process(delta: float) -> void:
 	
@@ -120,7 +120,7 @@ func dash_seq():
 		if (Input.is_action_just_pressed("dash")) && ((grab_dash_enemy.get_collider() != enemy_raycast_collided)||(grab_dash_enemy.is_colliding() == false)) && (dash_state == false) && (block_state == false):
 			
 			dash_state = true
-			if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
+			if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true) || (attack_charge_state == true) || (power_attack_release_state == true):
 				last_action = "new"
 				
 			attack_state = false
@@ -131,12 +131,15 @@ func dash_seq():
 			killing_blow = false 
 			grab_idle_transition_state = false
 			grab_punch_state = false
+			attack_charge_state = false
+			power_attack_release_state = false
 			enemy_raycast_collided = null
 			timer_pull.stop()
 			timer_attack.stop()
 			timer_attack_connected.stop()
 			timer_grab.stop()
 			timer_grab_punch.stop()
+			timer_attack_charge.stop()
 			animation.stop()
 			timer_dash.start(0.2)
 	
@@ -252,6 +255,7 @@ func attack_charge():
 	if(Input.is_action_pressed("attack")) && (attack_charge_state == false):
 		attack_charge_state = true
 		timer_attack.stop()
+		timer_attack_connected.stop()
 		timer_attack_charge.start(0.8)
 		if (right_left_hand == true):
 			animation.play("Power_attack_charge_L")
@@ -259,13 +263,13 @@ func attack_charge():
 		else:
 			animation.play("Power_attack_charge_R")
 			
-		print("Charge")
+		#print("Charge")
 
 
 func attack_release():
 	
 	if (Input.is_action_just_released("attack")) && (attack_charge_state == true):
-		print("Released")
+		#print("Released")
 		attack_charge_state = false
 		animation.stop()
 		
@@ -307,13 +311,13 @@ func attack_release_impact():
 		attack_connection = true
 		#print(enemy_body_ID)
 		if (right_left_hand == true):
-			comboVariety("attackL")
+			comboVariety("PowerAttackRelease_L")
 		else:
-			comboVariety("attackR")	
+			comboVariety("PowerAttackRelease_R")	
 		#print(combo_metter)
 	else:
 		attack_connection = false
-	
+
 
 func attack_release_finish():
 	attack_state = false
@@ -321,7 +325,6 @@ func attack_release_finish():
 	choose_action_buffer()
 	attack_charge()
 
-	
 
 func attack():
 	
@@ -345,7 +348,7 @@ func block_seq():
 	areaparry.monitoring = true
 	block_state = true
 	
-	if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true):
+	if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true) || (attack_charge_state == true) || (power_attack_release_state == true):	
 		last_action = "new"
 		
 	attack_state = false
@@ -356,12 +359,15 @@ func block_seq():
 	killing_blow = false 
 	grab_idle_transition_state = false
 	grab_punch_state = false
+	power_attack_release_state = false
+	attack_charge_state = false
 	enemy_raycast_collided = null
 	timer_pull.stop()
 	timer_attack.stop()
 	timer_attack_connected.stop()
 	timer_grab.stop()
 	timer_grab_punch.stop()
+	timer_attack_charge.stop()
 	animation.stop()
 	animation.play("Block")
 	timer_block.start(0.5)
@@ -390,7 +396,7 @@ func parryCondition():
 				parry_ok = true
 				#print("POK")
 				break
-	
+
 
 func block_buffer():
 	
@@ -547,12 +553,10 @@ func choose_action_buffer():
 	if (last_action == "attack"):
 		attack_buffer()
 		last_action_release = "attack"
-		print("Attack buffer")
-		
+	
 	if (last_action == "block"):
 		block_buffer()
-		#print("Block buffer")
-		
+	
 	if (last_action == "grab"):
 		grab_buffer()
 	
@@ -564,7 +568,7 @@ func choose_action_buffer():
 	
 	if (last_action == "dash"):
 		dash_seq()
-		#print("Dash buffer")
+	
 	
 	last_action = "new"
 	nr = 0
@@ -572,35 +576,35 @@ func choose_action_buffer():
 
 func comboVariety(action_name):
 	
-	action_array[index_ac_arr] = action_name
-	index_ac_arr += 1
+	action_array.push_back(action_name)
 	
-	if (index_ac_arr >= action_array.size()):
-		index_ac_arr = 0
-		
 	##################################################
 	
-	for i in range(0, action_array.size()):
-		for j in range(0, action_array.size()):
-			if (fr[i] == action_array[j]):
-				if (variety > 0) && (nr_fr >= 1):
-					variety -= 1
-					#print("act_arr: ", variety)
-				nr_fr += 1
-		nr_fr = 0
-	
-	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch")):
+	for i in range(0, fr.size()):
+		if(action_array.has(fr[i])):
+			variety += 1
+
+	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch") || (action_name == "PowerAttackRelease_L") || (action_name == "PowerAttackRelease_R")):
 		parry_ok = false
-		damage = damage_base * variety + parry_hit_damage
+		
+		if((action_name == "PowerAttackRelease_L") || (action_name == "PowerAttackRelease_R")):
+			damage = damage_base * variety * 2 * 2
+		else:
+			damage = damage_base * variety * 2
 		#print("PARRY_HIT")
 	else:
-		damage = damage_base * variety
-		
+		if((action_name == "PowerAttackRelease_L") || (action_name == "PowerAttackRelease_R")):
+			damage = damage_base * variety * 2
+		else:
+			damage = damage_base * variety
+	
+	
 	#print(action_array)
-	#print(damage)
+	print(damage)
 	#print(action_array.size())
 	variety_for_text = variety
-	variety = action_array.size()
+	variety = 1
+	
 	
 	##################################################
 
@@ -643,7 +647,7 @@ func _on_timer_attack_hit_timeout() -> void:
 		if (right_left_hand == true):
 			comboVariety("attackL")
 		else:
-			comboVariety("attackR")	
+			comboVariety("attackR")
 		#print(combo_metter)
 	else:
 		attack_connection = false
@@ -655,6 +659,7 @@ func _on_timer_block_timeout() -> void:
 	successfull_parry = false
 	
 	choose_action_buffer()
+	attack_charge()
 
 
 func _on_timer_grab_timeout() -> void:
