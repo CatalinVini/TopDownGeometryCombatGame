@@ -37,7 +37,7 @@ var controllerAngle = Vector2.ZERO
 @onready var timer_attack_charge = $"../Timer_attack_charge"
 
 
-var fr = ["attackL", "attackR","Power_attack_release_L", "Power_attack_release_R", "throw", "grab", "grab_punch"]
+var fr = ["attackL", "attackR","PowerAttack", "throw", "grab", "grab_punch"]
 var action_array = []
 var nr = 0
 var index_ac_arr = 0
@@ -91,6 +91,7 @@ func _ready() -> void:
 	grab_dash_enemy.add_exception(self)
 	action_array.resize(7)
 	action_array.fill("new")
+
 
 func _physics_process(delta: float) -> void:
 	
@@ -310,11 +311,7 @@ func attack_release_impact():
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
 		#print(enemy_body_ID)
-		if (right_left_hand == true):
-			comboVariety("PowerAttackRelease_L")
-		else:
-			comboVariety("PowerAttackRelease_R")	
-		#print(combo_metter)
+		comboVariety("PowerAttack")
 	else:
 		attack_connection = false
 
@@ -584,16 +581,16 @@ func comboVariety(action_name):
 		if(action_array.has(fr[i])):
 			variety += 1
 
-	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch") || (action_name == "PowerAttackRelease_L") || (action_name == "PowerAttackRelease_R")):
+	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch") || (action_name == "PowerAttack")):
 		parry_ok = false
 		
-		if((action_name == "PowerAttackRelease_L") || (action_name == "PowerAttackRelease_R")):
+		if((action_name == "PowerAttack")):
 			damage = damage_base * variety * 2 * 2
 		else:
 			damage = damage_base * variety * 2
 		#print("PARRY_HIT")
 	else:
-		if((action_name == "PowerAttackRelease_L") || (action_name == "PowerAttackRelease_R")):
+		if((action_name == "PowerAttack")):
 			damage = damage_base * variety * 2
 		else:
 			damage = damage_base * variety
