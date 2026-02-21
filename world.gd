@@ -24,15 +24,4 @@ func inst():
 	pos = Vector2(-300,-300)
 	instance.position = pos
 	add_child(instance)
-	instance = enemy.instantiate()
-	pos = Vector2(-300,300)
-	instance.position = pos
-	add_child(instance)
-	instance = enemy.instantiate()
-	pos = Vector2(300,-300)
-	instance.position = pos
-	add_child(instance)
-	instance = enemy.instantiate()
-	pos = Vector2(300,300)
-	instance.position = pos
-	add_child(instance)
+	

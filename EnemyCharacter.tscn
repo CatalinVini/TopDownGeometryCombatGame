@@ -589,71 +589,72 @@ script = ExtResource("1_d6you")
 [node name="KnockBackPathSE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=912296644]
 curve = SubResource("Curve2D_ayvk7")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSE" unique_id=1021565687]
-position = Vector2(24.730452, -24.730452)
+[node name="KnockBackPatheSE" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSE" unique_id=1021565687]
+position = Vector2(14.120137, -14.120137)
 rotation = -0.785398
-progress = 35.0
+progress = 20.0
 rotates = false
 
 [node name="KnockBackPathS" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1743662203]
 curve = SubResource("Curve2D_d6you")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathS" unique_id=1653986055]
-position = Vector2(34.98427, 0)
-progress = 35.0
+[node name="KnockBackPatheS" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathS" unique_id=1653986055]
+position = Vector2(19.986835, 0)
+progress = 20.0
 
 [node name="KnockBackPathSW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1424884366]
 curve = SubResource("Curve2D_kpxg6")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSW" unique_id=1848395888]
-position = Vector2(24.730452, 24.730452)
+[node name="KnockBackPatheSW" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathSW" unique_id=1848395888]
+position = Vector2(14.120137, 14.120137)
 rotation = 0.785398
-progress = 35.0
+progress = 20.0
 rotates = false
 
 [node name="KnockBackPathW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=968028411]
 curve = SubResource("Curve2D_j0e86")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathW" unique_id=2039751569]
-position = Vector2(0, 34.98427)
+[node name="KnockBackPatheW" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathW" unique_id=2039751569]
+position = Vector2(0, 19.986835)
 rotation = 1.5707964
-progress = 35.0
+progress = 20.0
 
 [node name="KnockBackPathNW" type="Path2D" parent="EnemyCharacterBody2D" unique_id=204186160]
 curve = SubResource("Curve2D_s84lq")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNW" unique_id=1533050206]
-position = Vector2(-24.730452, 24.730452)
+[node name="KnockBackPatheNW" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNW" unique_id=1533050206]
+position = Vector2(-14.120137, 14.120137)
 rotation = 2.35619
-progress = 35.0
+progress = 20.0
 rotates = false
 
-[node name="EnemyThrownPath" type="Path2D" parent="EnemyCharacterBody2D" unique_id=110233028]
+[node name="KnockBackPathN" type="Path2D" parent="EnemyCharacterBody2D" unique_id=110233028]
 curve = SubResource("Curve2D_kbrm0")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/EnemyThrownPath" unique_id=1415334036]
-position = Vector2(-44.783215, 0)
+[node name="KnockBackPatheN" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathN" unique_id=1415334036]
+position = Vector2(-19.97707, 0)
 rotation = 3.14159
-progress = 44.8
+progress = 20.0
 rotates = false
 loop = false
 
 [node name="KnockBackPathNE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=157186353]
 curve = SubResource("Curve2D_16xks")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNE" unique_id=1376945875]
-position = Vector2(-24.730452, -24.730452)
+[node name="KnockBackPatheNE" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathNE" unique_id=1376945875]
+position = Vector2(-14.120137, -14.120137)
 rotation = -2.35619
-progress = 35.0
+progress = 20.0
 rotates = false
 
 [node name="KnockBackPathE" type="Path2D" parent="EnemyCharacterBody2D" unique_id=1405894927]
 curve = SubResource("Curve2D_j7lw2")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathE" unique_id=339103730]
-position = Vector2(0, -34.992863)
+[node name="KnockBackPatheE" type="PathFollow2D" parent="EnemyCharacterBody2D/KnockBackPathE" unique_id=339103730]
+position = Vector2(0, -19.992363)
 rotation = -1.5707964
-progress = 35.0
+progress = 20.0
+rotates = false
 
 [node name="EnemyCharacterArea" type="Area2D" parent="EnemyCharacterBody2D" unique_id=1078124915]
 collision_layer = 2
@@ -828,6 +829,10 @@ one_shot = true
 wait_time = 0.5
 one_shot = true
 
+[node name="EnemyTimerGetHurtPowered" type="Timer" parent="." unique_id=712237272]
+wait_time = 0.1
+one_shot = true
+
 [node name="EnemyTimerGetParried" type="Timer" parent="." unique_id=1773516441]
 one_shot = true
 
@@ -895,6 +900,7 @@ fill_mode = 1
 [connection signal="timeout" from="EnemyTimerHit" to="EnemyCharacterBody2D" method="_on_enemy_timer_hit_timeout"]
 [connection signal="timeout" from="EnemyTimerRetreat" to="EnemyCharacterBody2D" method="_on_enemy_timer_retreat_timeout"]
 [connection signal="timeout" from="EnemyTimerGetHurt" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_hurt_timeout"]
+[connection signal="timeout" from="EnemyTimerGetHurtPowered" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_hurt_powered_timeout"]
 [connection signal="timeout" from="EnemyTimerGetParried" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_parried_timeout"]
 [connection signal="timeout" from="EnemyTimerGetKnockedBack" to="EnemyCharacterBody2D" method="_on_enemy_timer_get_knocked_back_timeout"]
 [connection signal="timeout" from="EnemyTimerThrown" to="EnemyCharacterBody2D" method="_on_enemy_timer_thrown_timeout"]

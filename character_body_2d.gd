@@ -57,6 +57,7 @@ var throw_state = false
 var dash_state = false
 var attack_charge_state = false
 var power_attack_release_state = false
+var power_attack_connection = false
 var in_buffer = false
 var action_to_block_transition = false
 var present_action = "new"
@@ -310,11 +311,12 @@ func attack_release_impact():
 	if (raycast.is_colliding()):
 		enemy_body_ID = raycast.get_collider()
 		attack_connection = true
+		power_attack_connection = true
 		#print(enemy_body_ID)
 		comboVariety("PowerAttack")
 	else:
 		attack_connection = false
-
+		power_attack_connection = false
 
 func attack_release_finish():
 	attack_state = false
