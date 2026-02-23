@@ -26,7 +26,7 @@ var controllerAngle = Vector2.ZERO
 @onready var marker_hand = $"Hand L/Marker2D"
 @onready var areaparry = $AreaParry2D
 @onready var raycast = $RayCast2D
-@onready var ALOCT = $AutoLockOnClosestTarget
+@onready var ALOCT = $"../PathNode/AutoLockOnClosestTarget"
 @onready var path_node = $"../PathNode"
 @onready var dodge_path = $"../PathNode/DodgePath"
 @onready var dodge_path_to_fallow = $"../PathNode/DodgePath/PathFollow2D"
@@ -37,7 +37,7 @@ var controllerAngle = Vector2.ZERO
 @onready var timer_attack_charge = $"../Timer_attack_charge"
 
 
-var fr = ["attackL", "attackR","PowerAttack", "throw", "grab", "grab_punch"]
+var fr = ["attackL", "attackR", "PowerAttack", "throw", "grab", "grab_punch"]
 var action_array = []
 var nr = 0
 var index_ac_arr = 0
@@ -92,7 +92,7 @@ func _ready() -> void:
 	grab_dash_enemy.add_exception(self)
 	action_array.resize(7)
 	action_array.fill("new")
-
+	ALOCT.add_exception(self)
 
 func _physics_process(delta: float) -> void:
 	
@@ -215,11 +215,11 @@ func lockOnTargetClosest():
 	if (Input.is_action_just_pressed("AutoLockOnMode")):
 		ALOCT_mode_switch = !ALOCT_mode_switch
 	
-	if (ALOCT_mode_switch == true) && (ALOCT.get_collider(0)):
-		#print(ALOCT.get_collision_point(0))
+	if (ALOCT_mode_switch == true) && (ALOCT.is_colliding() == true):
 		look_at(ALOCT.get_collision_point(0))
-
-
+	else:
+		ALOCT_mode_switch = false
+		
 func move():
 	
 	var input_direction = Input.get_vector("left", "right", "up", "down")
@@ -317,6 +317,7 @@ func attack_release_impact():
 	else:
 		attack_connection = false
 		power_attack_connection = false
+
 
 func attack_release_finish():
 	attack_state = false

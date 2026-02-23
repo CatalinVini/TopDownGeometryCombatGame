@@ -18,10 +18,11 @@ size = Vector2(158.436, 336)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_opd46"]
 size = Vector2(240, 16)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_kprj8"]
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_h0mou"]
 radius = 89.4427
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kprj8"]
+radius = 30.0
 
 [sub_resource type="Curve2D" id="Curve2D_opd46"]
 _data = {
@@ -766,7 +767,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(0.8603069, 0, 0.033461392, 1)]
+"values": [Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_f243m"]
@@ -859,7 +860,6 @@ polygon = PackedVector2Array(57.4286, 55, 38.2858, 103.425, -8.64781e-20, 128.00
 [node name="Hand L" type="Polygon2D" parent="PlayerCharacterBody2D" unique_id=1933392510]
 position = Vector2(8, -136)
 rotation = 3.14159
-color = Color(0.8603069, 0, 0.033461392, 1)
 offset = Vector2(96, 23.87)
 polygon = PackedVector2Array(-120, -40, -72, -40, -96, 9.53674e-07)
 
@@ -910,13 +910,6 @@ position = Vector2(80, 0)
 target_position = Vector2(240, 0)
 hit_from_inside = true
 
-[node name="AutoLockOnClosestTarget" type="ShapeCast2D" parent="PlayerCharacterBody2D" unique_id=1203025299]
-visible = false
-position = Vector2(-1.52588e-05, -3.05176e-05)
-scale = Vector2(46.1748, 46.0047)
-shape = SubResource("CircleShape2D_kprj8")
-target_position = Vector2(3.87134e-07, 8.32797e-07)
-
 [node name="AreaKnockBackStaggered" type="Area2D" parent="PlayerCharacterBody2D" unique_id=1745889696]
 collision_layer = 8
 collision_mask = 8
@@ -928,6 +921,13 @@ shape = SubResource("CircleShape2D_h0mou")
 debug_color = Color(0.977996, 0, 0.399711, 0.42)
 
 [node name="PathNode" type="Node2D" parent="." unique_id=2089951926]
+
+[node name="AutoLockOnClosestTarget" type="ShapeCast2D" parent="PathNode" unique_id=1203025299]
+visible = false
+position = Vector2(8, 0)
+scale = Vector2(46.1748, 46.0047)
+shape = SubResource("CircleShape2D_kprj8")
+target_position = Vector2(0, 0)
 
 [node name="DodgePath" type="Path2D" parent="PathNode" unique_id=1422709328]
 curve = SubResource("Curve2D_opd46")

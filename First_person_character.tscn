@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://c8ckkywgm2w77"]
+
+[ext_resource type="PackedScene" uid="uid://dfvwoxgu23qqi" path="res://TopDownGameARMS_MODEL.glb" id="1_iqfm8"]
+
+[node name="TopDownGameARMS_MODEL" unique_id=1538383903 instance=ExtResource("1_iqfm8")]
+
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(618440898) index="0" unique_id=162308619]
+bones/1/position = Vector3(-0.41971135, 1.018153, 4.6978545e-07)
+bones/1/rotation = Quaternion(-0.10335404, 0.5217204, 0.83484215, 0.14200172)
+bones/2/rotation = Quaternion(0.20087177, 0.19024795, 0.7193487, 0.63717645)
+bones/4/position = Vector3(0.41971135, 1.018153, 4.6978545e-07)
+bones/4/rotation = Quaternion(0.3824752, 0.57149845, 0.7226998, -0.06933385)
+bones/5/rotation = Quaternion(0.040084556, 0.0038323137, -0.7872023, 0.6153788)

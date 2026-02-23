@@ -45,7 +45,7 @@ var determinedZone
 @onready var enemy_detection_area2d =  $DetectionArea2D
 @onready var Player = get_tree().get_first_node_in_group("Player")
 @onready var Player_array = get_tree().get_nodes_in_group("Player")
-@onready var path_thrown_backward = $KnockBackPathN
+@onready var path_thrown_backward = $KnockBackPathN/KnockBackPatheN
 @onready var area_hit_other_enemies = $AreaHitAnotherEnemies
 @onready var area_hit_areanw = $AreaNW
 @onready var area_hit_areane = $AreaNE
@@ -255,10 +255,10 @@ func enemy_get_parried_dashed():
 
 func enemy_grabbed():
 	
-	if ((Player.grab_state == true) || (Player.pull_state == true) || (Player.clinch_state == true)) && (Player.enemy_raycast_collided == self) && (thrown_state == false)  && (knockback_by_thrown_state == false):
+	if ((Player.grab_state == true) || (Player.pull_state == true) || (Player.clinch_state == true)) && (Player.enemy_raycast_collided == self) && (thrown_state == false) && (knockback_by_thrown_state == false):
 		grabbed_state = true
 		attack_state = false
-		
+		Player.ALOCT_mode_switch = false
 		if (enemy_grabbed_canceled_actions == false):
 			enemy_grabbed_canceled_actions = true
 			animation.stop()
@@ -282,6 +282,7 @@ func enemy_thrown():
 		#print("Thrown")
 		
 	if (thrown_state == true):
+		path_thrown_backward.progress = 50
 		set_global_position(path_thrown_backward.global_position)
 
 
@@ -570,6 +571,7 @@ func _on_enemy_timer_get_parried_timeout() -> void:
 func _on_enemy_timer_thrown_timeout() -> void:
 	
 	thrown_state = false
+	path_thrown_backward.progress = 20
 	enemy_grabbed_canceled_actions = false
 	area_hit_other_enemies.monitorable = false
 
