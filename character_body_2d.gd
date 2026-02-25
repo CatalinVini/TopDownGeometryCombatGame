@@ -219,7 +219,8 @@ func lockOnTargetClosest():
 		look_at(ALOCT.get_collision_point(0))
 	else:
 		ALOCT_mode_switch = false
-		
+
+
 func move():
 	
 	var input_direction = Input.get_vector("left", "right", "up", "down")
