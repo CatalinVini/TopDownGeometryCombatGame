@@ -1228,24 +1228,40 @@ skin = SubResource("Skin_f7bb4")
 libraries/ = SubResource("AnimationLibrary_scdrw")
 
 [node name="Timer_attack" type="Timer" parent="." unique_id=71016877]
+one_shot = true
 
 [node name="Timer_attack_impact" type="Timer" parent="." unique_id=805248726]
+one_shot = true
 
 [node name="Timer_attack_charge" type="Timer" parent="." unique_id=702903589]
+one_shot = true
 
 [node name="Timer_pull" type="Timer" parent="." unique_id=1755867607]
+one_shot = true
 
 [node name="Timer_grab" type="Timer" parent="." unique_id=2003738901]
+one_shot = true
 
 [node name="Timer_grab_punch" type="Timer" parent="." unique_id=975217901]
+one_shot = true
 
 [node name="Timer_block" type="Timer" parent="." unique_id=773551109]
+one_shot = true
 
 [node name="Timer_grab_connected" type="Timer" parent="." unique_id=1383748003]
+one_shot = true
 
 [node name="Timer_throw" type="Timer" parent="." unique_id=1978382330]
+one_shot = true
 
 [node name="Timer_dash" type="Timer" parent="." unique_id=153362126]
+one_shot = true
+
+[node name="Timer_attack_release" type="Timer" parent="." unique_id=896087230]
+one_shot = true
+
+[node name="Timer_attack_release_impact" type="Timer" parent="." unique_id=486350554]
+one_shot = true
 
 [connection signal="timeout" from="Timer_attack" to="." method="_on_timer_attack_timeout"]
 [connection signal="timeout" from="Timer_attack_impact" to="." method="_on_timer_attack_impact_timeout"]
@@ -1257,3 +1273,5 @@ libraries/ = SubResource("AnimationLibrary_scdrw")
 [connection signal="timeout" from="Timer_grab_connected" to="." method="_on_timer_grab_connected_timeout"]
 [connection signal="timeout" from="Timer_throw" to="." method="_on_timer_throw_timeout"]
 [connection signal="timeout" from="Timer_dash" to="." method="_on_timer_dash_timeout"]
+[connection signal="timeout" from="Timer_attack_release" to="." method="_on_timer_attack_release_timeout"]
+[connection signal="timeout" from="Timer_attack_release_impact" to="." method="_on_timer_attack_release_impact_timeout"]

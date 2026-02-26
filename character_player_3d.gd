@@ -15,6 +15,8 @@ extends CharacterBody3D
 @onready var timer_attack = $Timer_attack
 @onready var timer_attack_impact = $Timer_attack_impact
 @onready var timer_attack_charge = $Timer_attack_charge
+@onready var timer_attack_release = $Timer_attack_release
+@onready var timer_attack_release_impact = $Timer_attack_release_impact
 @onready var timer_pull = $Timer_pull
 @onready var timer_grab = $Timer_grab
 @onready var timer_grab_punch = $Timer_grab_punch
@@ -49,6 +51,7 @@ var last_action = "new"
 var last_action_release = "new"
 var enemy_body_ID
 var attack_connection = false
+var power_attack_connection = false
 
 var fr = ["attackL", "attackR", "PowerAttack", "throw", "grab", "grab_punch"]
 var action_array = []
@@ -77,7 +80,7 @@ func _physics_process(delta: float) -> void:
 	#dash()
 	#dash_vault_over()
 	attack()
-	#attack_release()
+	attack_release()
 	block()
 	#parryCondition()
 	grab()
@@ -109,13 +112,18 @@ func move():
 	
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (CameraFPS.global_transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	print(CameraFPS.global_rotation)
+	#print(CameraFPS.global_rotation)
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+
+	if (input_dir) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
+		animation.play("Move")
+	elif (input_dir == Vector2.ZERO) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
+		animation.play("Idle")
 
 
 func dash_seq():
@@ -164,6 +172,47 @@ func attack_charge():
 			animation.play("Power_attack_charge_R")
 			
 		#print("Charge")
+
+
+func attack_release():
+	
+	if (Input.is_action_just_released("attack")) && (attack_charge_state == true):
+		#print("Released")
+		attack_charge_state = false
+		animation.stop()
+		
+		if (timer_attack_charge.get_time_left() < 0.5):
+			timer_attack_charge.stop()
+			power_attack_release_state = true
+			if (right_left_hand == true):
+				animation.play("Power_attack_release_L")
+			else:
+				animation.play("Power_attack_release_R")
+			timer_attack_release_impact.start(0.2)
+			timer_attack_release.start(0.58)
+				
+		elif (timer_attack_charge.get_time_left() >= 0.5) && (timer_attack_charge.get_time_left() <= 1):
+			timer_attack_charge.stop()
+			attack_state = true
+			timer_attack.start(0.83)
+			timer_attack_impact.start(0.5)
+			if (right_left_hand == true):
+				animation.play("Attack_R")
+			else:
+				animation.play("Attack_L")
+		elif (timer_attack_charge.get_time_left() > 1) && (timer_attack_charge.get_time_left() <= 1.4) && (last_action_release == "new"):
+			timer_attack_charge.stop()
+			attack_seq()
+		elif (timer_attack_charge.get_time_left() > 1) && (timer_attack_charge.get_time_left() <= 1.4) && (last_action_release == "attack"):
+			timer_attack_charge.stop()
+			last_action_release = "new"
+			attack_state = true
+			timer_attack.start(0.83)
+			timer_attack_impact.start(0.5)
+			if (right_left_hand == true):
+				animation.play("Attack_L")
+			else:
+				animation.play("Attack_R")
 
 
 func block_seq():
@@ -322,7 +371,6 @@ func buffer():
 			last_action = "dash"
 
 
-
 func choose_action_buffer():
 
 
@@ -344,7 +392,6 @@ func choose_action_buffer():
 	
 	if (last_action == "dash"):
 		dash_seq()
-	
 	
 	last_action = "new"
 	nr = 0
@@ -376,7 +423,7 @@ func comboVariety(action_name):
 	
 	
 	#print(action_array)
-	print(damage)
+	#print(damage)
 	#print(action_array.size())
 	variety_for_text = variety
 	variety = 1
@@ -466,3 +513,24 @@ func _on_timer_throw_timeout() -> void:
 
 func _on_timer_dash_timeout() -> void:
 	pass # Replace with function body.
+
+
+func _on_timer_attack_release_timeout() -> void:
+	
+	attack_state = false
+	power_attack_release_state = false
+	choose_action_buffer()
+	attack_charge()
+
+
+func _on_timer_attack_release_impact_timeout() -> void:
+	
+	if (ray_cast_attack.is_colliding()):
+		enemy_body_ID = ray_cast_attack.get_collider()
+		attack_connection = true
+		power_attack_connection = true
+		#print(enemy_body_ID)
+		comboVariety("PowerAttack")
+	else:
+		attack_connection = false
+		power_attack_connection = false 
