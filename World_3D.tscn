@@ -17,7 +17,7 @@ directional_shadow_max_distance = 1.0
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 3.5695496, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=425885854]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+transform = Transform3D(346.41, 0, 0, 0, 300, 0, 0, 0, 385.08, 0, 0, 0)
 mesh = SubResource("PlaneMesh_gc53e")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=965304353]

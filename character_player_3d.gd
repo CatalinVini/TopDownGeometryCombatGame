@@ -3,12 +3,17 @@ extends CharacterBody3D
 @export var mouse_sensitivity = 0.002
 @export var SPEED = 90.0
 @export var damage_base = 5
+@export var gravity := 9.8
 
 @onready var CameraFPS = $Camera3D
 @onready var Armature = $Armature/Skeleton3D
 @onready var animation = $AnimationPlayer
-@onready var ray_cast_attack = $Camera3D/RayCast3D
+@onready var ray_cast_attack = $Camera3D/RayCastAttack3D
 @onready var areaparry = $Camera3D/AreaParry
+@onready var dash_path_node = $DashPath
+@onready var dash_path_to_fallow = $DashPath/DashPathFallow
+@onready var grab_dash_enemy = $Camera3D/GrabDashOverEnemy
+@onready var AKBS = $AreaKnockBackStaggered
 
 ###################TIMERS############################
 
@@ -24,6 +29,9 @@ extends CharacterBody3D
 @onready var timer_grab_connected = $Timer_grab_connected
 @onready var timer_throw = $Timer_throw
 @onready var timer_dash = $Timer_dash
+@onready var timer_dash_recovery = $Timer_dash_reovery
+@onready var timer_block_release = $Timer_block_release
+
 ###################TIMERS############################
 
 
@@ -31,6 +39,7 @@ extends CharacterBody3D
 
 var attack_state = false
 var block_state = false
+var block_hold_state = false
 var killing_blow = false
 var grab_state = false
 var pull_state = false
@@ -41,7 +50,7 @@ var grab_idle_transition_state = false
 var dash_state = false
 var power_attack_release_state = false
 var attack_charge_state = false
-var enemy_raycast_collided = null
+var block_release_state = false
 
 ##################STATES###########################
 var nr
@@ -52,6 +61,8 @@ var last_action_release = "new"
 var enemy_body_ID
 var attack_connection = false
 var power_attack_connection = false
+var dash_nr = 2
+var enemy_raycast_collided = null
 
 var fr = ["attackL", "attackR", "PowerAttack", "throw", "grab", "grab_punch"]
 var action_array = []
@@ -70,18 +81,24 @@ const JUMP_VELOCITY = 4.5
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
-	
+	grab_dash_enemy.add_exception($".")
+	ray_cast_attack.add_exception($".")
+
+
 func _physics_process(delta: float) -> void:
 
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+	
 	move()
 	move_and_slide()
 	buffer() #it needs to be called before other actions
-	#dash()
+	dash()
 	#dash_vault_over()
 	attack()
 	attack_release()
 	block()
+	block_release()
 	#parryCondition()
 	grab()
 	grab_punch()
@@ -90,8 +107,6 @@ func _physics_process(delta: float) -> void:
 	#get_hurt()
 	
 	#Global_variables_functions.player_position = get_position()
-	if Input.is_action_just_pressed("quit"):
-		get_tree().quit()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -106,8 +121,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		CameraFPS.rotation.y = y_rotation
 		Armature.rotation.x = -x_rotation
 		Armature.rotation.y = y_rotation
-	
-	
+
+
 func move():
 	
 	var input_dir = Input.get_vector("left", "right", "up", "down")
@@ -120,14 +135,61 @@ func move():
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
-	if (input_dir) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
+	if (input_dir) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
 		animation.play("Move")
-	elif (input_dir == Vector2.ZERO) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
+	elif (input_dir == Vector2.ZERO) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
 		animation.play("Idle")
 
 
 func dash_seq():
-	pass
+	
+	
+	if (dash_nr > 0):
+		if (Input.is_action_just_pressed("dash")) && ((grab_dash_enemy.get_collider() != enemy_raycast_collided) || (grab_dash_enemy.is_colliding() == false)) && (dash_state == false) && (block_state == false) && (block_hold_state == false) && (block_release_state == false):
+			
+			dash_state = true
+			if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true) || (attack_charge_state == true) || (power_attack_release_state == true):
+				last_action = "new"
+				
+			attack_state = false
+			grab_state = false
+			pull_state = false
+			clinch_state = false
+			throw_state = false
+			killing_blow = false 
+			grab_idle_transition_state = false
+			grab_punch_state = false
+			attack_charge_state = false
+			power_attack_release_state = false
+			enemy_raycast_collided = null
+			timer_pull.stop()
+			timer_attack.stop()
+			timer_attack_impact.stop()
+			timer_grab.stop()
+			timer_grab_punch.stop()
+			timer_attack_charge.stop()
+			animation.stop()
+			timer_dash.start(0.2)
+			#print("DASH")
+			
+	if (dash_state == true):
+		set_global_position(Vector3(dash_path_to_fallow.global_position.x, 0,dash_path_to_fallow.global_position.z))
+		AKBS.monitorable = true
+		
+	if (Input.is_action_just_pressed("dash")) && (block_state == false) && (dash_nr > 0):
+		dash_nr = dash_nr - 1
+		timer_dash_recovery.start(1)
+
+
+func dash():
+
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	#dash_path_node.rotation.x = CameraFPS.rotation.x
+	dash_path_node.rotation.y = CameraFPS.rotation.y
+	dash_path_node.rotation.z = CameraFPS.rotation.z
+	dash_path_node.curve.set_point_position(0, (Vector3(0, -200, 0)).normalized())
+	dash_path_node.curve.set_point_position(1, (Vector3(input_dir.x, 0, input_dir.y)).normalized() * 10 + Vector3(0, 0, 0))
+	dash_seq()
 
 
 func attack_seq():
@@ -148,7 +210,7 @@ func attack_seq():
 
 func attack():
 
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
 		attack_seq() 
 
 
@@ -160,7 +222,7 @@ func attack_buffer():
 
 func attack_charge():
 	
-	if(Input.is_action_pressed("attack")) && (attack_charge_state == false):
+	if (Input.is_action_pressed("attack")) && (attack_charge_state == false):
 		attack_charge_state = true
 		timer_attack.stop()
 		timer_attack_impact.stop()
@@ -220,7 +282,7 @@ func block_seq():
 	areaparry.monitoring = true
 	block_state = true
 	
-	if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true) || (attack_charge_state == true) || (power_attack_release_state == true):	
+	if (attack_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true) || (attack_charge_state == true) || (power_attack_release_state == true):
 		last_action = "new"
 		
 	attack_state = false
@@ -247,7 +309,7 @@ func block_seq():
 
 func block():
 	
-	if(Input.is_action_just_pressed("block")) && (block_state == false) && (dash_state == false):
+	if(Input.is_action_just_pressed("block")) && (block_state == false) && (dash_state == false) && (block_release_state == false):
 		block_seq()
 
 
@@ -256,15 +318,33 @@ func block_buffer():
 	block_seq()
 
 
+func block_hold():
+	
+	if(Input.is_action_pressed("block"))  && (attack_state == false) && (grab_state == false) && (dash_state == false):
+		block_hold_state = true
+		animation.play("Block_Hold")
+
+
+func block_release():
+	
+	if (Input.is_action_just_released("block")) && (block_hold_state == true):
+		block_hold_state = false
+		block_release_state = true
+		timer_block_release.start(0.58)
+		animation.play("Block_Hold_Release")
+
+
+
 func grab_seq():
+	
 	grab_state = true
 	animation.play("Grab")
-	timer_grab.start(0.5)
-	timer_grab_connected.start(0.23)
+	timer_grab.start(0.8)
+	timer_grab_connected.start(0.5)
 
 
 func grab():
-	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false):
+	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
 		grab_seq()
 
 
@@ -427,9 +507,10 @@ func comboVariety(action_name):
 	#print(action_array.size())
 	variety_for_text = variety
 	variety = 1
-	
-	
+
+
 ####################################\/TIMER_EFFECTS\/#####################################
+
 
 func _on_timer_attack_timeout() -> void:
 	attack_state = false
@@ -488,9 +569,16 @@ func _on_timer_block_timeout() -> void:
 	
 	block_state = false
 	successfull_parry = false
+	block_hold()
 	
-	choose_action_buffer()
-	attack_charge()
+	if (Input.is_action_pressed("block") == false):
+		block_hold_state = false
+		block_release_state = true
+		timer_block_release.start(0.58)
+		animation.play("Block_Hold_Release")
+
+func _on_timer_block_release_timeout() -> void:
+	block_release_state = false
 
 
 func _on_timer_grab_connected_timeout() -> void:
@@ -509,10 +597,6 @@ func _on_timer_throw_timeout() -> void:
 	
 	throw_state = false
 	enemy_raycast_collided = null
-
-
-func _on_timer_dash_timeout() -> void:
-	pass # Replace with function body.
 
 
 func _on_timer_attack_release_timeout() -> void:
@@ -534,3 +618,22 @@ func _on_timer_attack_release_impact_timeout() -> void:
 	else:
 		attack_connection = false
 		power_attack_connection = false 
+
+
+func _on_timer_dash_timeout() -> void:
+	
+	dash_state = false
+	AKBS.monitorable = false
+	choose_action_buffer()
+
+
+func _on_timer_dash_reovery_timeout() -> void:
+	
+	dash_nr += 1
+	print("dash_nr + 1: ", dash_nr)
+	
+	if (dash_nr >= 2):
+		print("dash recovered")
+		timer_dash_recovery.stop()
+	else:
+		timer_dash_recovery.start(1)
