@@ -136,9 +136,9 @@ func move():
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	if (input_dir) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
-		animation.play("Move")
+		animation.play("Move", 0.2)
 	elif (input_dir == Vector2.ZERO) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
-		animation.play("Idle")
+		animation.play("Idle", 0.2)
 
 
 func dash_seq():
@@ -216,8 +216,10 @@ func attack():
 
 func attack_buffer():
 	
-	if (block_state == false):
+	if (Input.is_action_pressed("attack") == false) && (block_state == false):
 		attack_seq()
+	elif (Input.is_action_pressed("attack")) && (block_state == false):
+		right_left_hand = !right_left_hand
 
 
 func attack_charge():
@@ -228,10 +230,10 @@ func attack_charge():
 		timer_attack_impact.stop()
 		timer_attack_charge.start(1.4)
 		if (right_left_hand == true):
-			animation.play("Power_attack_charge_L")
+			animation.play("Power_attack_charge_L", 0.2)
 			
 		else:
-			animation.play("Power_attack_charge_R")
+			animation.play("Power_attack_charge_R", 0.2)
 			
 		#print("Charge")
 
@@ -335,8 +337,10 @@ func block_release():
 
 
 func block_release_timeout():
+	
 	block_release_state = false
 	choose_action_buffer()
+	attack_charge()
 
 
 func grab_seq():
@@ -580,6 +584,8 @@ func _on_timer_block_timeout() -> void:
 		block_release_state = true
 		timer_block_release.start(0.58)
 		animation.play("Block_Hold_Release", 0.3)
+	else:
+		attack_charge()
 
 
 func _on_timer_block_release_timeout() -> void:   ##### USELESSS############
