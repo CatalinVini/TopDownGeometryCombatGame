@@ -302,9 +302,8 @@ func block_seq():
 	timer_grab.stop()
 	timer_grab_punch.stop()
 	timer_attack_charge.stop()
-	animation.stop()
-	animation.play("Block")
-	timer_block.start(0.41)
+	animation.play("Block", 0.2)
+	timer_block.start(0.416)
 
 
 func block():
@@ -322,6 +321,7 @@ func block_hold():
 	
 	if(Input.is_action_pressed("block"))  && (attack_state == false) && (grab_state == false) && (dash_state == false):
 		block_hold_state = true
+		animation.set_auto_capture(true)
 		animation.play("Block_Hold")
 
 
@@ -330,9 +330,13 @@ func block_release():
 	if (Input.is_action_just_released("block")) && (block_hold_state == true):
 		block_hold_state = false
 		block_release_state = true
-		timer_block_release.start(0.58)
-		animation.play("Block_Hold_Release")
+		#timer_block_release.start(0.58)
+		animation.play("Block_Hold_Release", 0.2, 1.5)
 
+
+func block_release_timeout():
+	block_release_state = false
+	choose_action_buffer()
 
 
 func grab_seq():
@@ -423,7 +427,7 @@ func grab_punch_idle_transition():
 
 func buffer():
 	
-	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false) || (timer_attack_charge.is_stopped() == false) || (animation.current_animation == "Power_attack_release_L") || (animation.current_animation == "Power_attack_release_R"):
+	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false) || (timer_attack_charge.is_stopped() == false) || (animation.current_animation == "Block_Hold_Release") || (animation.current_animation == "Power_attack_release_L") || (animation.current_animation == "Power_attack_release_R"):
 		
 		if(Input.is_action_just_pressed("attack")):
 			
@@ -575,10 +579,12 @@ func _on_timer_block_timeout() -> void:
 		block_hold_state = false
 		block_release_state = true
 		timer_block_release.start(0.58)
-		animation.play("Block_Hold_Release")
+		animation.play("Block_Hold_Release", 0.3)
 
-func _on_timer_block_release_timeout() -> void:
+
+func _on_timer_block_release_timeout() -> void:   ##### USELESSS############
 	block_release_state = false
+	choose_action_buffer()
 
 
 func _on_timer_grab_connected_timeout() -> void:

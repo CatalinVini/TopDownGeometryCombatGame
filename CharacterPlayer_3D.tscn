@@ -209,6 +209,7 @@ tracks/6/keys = PackedFloat32Array(0, 1, 0.040084515, 0.0038323456, -0.7872023, 
 [sub_resource type="Animation" id="Animation_4f4en"]
 resource_name = "Block_Hold"
 length = 1.875
+loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -318,9 +319,12 @@ tracks/7/path = NodePath(".")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"values": []
+"times": PackedFloat32Array(0.56666666),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"block_release_timeout"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_6gkpp"]
@@ -1235,14 +1239,14 @@ bones/1/parent = 0
 bones/1/rest = Transform3D(-0.9326528, -0.35987884, -0.025446642, 0.36077762, -0.9303627, -0.065307416, -0.00017185153, -0.07008966, 0.9975407, -0.41597226, 0.10616112, 2.4586916e-07)
 bones/1/enabled = true
 bones/1/position = Vector3(-0.41597226, 0.106161244, 3.6424282e-07)
-bones/1/rotation = Quaternion(-0.24356404, 0.5374175, 0.7329899, -0.33850384)
+bones/1/rotation = Quaternion(-0.15341958, 0.5502251, 0.7974458, -0.19440968)
 bones/1/scale = Vector3(1.0000008, 1, 1)
 bones/2/name = "lowerarn.l"
 bones/2/parent = 1
 bones/2/rest = Transform3D(0.99953794, 0.03034146, -0.0018222128, -0.030320475, 0.99103, -0.13015491, -0.0021432228, 0.13015002, 0.991492, 1.8192623e-08, 0.60803664, 3.7252903e-09)
 bones/2/enabled = true
 bones/2/position = Vector3(1.8192623e-08, 0.60803664, 3.7252903e-09)
-bones/2/rotation = Quaternion(0.32926092, 0.14967237, 0.6712869, 0.6469616)
+bones/2/rotation = Quaternion(0.32926086, 0.1496724, 0.671287, 0.6469616)
 bones/2/scale = Vector3(1, 1, 0.99999994)
 bones/3/name = "hand.l"
 bones/3/parent = 2
@@ -1256,14 +1260,14 @@ bones/4/parent = 0
 bones/4/rest = Transform3D(-0.9326516, 0.35987893, 0.025446894, -0.3607773, -0.93036264, -0.065307334, 0.00017210837, -0.070089675, 0.9975407, 0.42345056, 0.10616112, 2.4586916e-07)
 bones/4/enabled = true
 bones/4/position = Vector3(0.42345053, 0.10616125, 3.663166e-07)
-bones/4/rotation = Quaternion(0.46374843, 0.5375995, 0.60647553, 0.3579268)
+bones/4/rotation = Quaternion(0.46154732, 0.49888352, 0.68528014, 0.26168787)
 bones/4/scale = Vector3(0.9999996, 1, 1)
 bones/5/name = "lowerarn.r"
 bones/5/parent = 4
 bones/5/rest = Transform3D(0.99953806, -0.03034165, 0.0018222693, 0.03032067, 0.9910301, -0.13015497, 0.002143192, 0.13015006, 0.99149215, -5.048696e-08, 0.6080367, -2.7939677e-09)
 bones/5/enabled = true
 bones/5/position = Vector3(-5.048696e-08, 0.6080367, -2.7939677e-09)
-bones/5/rotation = Quaternion(0.056593865, 0.0083074905, -0.8168746, 0.57397217)
+bones/5/rotation = Quaternion(0.056593858, 0.008307505, -0.8168747, 0.57397205)
 bones/5/scale = Vector3(1.0000001, 1.0000001, 1.0000001)
 bones/6/name = "hand.r"
 bones/6/parent = 5
