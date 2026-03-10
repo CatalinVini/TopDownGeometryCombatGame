@@ -106,7 +106,7 @@ func _physics_process(delta: float) -> void:
 	throw()
 	#get_hurt()
 	
-	#Global_variables_functions.player_position = get_position()
+	Global_variables_functions.player_position_3D = get_position()
 
 
 func _unhandled_input(event: InputEvent) -> void:
