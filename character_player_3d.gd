@@ -132,8 +132,8 @@ func move():
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x,0, SPEED)
+		velocity.z = move_toward(velocity.z,0, SPEED)
 
 	if (input_dir) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
 		animation.play("Move", 0.2)
@@ -304,8 +304,8 @@ func block_seq():
 	timer_grab.stop()
 	timer_grab_punch.stop()
 	timer_attack_charge.stop()
-	animation.play("Block", 0.2)
-	timer_block.start(0.416)
+	animation.play("Block", 0.2, 1.3)
+	timer_block.start(0.416/1.3)
 
 
 func block():

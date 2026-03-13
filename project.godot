@@ -28,6 +28,7 @@ Global_variables_functions="*res://global.gd"
 Enemy=""
 Player=""
 Arms_model=""
+Player_3D=""
 
 [input]
 
