@@ -314,7 +314,7 @@ func block_seq():
 	timer_grab_punch.stop()
 	timer_attack_charge.stop()
 	animation.play("Block", 0.2, 1.3)
-	timer_block.start(0.416/1.3)
+	#timer_block.start(0.32)
 
 
 func block():
@@ -323,33 +323,43 @@ func block():
 		block_seq()
 
 
+func block_timeout():
+	
+	block_state = false
+	successfull_parry = false
+	
+	block_hold()
+	block_release()
+
+
 func block_buffer():
 	
-	if (block_release_state == false) && (block_hold_state == false):
+	if (block_state == false) && (block_release_state == false) && (block_hold_state == false):
 		block_seq()
 
 
 func block_hold():
 	
-	if(Input.is_action_pressed("block"))  && (attack_state == false) && (grab_state == false) && (dash_state == false):
+	if(Input.is_action_pressed("block")) && (attack_state == false) && (grab_state == false) && (dash_state == false) && (block_state == false) && (block_hold_state == false) && (block_release_state == false):
 		block_hold_state = true
 		animation.play("Block_Hold")
 
 
 func block_release_from_hold():
-	if (Input.is_action_just_released("block")) && (block_hold_state == true): 
+	
+	if (Input.is_action_just_released("block"))  && (block_hold_state == true) && (block_release_state == false) && (block_state == false): 
 		block_hold_state = false
 		block_release_state = true
-		#timer_block_release.start(0.58)
+		print("block_release_state ", block_release_state)
 		animation.play("Block_Hold_Release", 0.2, 1.5)
 
 
 func block_release():
 	
-	if (Input.is_action_just_released("block")):
+	if (!Input.is_action_pressed("block")) && (block_release_state == false) && (block_state == false):
 		block_hold_state = false
 		block_release_state = true
-		#timer_block_release.start(0.58)
+		print("block_release_state ", block_release_state)
 		animation.play("Block_Hold_Release", 0.2, 1.5)
 
 
@@ -483,8 +493,8 @@ func choose_action_buffer():
 		attack_buffer()
 		last_action_release = "attack"
 	
-	#if (last_action == "block"):
-		#block_buffer()
+	if (last_action == "block"):
+		block_buffer()
 	
 	if (last_action == "grab"):
 		grab_buffer()
@@ -595,16 +605,9 @@ func _on_timer_block_timeout() -> void:
 	block_state = false
 	successfull_parry = false
 	
-	if (Input.is_action_pressed("block") == false):
-		block_hold_state = false
-		block_release_state = true
-		#timer_block_release.start(0.58) ##########USELESSS############
-		animation.play("Block_Hold_Release", 0.3)
-		block_release()
-		attack_charge()
-	else:
-		block_hold()
-		
+	block_hold()
+	block_release()
+	
 
 
 func _on_timer_block_release_timeout() -> void:   ##########USELESSS############

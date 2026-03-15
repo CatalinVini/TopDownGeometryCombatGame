@@ -220,13 +220,14 @@ tracks/7/keys = {
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
-"method": &"block_release_timeout"
+"method": &"block_timeout"
 }]
 }
 
 [sub_resource type="Animation" id="Animation_4f4en"]
 resource_name = "Block_Hold"
 length = 1.875
+loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
