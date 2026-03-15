@@ -5,10 +5,14 @@ extends CharacterBody3D
 
 @onready var animation = $AnimationPlayer
 
+@onready var timer_attack_moment = $Timer_attack_moment
+
+
 var attack_zone = false
 var attack_state = false
 
 var player
+
 
 func _ready():
 	player = get_tree().get_first_node_in_group("Player_3D")
@@ -20,10 +24,29 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-	move(delta)
-	attack()
+	enemy_behaviour(delta)
+	
 	move_and_slide()
 
+
+func enemy_behaviour(delta):
+	
+	if (attack_zone == false):
+		move(delta)
+		if (!timer_attack_moment.is_stopped()):
+			timer_attack_moment.stop()
+		
+		
+	if (attack_zone == true):
+		
+		velocity = Vector3.ZERO
+		
+		if (attack_state == false):
+			animation.play("Idle")
+		
+		if (timer_attack_moment.is_stopped()):
+			timer_attack_moment.start(1)
+	
 
 
 func move(delta):
@@ -46,15 +69,17 @@ func move(delta):
 
 func attack():
 	
-	if (attack_state == true):
-		velocity = Vector3.ZERO
-		animation.play("Attack")
+	attack_state = true
+	velocity = Vector3.ZERO
+	animation.play("Attack")
 
 
 func attack_timeout():
 	
 	attack_state = false
-	speed = 30
+
+
+
 
 
 ###########################AREAS###################
@@ -63,4 +88,19 @@ func attack_timeout():
 func _on_area_attack_zone_body_entered(body: Node3D) -> void:
 	
 	if (body == player):
-		attack_state = true
+		attack_zone = true
+		print("attack_zone: ", attack_zone)
+
+
+func _on_area_attack_zone_body_exited(body: Node3D) -> void:
+	
+	if (body == player):
+		attack_zone = false
+		print("attack_zone: ", attack_zone)
+
+##########################TIMERS#####################
+
+
+func _on_timer_attack_moment_timeout() -> void:
+	
+	attack()
