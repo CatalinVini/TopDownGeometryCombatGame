@@ -359,7 +359,6 @@ func block_release():
 	if (!Input.is_action_pressed("block")) && (block_release_state == false) && (block_state == false):
 		block_hold_state = false
 		block_release_state = true
-		print("block_release_state ", block_release_state)
 		animation.play("Block_Hold_Release", 0.2, 1.5)
 
 
@@ -559,7 +558,7 @@ func _on_timer_attack_impact_timeout() -> void:
 	if (ray_cast_attack.is_colliding()):
 		enemy_body_ID = ray_cast_attack.get_collider()
 		attack_connection = true
-		#print(enemy_body_ID)
+		print(enemy_body_ID)
 		if (right_left_hand == true):
 			comboVariety("attackL")
 		else:
@@ -607,7 +606,6 @@ func _on_timer_block_timeout() -> void:
 	
 	block_hold()
 	block_release()
-	
 
 
 func _on_timer_block_release_timeout() -> void:   ##########USELESSS############

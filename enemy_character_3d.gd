@@ -10,7 +10,7 @@ extends CharacterBody3D
 
 var attack_zone = false
 var attack_state = false
-
+var hurt_state = false
 var player
 
 
@@ -31,13 +31,12 @@ func _physics_process(delta):
 
 func enemy_behaviour(delta):
 	
-	if (attack_zone == false):
+	if (attack_zone == false) && (hurt_state == false):
 		move(delta)
 		if (!timer_attack_moment.is_stopped()):
 			timer_attack_moment.stop()
 		
-		
-	if (attack_zone == true):
+	if (attack_zone == true) && (hurt_state == false):
 		
 		velocity = Vector3.ZERO
 		
@@ -47,6 +46,7 @@ func enemy_behaviour(delta):
 		if (timer_attack_moment.is_stopped()):
 			timer_attack_moment.start(1)
 	
+	getHurt()
 
 
 func move(delta):
@@ -79,7 +79,21 @@ func attack_timeout():
 	attack_state = false
 
 
+func getHurt():
+	
+	if (player.attack_connection == true) && (self == player.enemy_body_ID) && (hurt_state == false):
+		player.attack_connection = false
+		velocity = Vector3.ZERO
+		hurt_state = true
+		timer_attack_moment.stop()
+		attack_state = false
+		animation.play("GettingHurt")
+		
 
+
+func getHurt_timeout():
+	
+	hurt_state = false
 
 
 ###########################AREAS###################
@@ -97,6 +111,7 @@ func _on_area_attack_zone_body_exited(body: Node3D) -> void:
 	if (body == player):
 		attack_zone = false
 		print("attack_zone: ", attack_zone)
+
 
 ##########################TIMERS#####################
 

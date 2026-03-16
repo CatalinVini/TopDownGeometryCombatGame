@@ -775,6 +775,20 @@ tracks/22/path = NodePath("Armature/Skeleton3D:iklegtarget.r")
 tracks/22/interp = 1
 tracks/22/loop_wrap = true
 tracks/22/keys = PackedFloat32Array(0, 1, 0.7064845, 0.0031629354, 0.029659335, 0.7070997)
+tracks/23/type = "method"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath(".")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = {
+"times": PackedFloat32Array(0.8333333),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"getHurt_timeout"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_so7n2"]
 resource_name = "Idle_loop"
@@ -1513,7 +1527,7 @@ bones/6/parent = 3
 bones/6/rest = Transform3D(-0.88270575, 0.46992636, -1.1324436e-06, -0.42855254, -0.8049884, 0.4102883, 0.1928044, 0.3621643, 0.9119559, 3.6912796, 1.001765, 0.9602514)
 bones/6/enabled = true
 bones/6/position = Vector3(3.6912796, 1.001765, 0.9602514)
-bones/6/rotation = Quaternion(0.044910073, 0.20533015, 0.96231866, -0.17252676)
+bones/6/rotation = Quaternion(0.04491007, 0.20533015, 0.9623186, -0.17252676)
 bones/6/scale = Vector3(1.0000001, 1, 1)
 bones/7/name = "lowerarm.l"
 bones/7/parent = 6
