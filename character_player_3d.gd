@@ -314,7 +314,7 @@ func block_seq():
 	timer_grab_punch.stop()
 	timer_attack_charge.stop()
 	animation.play("Block", 0.2, 1.3)
-	#timer_block.start(0.32)
+	timer_block.start(0.32)
 
 
 func block():
@@ -323,7 +323,7 @@ func block():
 		block_seq()
 
 
-func block_timeout():
+func block_timeout():          ##############USELESS###########
 	
 	block_state = false
 	successfull_parry = false
@@ -360,9 +360,10 @@ func block_release():
 		block_hold_state = false
 		block_release_state = true
 		animation.play("Block_Hold_Release", 0.2, 1.5)
+		timer_block_release.start(0.58/1.5)
 
 
-func block_release_timeout():
+func block_release_timeout():          #############USELESS#############
 	
 	block_release_state = false
 	choose_action_buffer()
@@ -608,10 +609,11 @@ func _on_timer_block_timeout() -> void:
 	block_release()
 
 
-func _on_timer_block_release_timeout() -> void:   ##########USELESSS############
+func _on_timer_block_release_timeout() -> void: 
 	
 	block_release_state = false
 	choose_action_buffer()
+	attack_charge()
 
 
 func _on_timer_grab_connected_timeout() -> void:

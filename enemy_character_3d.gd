@@ -88,7 +88,6 @@ func getHurt():
 		timer_attack_moment.stop()
 		attack_state = false
 		animation.play("GettingHurt")
-		
 
 
 func getHurt_timeout():
