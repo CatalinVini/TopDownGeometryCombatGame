@@ -219,7 +219,7 @@ func attack():
 
 func attack_buffer():
 	
-	if (Input.is_action_pressed("attack") == false) && (block_state == false):
+	if (Input.is_action_pressed("attack") == false) && (block_state == false) && (block_parry_state == false):
 		attack_seq()
 	elif (Input.is_action_pressed("attack")) && (block_state == false):
 		right_left_hand = !right_left_hand
@@ -322,13 +322,13 @@ func block_seq():
 
 func block():
 	
-	if(Input.is_action_just_pressed("block")) && (block_state == false) && (dash_state == false) && (block_release_state == false) && (block_hold_state == false):
+	if(Input.is_action_just_pressed("block")) && (block_state == false) && (dash_state == false) && (block_release_state == false) && (block_hold_state == false) && (block_parry_state == false):
 		block_seq()
 
 
 func block_buffer():
 	
-	if (block_state == false) && (block_release_state == false) && (block_hold_state == false):
+	if (block_state == false) && (block_release_state == false) && (block_hold_state == false) && (block_parry_state == false):
 		block_seq()
 
 
@@ -341,18 +341,22 @@ func block_hold():
 
 func block_parry_seq():
 	
-	if (block_parry_state == false):
-		
-		block_parry_state = true
-		block_hold_state = false
-		animation.play("Block_Parry")
-		timer_block_parry.start(0.833)
-		
+	block_parry_state = true
+	block_hold_state = false
+	animation.play("Block_Parry")
+	timer_block_parry.start(0.833)
+
 
 
 func block_parry():
 	
 	if(Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")) && (block_parry_state == false) && (attack_state == false) && (grab_state == false) && (dash_state == false) && (block_release_state == false):
+		block_parry_seq()
+
+
+func block_parry_buffer():
+	
+	if (block_parry_state == false) && (attack_state == false) && (grab_state == false) && (dash_state == false) && (block_release_state == false):
 		block_parry_seq()
 
 
@@ -528,7 +532,8 @@ func choose_action_buffer():
 		dash_seq()
 	
 	if (last_action == "block_parry"):
-		block_parry_seq()
+		block_parry_buffer()
+		print("BUFFER_block_parry")
 	
 	if (last_action == "block_released"):
 		block_release()
@@ -702,5 +707,6 @@ func _on_timer_dash_reovery_timeout() -> void:
 func _on_timer_block_parry_timeout() -> void:
 	
 	block_parry_state = false
-	choose_action_buffer()
 	block_hold()
+	choose_action_buffer()
+	
