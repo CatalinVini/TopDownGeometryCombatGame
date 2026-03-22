@@ -711,5 +711,4 @@ func _on_timer_block_parry_timeout() -> void:
 	
 	block_parry_state = false
 	block_hold()
-	attack_charge()
 	choose_action_buffer()
