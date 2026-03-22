@@ -227,7 +227,7 @@ func attack_buffer():
 
 func attack_charge():
 	
-	if (Input.is_action_pressed("attack")) && (attack_charge_state == false):
+	if (Input.is_action_pressed("attack")) && (!Input.is_action_pressed("block")) && (attack_charge_state == false):
 		attack_charge_state = true
 		timer_attack.stop()
 		timer_attack_impact.stop()
@@ -237,8 +237,6 @@ func attack_charge():
 			
 		else:
 			animation.play("Power_attack_charge_R", 0.2)
-			
-		#print("Charge")
 
 
 func attack_release():
@@ -342,10 +340,16 @@ func block_hold():
 func block_parry_seq():
 	
 	block_parry_state = true
+	
+	if (attack_state == true) || (block_state == true) || (block_hold_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true) || (attack_charge_state == true) || (power_attack_release_state == true):
+		last_action = "new"
+	
+	successfull_parry = false
+	block_state = false
 	block_hold_state = false
 	animation.play("Block_Parry")
+	timer_block.stop()
 	timer_block_parry.start(0.833)
-
 
 
 func block_parry():
@@ -469,7 +473,6 @@ func buffer():
 	
 	if (timer_attack.is_stopped() == false) || (timer_block.is_stopped() == false) || (timer_block_parry.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false) || (timer_attack_charge.is_stopped() == false) || (animation.current_animation == "Block_Hold_Release") || (animation.current_animation == "Power_attack_release_L") || (animation.current_animation == "Power_attack_release_R"):
 		
-		
 		if(Input.is_action_just_pressed("attack")):
 			
 			if (clinch_state == false):
@@ -532,8 +535,8 @@ func choose_action_buffer():
 		dash_seq()
 	
 	if (last_action == "block_parry"):
+		print("BUFFER_Block_Parry")
 		block_parry_buffer()
-		print("BUFFER_block_parry")
 	
 	if (last_action == "block_released"):
 		block_release()
@@ -708,5 +711,5 @@ func _on_timer_block_parry_timeout() -> void:
 	
 	block_parry_state = false
 	block_hold()
+	attack_charge()
 	choose_action_buffer()
-	
