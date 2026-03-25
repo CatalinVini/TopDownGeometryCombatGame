@@ -6,11 +6,16 @@ extends CharacterBody3D
 @onready var animation = $AnimationPlayer
 
 @onready var timer_attack_moment = $Timer_attack_moment
-
+@onready var timer_attack_timeout = $Timer_attack_timeout
+@onready var timer_attack_impact = $Timer_attack_impact
+@onready var timer_parried = $Timer_parried
 
 var attack_zone = false
 var attack_state = false
 var hurt_state = false
+var parried_state = false
+var area_attack_range = false
+var attack_parry_connection = false
 var player
 
 
@@ -31,16 +36,16 @@ func _physics_process(delta):
 
 func enemy_behaviour(delta):
 	
-	if (attack_zone == false) && (hurt_state == false):
+	if (attack_zone == false) && (hurt_state == false):  #####___MOVEMENT_ZONE___######
 		move(delta)
 		if (!timer_attack_moment.is_stopped()):
 			timer_attack_moment.stop()
 		
-	if (attack_zone == true) && (hurt_state == false):
+	if (attack_zone == true) && (hurt_state == false):  #####___ATTACK_ZONE___#########
 		
 		velocity = Vector3.ZERO
 		
-		if (attack_state == false):
+		if (attack_state == false) && (parried_state == false):
 			animation.play("Idle")
 		
 		if (timer_attack_moment.is_stopped()):
@@ -69,14 +74,22 @@ func move(delta):
 
 func attack():
 	
-	attack_state = true
-	velocity = Vector3.ZERO
-	animation.play("Attack")
+	if(parried_state == false):
+		attack_state = true
+		velocity = Vector3.ZERO
+		animation.play("Attack")
+		timer_attack_timeout.start(0.833)
+		timer_attack_impact.start(0.5)
 
 
-func attack_timeout():
+func parried():
 	
-	attack_state = false
+	if (attack_state == true):
+		attack_state = false
+		parried_state = true
+		timer_attack_timeout.stop()
+		animation.play("Parried")
+		timer_parried.start(0.833)
 
 
 func getHurt():
@@ -95,7 +108,7 @@ func getHurt_timeout():
 	hurt_state = false
 
 
-###########################AREAS###################
+###########################--AREAS_ZONES_BEHAVIOUR--###########################
 
 
 func _on_area_attack_zone_body_entered(body: Node3D) -> void:
@@ -112,7 +125,47 @@ func _on_area_attack_zone_body_exited(body: Node3D) -> void:
 		print("attack_zone: ", attack_zone)
 
 
-##########################TIMERS#####################
+##############################--AREA_EFFECTS--#################################
+
+
+func _on_area_attack_range_body_entered(body: Node3D) -> void:
+	
+	if (body == player):
+		area_attack_range = true
+		print("area_attack_range: ", area_attack_range)
+
+
+func _on_area_attack_range_body_exited(body: Node3D) -> void:
+	
+	if (body == player):
+		area_attack_range = false
+		print("area_attack_range: ", area_attack_range)
+
+
+#############################--TIMERS_STATES--#################################
+
+
+func _on_timer_attack_timeout_timeout() -> void:
+	
+	attack_state = false
+
+
+func _on_timer_attack_impact_timeout() -> void:
+	
+	if (area_attack_range == true) && (player.block_parriable_state == false):
+		print("HIT")
+	elif (area_attack_range == true) && (player.block_parriable_state == true):
+		print("HITParried")
+		attack_parry_connection = true
+		parried()
+
+
+func _on_timer_parried_timeout() -> void:
+	
+	parried_state = false
+
+
+##########################--TIMERS_MOMENT_BEHAVIOUR--##########################
 
 
 func _on_timer_attack_moment_timeout() -> void:

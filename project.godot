@@ -29,6 +29,7 @@ Enemy=""
 Player=""
 Arms_model=""
 Player_3D=""
+Enemy_3D=""
 
 [input]
 

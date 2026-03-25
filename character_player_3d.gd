@@ -32,6 +32,7 @@ extends CharacterBody3D
 @onready var timer_dash_recovery = $Timer_dash_reovery
 @onready var timer_block_release = $Timer_block_release
 @onready var timer_block_parry = $Timer_block_parry
+@onready var timer_block_parriable = $Timer_block_parriable
 
 ###################TIMERS############################
 
@@ -53,6 +54,7 @@ var power_attack_release_state = false
 var attack_charge_state = false
 var block_release_state = false
 var block_parry_state = false
+var block_parriable_state = false
 
 ##################STATES###########################
 var nr
@@ -78,14 +80,18 @@ var successfull_parry = false
 var y_rotation = 0.0
 var x_rotation = 0.0
 
+var enemy
+
 const JUMP_VELOCITY = 4.5
 
 
 func _ready():
+	
+	enemy = get_tree().get_first_node_in_group("Enemy_3D")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	grab_dash_enemy.add_exception($".")
 	ray_cast_attack.add_exception($".")
-
+	
 
 func _physics_process(delta: float) -> void:
 
@@ -102,6 +108,7 @@ func _physics_process(delta: float) -> void:
 	block()
 	block_release_from_hold()
 	block_parry()
+	block_parry_successfull()
 	#parryCondition()
 	grab()
 	grab_punch()
@@ -340,16 +347,17 @@ func block_hold():
 func block_parry_seq():
 	
 	block_parry_state = true
-	
+	block_parriable_state = true
 	if (attack_state == true) || (block_state == true) || (block_hold_state == true) || (grab_state == true) || (throw_state == true) || (grab_punch_state == true) || (attack_charge_state == true) || (power_attack_release_state == true):
 		last_action = "new"
 	
 	successfull_parry = false
 	block_state = false
 	block_hold_state = false
-	animation.play("Block_Parry")
+	animation.play("Block_Parry", 0, 1.3)
 	timer_block.stop()
-	timer_block_parry.start(0.833)
+	timer_block_parry.start(0.833/1.3)
+	timer_block_parriable.start(0.3/1.3)
 
 
 func block_parry():
@@ -362,6 +370,17 @@ func block_parry_buffer():
 	
 	if (block_parry_state == false) && (attack_state == false) && (grab_state == false) && (dash_state == false) && (block_release_state == false):
 		block_parry_seq()
+
+
+func block_parry_successfull():
+	
+	if (block_parriable_state == true) && (enemy.attack_parry_connection == true):
+		enemy.attack_parry_connection = false
+		block_parry_state = false
+		block_parriable_state = false
+		timer_block_parry.stop()
+		timer_block_parriable.stop()
+		block_hold()
 
 
 func block_release_from_hold():
@@ -712,3 +731,8 @@ func _on_timer_block_parry_timeout() -> void:
 	block_parry_state = false
 	block_hold()
 	choose_action_buffer()
+
+
+func _on_timer_block_parriable_timeout() -> void:
+	
+	block_parriable_state = false

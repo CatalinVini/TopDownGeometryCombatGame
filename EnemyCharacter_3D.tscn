@@ -266,20 +266,6 @@ tracks/22/path = NodePath("Armature/Skeleton3D:iklegtarget.r")
 tracks/22/interp = 1
 tracks/22/loop_wrap = true
 tracks/22/keys = PackedFloat32Array(0, 1, 0.7064845, 0.0031629354, 0.029659335, 0.7070997)
-tracks/23/type = "method"
-tracks/23/imported = false
-tracks/23/enabled = true
-tracks/23/path = NodePath(".")
-tracks/23/interp = 1
-tracks/23/loop_wrap = true
-tracks/23/keys = {
-"times": PackedFloat32Array(0.8333333),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"attack_timeout"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_wdjl4"]
 resource_name = "Cube"
@@ -1467,7 +1453,10 @@ _data = {
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_2b0n5"]
 radius = 1.2133789
 
-[node name="EnemyCharacter" type="CharacterBody3D" unique_id=1466998257]
+[sub_resource type="BoxShape3D" id="BoxShape3D_2b0n5"]
+size = Vector3(15.472908, 7.7984176, 32.226902)
+
+[node name="EnemyCharacter" type="CharacterBody3D" unique_id=1466998257 groups=["Enemy_3D"]]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_2b0n5")
@@ -1527,7 +1516,7 @@ bones/6/parent = 3
 bones/6/rest = Transform3D(-0.88270575, 0.46992636, -1.1324436e-06, -0.42855254, -0.8049884, 0.4102883, 0.1928044, 0.3621643, 0.9119559, 3.6912796, 1.001765, 0.9602514)
 bones/6/enabled = true
 bones/6/position = Vector3(3.6912796, 1.001765, 0.9602514)
-bones/6/rotation = Quaternion(0.04491007, 0.20533015, 0.9623186, -0.17252676)
+bones/6/rotation = Quaternion(0.044910073, 0.20533015, 0.96231866, -0.17252676)
 bones/6/scale = Vector3(1.0000001, 1, 1)
 bones/7/name = "lowerarm.l"
 bones/7/parent = 6
@@ -1649,9 +1638,29 @@ transform = Transform3D(15.365, 0, 0, 0, 15.365, 0, 0, 0, 15.365, 0, 17.172178, 
 shape = SubResource("CylinderShape3D_2b0n5")
 debug_color = Color(0.88440704, 0.057491027, 0.13171515, 0.41960785)
 
+[node name="AreaAttackRange" type="Area3D" parent="." unique_id=323809082]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaAttackRange" unique_id=576152271]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2777748, 30.616682, -16.105343)
+shape = SubResource("BoxShape3D_2b0n5")
+
 [node name="Timer_attack_moment" type="Timer" parent="." unique_id=114757548]
+one_shot = true
+
+[node name="Timer_attack_timeout" type="Timer" parent="." unique_id=866428176]
+one_shot = true
+
+[node name="Timer_attack_impact" type="Timer" parent="." unique_id=2008644869]
+one_shot = true
+
+[node name="Timer_parried" type="Timer" parent="." unique_id=2056482675]
 one_shot = true
 
 [connection signal="body_entered" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_entered"]
 [connection signal="body_exited" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_exited"]
+[connection signal="body_entered" from="AreaAttackRange" to="." method="_on_area_attack_range_body_entered"]
+[connection signal="body_exited" from="AreaAttackRange" to="." method="_on_area_attack_range_body_exited"]
 [connection signal="timeout" from="Timer_attack_moment" to="." method="_on_timer_attack_moment_timeout"]
+[connection signal="timeout" from="Timer_attack_timeout" to="." method="_on_timer_attack_timeout_timeout"]
+[connection signal="timeout" from="Timer_attack_impact" to="." method="_on_timer_attack_impact_timeout"]
+[connection signal="timeout" from="Timer_parried" to="." method="_on_timer_parried_timeout"]

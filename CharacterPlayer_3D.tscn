@@ -1282,14 +1282,14 @@ bones/1/parent = 0
 bones/1/rest = Transform3D(-0.9326528, -0.3598788, -0.02544693, 0.3607776, -0.9303628, -0.06530731, -0.00017215886, -0.070089675, 0.9975407, -0.41597226, 0.10616112, 2.4586916e-07)
 bones/1/enabled = true
 bones/1/position = Vector3(-0.4159722, 0.10616124, 3.6530477e-07)
-bones/1/rotation = Quaternion(-0.24356417, 0.5374176, 0.7329898, -0.33850378)
+bones/1/rotation = Quaternion(-0.3090906, 0.56592447, 0.70785624, -0.28832626)
 bones/1/scale = Vector3(1.0000008, 1.0000001, 1)
 bones/2/name = "lowerarn.l"
 bones/2/parent = 1
 bones/2/rest = Transform3D(0.99953794, 0.030341437, -0.0018222127, -0.030320454, 0.9910299, -0.13015501, -0.0021432226, 0.13015008, 0.99149215, -2.2457243e-08, 0.6080367, 8.381903e-09)
 bones/2/enabled = true
 bones/2/position = Vector3(-2.2457243e-08, 0.6080367, 8.381903e-09)
-bones/2/rotation = Quaternion(0.3292609, 0.14967237, 0.6712869, 0.6469616)
+bones/2/rotation = Quaternion(0.25165778, 0.04569711, 0.69700927, 0.6698942)
 bones/2/scale = Vector3(1, 0.99999994, 1.0000001)
 bones/3/name = "hand.l"
 bones/3/parent = 2
@@ -1303,14 +1303,14 @@ bones/4/parent = 0
 bones/4/rest = Transform3D(-0.9326516, 0.35987896, 0.025446733, -0.3607773, -0.93036264, -0.06530738, 0.00017194073, -0.07008966, 0.9975407, 0.42345056, 0.10616112, 2.4586916e-07)
 bones/4/enabled = true
 bones/4/position = Vector3(0.42345056, 0.10616121, 3.622629e-07)
-bones/4/rotation = Quaternion(0.4637485, 0.53759944, 0.6064754, 0.35792693)
+bones/4/rotation = Quaternion(0.5382871, 0.64502305, 0.44337004, 0.31243443)
 bones/4/scale = Vector3(0.9999996, 1, 1)
 bones/5/name = "lowerarn.r"
 bones/5/parent = 4
 bones/5/rest = Transform3D(0.99953806, -0.030341659, 0.0018222638, 0.03032068, 0.9910301, -0.13015497, 0.0021431989, 0.13015006, 0.99149215, -1.1747034e-08, 0.60803664, -3.7252903e-09)
 bones/5/enabled = true
 bones/5/position = Vector3(-1.1747034e-08, 0.60803664, -3.7252903e-09)
-bones/5/rotation = Quaternion(0.056593854, 0.008307479, -0.81687456, 0.5739722)
+bones/5/rotation = Quaternion(-0.30488214, 0.3648047, -0.7351922, 0.48317388)
 bones/5/scale = Vector3(1.0000001, 1.0000001, 1.0000001)
 bones/6/name = "hand.r"
 bones/6/parent = 5
@@ -1413,6 +1413,9 @@ one_shot = true
 [node name="Timer_block_parry" type="Timer" parent="." unique_id=795301644]
 one_shot = true
 
+[node name="Timer_block_parriable" type="Timer" parent="." unique_id=623027511]
+one_shot = true
+
 [connection signal="timeout" from="Timer_attack_charge" to="." method="_on_timer_attack_charge_timeout"]
 [connection signal="timeout" from="Timer_attack" to="." method="_on_timer_attack_timeout"]
 [connection signal="timeout" from="Timer_attack_impact" to="." method="_on_timer_attack_impact_timeout"]
@@ -1428,3 +1431,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_block_release" to="." method="_on_timer_block_release_timeout"]
 [connection signal="timeout" from="Timer_throw" to="." method="_on_timer_throw_timeout"]
 [connection signal="timeout" from="Timer_block_parry" to="." method="_on_timer_block_parry_timeout"]
+[connection signal="timeout" from="Timer_block_parriable" to="." method="_on_timer_block_parriable_timeout"]
