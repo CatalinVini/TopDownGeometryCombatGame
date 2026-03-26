@@ -33,6 +33,7 @@ extends CharacterBody3D
 @onready var timer_block_release = $Timer_block_release
 @onready var timer_block_parry = $Timer_block_parry
 @onready var timer_block_parriable = $Timer_block_parriable
+@onready var timer_block_successfull = $Timer_block_successfull
 
 ###################TIMERS############################
 
@@ -55,6 +56,7 @@ var attack_charge_state = false
 var block_release_state = false
 var block_parry_state = false
 var block_parriable_state = false
+var block_succsefull_state = false
 
 ##################STATES###########################
 var nr
@@ -220,7 +222,7 @@ func attack_seq():
 
 func attack():
 
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false) && (block_parry_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false) && (block_parriable_state) && (block_parry_state == false):
 		attack_seq() 
 
 
@@ -338,10 +340,10 @@ func block_buffer():
 
 
 func block_hold():
-	
-	if(Input.is_action_pressed("block")) && (block_parry_state == false) && (attack_state == false) && (grab_state == false) && (dash_state == false) && (block_state == false) && (block_hold_state == false) && (block_release_state == false):
+	 
+	if (Input.is_action_pressed("block")) && (block_parry_state == false) && (attack_state == false) && (grab_state == false) && (dash_state == false) && (block_state == false) && (block_hold_state == false) && (block_succsefull_state == false) && (block_release_state == false):
 		block_hold_state = true
-		animation.play("Block_Hold")
+		animation.play("Block_Hold", 1)
 
 
 func block_parry_seq():
@@ -378,9 +380,11 @@ func block_parry_successfull():
 		enemy.attack_parry_connection = false
 		block_parry_state = false
 		block_parriable_state = false
+		block_succsefull_state = true
 		timer_block_parry.stop()
 		timer_block_parriable.stop()
-		block_hold()
+		animation.play_section("Block_Parry", 0.3, 0.6, 1)
+		timer_block_successfull.start(0.3)
 
 
 func block_release_from_hold():
@@ -736,3 +740,9 @@ func _on_timer_block_parry_timeout() -> void:
 func _on_timer_block_parriable_timeout() -> void:
 	
 	block_parriable_state = false
+
+
+func _on_timer_block_successfull_timeout() -> void:
+	
+	block_succsefull_state = false
+	block_hold()
