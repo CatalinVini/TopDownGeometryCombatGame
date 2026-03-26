@@ -1417,6 +1417,7 @@ one_shot = true
 one_shot = true
 
 [node name="Timer_block_successfull" type="Timer" parent="." unique_id=1069526233]
+one_shot = true
 
 [connection signal="timeout" from="Timer_attack_charge" to="." method="_on_timer_attack_charge_timeout"]
 [connection signal="timeout" from="Timer_attack" to="." method="_on_timer_attack_timeout"]
