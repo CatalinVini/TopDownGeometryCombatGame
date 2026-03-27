@@ -395,7 +395,7 @@ func block_release_from_hold():
 		block_hold_state = false
 		block_successfull_state = false
 		block_release_state = true
-		print("block_release_state ", block_release_state)
+		print("block_release_from_HOLD ")
 		animation.play("Block_Hold_Release", 0.2, 2)
 		timer_block_release.start(0.58/2)
 
@@ -404,9 +404,10 @@ func block_release():
 	
 	if (!Input.is_action_pressed("block")) && (block_release_state == false) && (block_state == false) && (block_parry_state == false) && (block_parriable_state == false):
 		block_hold_state = false
+		block_state = false
 		block_successfull_state = false
 		block_release_state = true
-		print("block_release_state ", block_release_state)
+		print("block_RELEASE")
 		animation.play("Block_Hold_Release", 0.2, 2)
 		timer_block_release.start(0.58/2)
 
@@ -563,11 +564,12 @@ func choose_action_buffer():
 		dash_seq()
 	
 	if (last_action == "block_parry"):
-		print("BUFFER_Block_Parry")
+		#print("BUFFER_Block_Parry")
 		block_parry_buffer()
 	
 	if (last_action == "block_released"):
 		block_release()
+		print("block_RELEASE_buffer")
 	
 	last_action = "new"
 	nr = 0
@@ -673,9 +675,10 @@ func _on_timer_block_timeout() -> void:
 func _on_timer_block_release_timeout() -> void: 
 	
 	block_release_state = false
-	choose_action_buffer()
 	attack_charge()
 	block_hold()
+	choose_action_buffer()
+	
 
 
 func _on_timer_grab_connected_timeout() -> void:
