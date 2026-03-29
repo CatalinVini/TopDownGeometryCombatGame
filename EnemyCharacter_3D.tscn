@@ -1656,6 +1656,9 @@ one_shot = true
 [node name="Timer_parried" type="Timer" parent="." unique_id=2056482675]
 one_shot = true
 
+[node name="Timer_parried_countered" type="Timer" parent="." unique_id=1439440673]
+one_shot = true
+
 [connection signal="body_entered" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_entered"]
 [connection signal="body_exited" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_exited"]
 [connection signal="body_entered" from="AreaAttackRange" to="." method="_on_area_attack_range_body_entered"]
@@ -1664,3 +1667,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_attack_timeout" to="." method="_on_timer_attack_timeout_timeout"]
 [connection signal="timeout" from="Timer_attack_impact" to="." method="_on_timer_attack_impact_timeout"]
 [connection signal="timeout" from="Timer_parried" to="." method="_on_timer_parried_timeout"]
+[connection signal="timeout" from="Timer_parried_countered" to="." method="_on_timer_parried_countered_timeout"]

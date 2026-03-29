@@ -9,6 +9,7 @@ extends CharacterBody3D
 @onready var timer_attack_timeout = $Timer_attack_timeout
 @onready var timer_attack_impact = $Timer_attack_impact
 @onready var timer_parried = $Timer_parried
+@onready var timer_parried_countered = $Timer_parried_countered
 
 var attack_zone = false
 var attack_state = false
@@ -94,15 +95,25 @@ func parried():
 
 func getHurt():
 	
-	if (player.attack_connection == true) && (self == player.enemy_body_ID) && (hurt_state == false):
+	if (player.attack_connection == true) && (self == player.enemy_body_ID) && (hurt_state == false) && (parried_state == false):
 		player.attack_connection = false
 		velocity = Vector3.ZERO
 		hurt_state = true
 		timer_attack_moment.stop()
 		attack_state = false
 		animation.play("GettingHurt")
-
-
+	elif (player.attack_connection == true) && (self == player.enemy_body_ID) && (hurt_state == false) && (parried_state == true):
+		player.attack_connection = false
+		parried_state = false
+		attack_state = false
+		hurt_state = true
+		velocity = Vector3.ZERO
+		timer_parried.stop()
+		timer_attack_moment.stop()
+		animation.play("GettingCountered")
+		timer_parried_countered.start(animation.current_animation_length)
+		
+		
 func getHurt_timeout():
 	
 	hurt_state = false
@@ -171,3 +182,8 @@ func _on_timer_parried_timeout() -> void:
 func _on_timer_attack_moment_timeout() -> void:
 	
 	attack()
+
+
+func _on_timer_parried_countered_timeout() -> void:
+	
+	hurt_state = false
