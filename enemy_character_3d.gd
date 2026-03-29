@@ -36,7 +36,7 @@ func _physics_process(delta):
 
 func enemy_behaviour(delta):
 	
-	if (attack_zone == false) && (hurt_state == false):  #####___MOVEMENT_ZONE___######
+	if (attack_zone == false) && (hurt_state == false) && (parried_state == false):  #####___MOVEMENT_ZONE___######
 		move(delta)
 		if (!timer_attack_moment.is_stopped()):
 			timer_attack_moment.stop()

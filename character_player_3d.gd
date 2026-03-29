@@ -148,8 +148,10 @@ func move():
 		velocity.z = move_toward(velocity.z,0, SPEED)
 
 	if (input_dir) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false) && (block_parry_state == false):
+		block_successfull_state = false
 		animation.play("Move", 0.2)
 	elif (input_dir == Vector2.ZERO) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false) && (block_parry_state == false):
+		block_successfull_state = false
 		animation.play("Idle", 0.2)
 
 
@@ -208,6 +210,8 @@ func attack_seq():
 	
 	attack_state = true
 	
+	block_successfull_state = false
+	timer_block_successfull.stop()
 	timer_attack.start(0.83)
 	timer_attack_impact.start(0.5)
 	
@@ -343,7 +347,37 @@ func block_hold():
 	 
 	if (Input.is_action_pressed("block")) && (block_parry_state == false) && (attack_state == false) && (grab_state == false) && (dash_state == false) && (block_state == false) && (block_hold_state == false) && (block_successfull_state == false) && (block_release_state == false):
 		block_hold_state = true
-		animation.play("Block_Hold")
+		block_successfull_state = false
+		timer_block_successfull.stop()
+		print("BLOCK HOLD")
+		animation.play("Block_Hold", 1)
+
+
+func block_release_seq():
+	
+	block_release_state = true
+	block_successfull_state = false
+	print("block_RELEASE")
+	animation.play("Block_Hold_Release", 0, 2)
+	timer_block_release.start(0.58/2)
+
+
+func block_release_from_hold():
+	
+	if (Input.is_action_just_released("block")) && (block_hold_state == true) && (block_release_state == false) && (block_state == false) && (block_parry_state == false) && (block_parriable_state == false): 
+		
+		block_release_state = true
+		block_hold_state = false
+		block_successfull_state = false
+		print("block_RELEASE_HOLD")
+		animation.play("Block_Hold_Release", 0, 2)
+		timer_block_release.start(0.58/2)
+
+
+func block_release():
+	
+	if (!Input.is_action_pressed("block")) && (block_release_state == false) && (block_parry_state == false) && (block_parriable_state == false):
+		block_release_seq()
 
 
 func block_parry_seq():
@@ -387,32 +421,6 @@ func block_parry_successfull():
 		timer_block_parriable.stop()
 		animation.play_section("Block_Parry", 0.3, 0.6, 1)
 		timer_block_successfull.start(0.3)
-
-
-func block_release_from_hold():
-	
-	if (Input.is_action_just_released("block")) && (block_hold_state == true) && (block_release_state == false) && (block_state == false) && (block_parry_state == false) && (block_parriable_state == false): 
-		block_hold_state = false
-		block_successfull_state = false
-		block_release_state = true
-		print("block_RELEASE_HOLD")
-		animation.play("Block_Hold_Release", 0.2, 2)
-		timer_block_release.start(0.58/2)
-
-
-func block_release_seq():
-	
-	block_successfull_state = false
-	block_release_state = true
-	print("block_RELEASE")
-	animation.play("Block_Hold_Release", 0.2, 2)
-	timer_block_release.start(0.58/2)
-
-
-func block_release():
-	
-	if (!Input.is_action_pressed("block")) && (block_release_state == false) && (block_parry_state == false) && (block_parriable_state == false):
-		block_release_seq()
 
 
 func grab_seq():
@@ -503,7 +511,7 @@ func grab_punch_idle_transition():
 
 func buffer():
 	
-	if  (timer_attack.is_stopped() == false) || (timer_block_parry.is_stopped() == false) || (timer_block_successfull.is_stopped() == false) || (timer_block_release.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false) || (timer_attack_charge.is_stopped() == false):
+	if  (timer_attack.is_stopped() == false) || (timer_block_parry.is_stopped() == false) || (timer_block_release.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false) || (timer_attack_charge.is_stopped() == false):
 		
 		if(Input.is_action_just_pressed("attack")):
 			
@@ -516,8 +524,7 @@ func buffer():
 			
 		if (Input.is_action_just_pressed("block")):
 			
-			last_action = "block"	
-			
+			last_action = "block"
 			
 		if (timer_block_release.is_stopped() == false) && (Input.is_action_just_pressed("block")):
 			
@@ -528,13 +535,11 @@ func buffer():
 			
 			last_action = "block_released"
 		
-		
-		if(Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
+		if (Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
 			
 			last_action = "block_parry"
-			
-			
-		if(Input.is_action_just_pressed("grab")):
+		
+		if (Input.is_action_just_pressed("grab")):
 			
 			if (clinch_state == false) && (pull_state == false):
 				#print("GRAB")
@@ -546,7 +551,6 @@ func buffer():
 		if (Input.is_action_just_pressed("dash")):
 			
 			last_action = "dash"
-		
 
 
 func choose_action_buffer():
@@ -687,6 +691,7 @@ func _on_timer_block_parry_timeout() -> void:
 	
 	block_parry_state = false
 	block_hold()
+	block_release()
 	choose_action_buffer()
 
 
@@ -699,7 +704,8 @@ func _on_timer_block_successfull_timeout() -> void:
 	
 	block_successfull_state = false
 	block_hold()
-
+	block_release()
+	
 
 func _on_timer_grab_connected_timeout() -> void:
 	
