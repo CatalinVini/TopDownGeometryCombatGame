@@ -761,20 +761,6 @@ tracks/22/path = NodePath("Armature/Skeleton3D:iklegtarget.r")
 tracks/22/interp = 1
 tracks/22/loop_wrap = true
 tracks/22/keys = PackedFloat32Array(0, 1, 0.7064845, 0.0031629354, 0.029659335, 0.7070997)
-tracks/23/type = "method"
-tracks/23/imported = false
-tracks/23/enabled = true
-tracks/23/path = NodePath(".")
-tracks/23/interp = 1
-tracks/23/loop_wrap = true
-tracks/23/keys = {
-"times": PackedFloat32Array(0.8333333),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"getHurt_timeout"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_so7n2"]
 resource_name = "Idle_loop"
@@ -1488,14 +1474,14 @@ bones/2/parent = 1
 bones/2/rest = Transform3D(1, -4.7518807e-08, 3.8812398e-09, 4.7442704e-08, 0.98372096, -0.17970365, 4.721245e-09, 0.17970367, 0.98372084, -2.9897365e-09, 2.8055084, 1.3247234e-07)
 bones/2/enabled = true
 bones/2/position = Vector3(-2.9897365e-09, 2.8055084, 1.3247234e-07)
-bones/2/rotation = Quaternion(0.12442201, -1.3067582e-10, 3.199792e-08, 0.99222946)
+bones/2/rotation = Quaternion(0.124422, -1.3067548e-10, 3.1997914e-08, 0.9922294)
 bones/2/scale = Vector3(1, 1.0000001, 1)
 bones/3/name = "body3"
 bones/3/parent = 2
 bones/3/rest = Transform3D(1, -8.606464e-08, -4.6336433e-07, -7.235543e-08, 0.94349205, -0.3313952, 4.6570196e-07, 0.3313952, 0.94349205, -5.122729e-10, 3.1579216, 1.3245925e-07)
 bones/3/enabled = true
 bones/3/position = Vector3(-5.122729e-10, 3.1579216, 1.3245925e-07)
-bones/3/rotation = Quaternion(0.13986897, -2.3676671e-07, 3.4584127e-09, 0.99017006)
+bones/3/rotation = Quaternion(0.13986897, -2.3676671e-07, 3.4584184e-09, 0.9901701)
 bones/3/scale = Vector3(1, 1, 1)
 bones/4/name = "neck"
 bones/4/parent = 3
@@ -1659,6 +1645,9 @@ one_shot = true
 [node name="Timer_parried_countered" type="Timer" parent="." unique_id=1439440673]
 one_shot = true
 
+[node name="Timer_hurt" type="Timer" parent="." unique_id=1056925978]
+one_shot = true
+
 [connection signal="body_entered" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_entered"]
 [connection signal="body_exited" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_exited"]
 [connection signal="body_entered" from="AreaAttackRange" to="." method="_on_area_attack_range_body_entered"]
@@ -1668,3 +1657,4 @@ one_shot = true
 [connection signal="timeout" from="Timer_attack_impact" to="." method="_on_timer_attack_impact_timeout"]
 [connection signal="timeout" from="Timer_parried" to="." method="_on_timer_parried_timeout"]
 [connection signal="timeout" from="Timer_parried_countered" to="." method="_on_timer_parried_countered_timeout"]
+[connection signal="timeout" from="Timer_hurt" to="." method="_on_timer_hurt_timeout"]
