@@ -54,8 +54,7 @@ func enemy_behaviour(delta):
 		
 		if (timer_attack_moment.is_stopped()):
 			timer_attack_moment.start(1)
-	
-	
+
 
 func move(delta):
 	
@@ -103,7 +102,8 @@ func getHurt():
 		hurt_state = true
 		attack_state = false
 		timer_attack_moment.stop()
-		timer_hurt.start(0.8)
+		timer_hurt.start(0.833)
+		animation.stop(true)
 		animation.play("GettingHurt")
 		
 	elif (player.attack_connection == true) && (self == player.enemy_body_ID) && (parried_state == true):
@@ -116,8 +116,6 @@ func getHurt():
 		timer_attack_moment.stop()
 		animation.play("GettingCountered")
 		timer_parried_countered.start(animation.current_animation_length)
-		
-		
 
 
 ###########################--AREAS_ZONES_BEHAVIOUR--###########################

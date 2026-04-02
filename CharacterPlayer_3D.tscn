@@ -1349,6 +1349,15 @@ progress = 1.4138
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1806462, 0)
 current = true
 
+[node name="CanvasLayer" type="CanvasLayer" parent="Camera3D" unique_id=115491731]
+follow_viewport_enabled = true
+
+[node name="ProgressBar" type="ProgressBar" parent="Camera3D/CanvasLayer" unique_id=2106642104]
+offset_left = 64.0
+offset_top = 544.0
+offset_right = 288.0
+offset_bottom = 571.0
+
 [node name="RayCastAttack3D" type="RayCast3D" parent="Camera3D" unique_id=1746698236]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016, -0.24500012, 0.016)
 target_position = Vector3(0, 0, -30)
