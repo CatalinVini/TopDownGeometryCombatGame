@@ -2,6 +2,7 @@ extends CharacterBody3D
 
 @export var speed = 30
 @export var gravity = 9.8
+@export var damage = 20
 
 @onready var animation = $AnimationPlayer
 
@@ -17,7 +18,10 @@ var attack_state = false
 var hurt_state = false
 var parried_state = false
 var area_attack_range = false
+var attack_hit_connection = false
+var attack_hit_blocked_parried = false
 var attack_parry_connection = false
+var attack_hit_perfect_parried = false
 var player
 
 
@@ -162,11 +166,17 @@ func _on_timer_attack_timeout_timeout() -> void:
 
 func _on_timer_attack_impact_timeout() -> void:
 	
-	if (area_attack_range == true) && (player.block_parriable_state == false):
-		print("HIT")
-	elif (area_attack_range == true) && (player.block_parriable_state == true):
+	if (area_attack_range == true) && (player.block_parriable_state == false) && (player.perfect_block_state == false):
+		print("ENEMY HIT CONNECTED")
+		attack_hit_connection = true
+		
+	elif (area_attack_range == true) && (player.block_parriable_state == true) && (player.perfect_block_state == false):
 		print("HITParried")
-		attack_parry_connection = true
+		attack_hit_blocked_parried = true
+		
+	elif (area_attack_range == true) && (player.block_parriable_state == true) && (player.perfect_block_state == true):  
+		print("PERFECT_PARRIED")
+		attack_hit_perfect_parried = true
 		parried()
 
 

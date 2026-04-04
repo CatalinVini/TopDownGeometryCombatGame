@@ -4,6 +4,10 @@ extends CharacterBody3D
 @export var SPEED = 90.0
 @export var damage_base = 5
 @export var gravity := 9.8
+@export var HP = 100
+@onready var HP_meter = $Camera3D/CanvasLayer/HealthBar
+@export var DEF = 100
+@onready var DEF_meter = $Camera3D/CanvasLayer/DefenseBar
 
 @onready var CameraFPS = $Camera3D
 @onready var Armature = $Armature/Skeleton3D
@@ -34,9 +38,7 @@ extends CharacterBody3D
 @onready var timer_block_parry = $Timer_block_parry
 @onready var timer_block_parriable = $Timer_block_parriable
 @onready var timer_block_successfull = $Timer_block_successfull
-
-###################TIMERS############################
-
+@onready var timer_block_perfect_window = $Timer_block_perfect_window
 
 ##################STATES###########################
 
@@ -57,6 +59,7 @@ var block_release_state = false
 var block_parry_state = false
 var block_parriable_state = false
 var block_successfull_state = false
+var perfect_block_state = false
 
 ##################STATES###########################
 var nr
@@ -93,7 +96,7 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	grab_dash_enemy.add_exception($".")
 	ray_cast_attack.add_exception($".")
-	
+
 
 func _physics_process(delta: float) -> void:
 
@@ -116,7 +119,7 @@ func _physics_process(delta: float) -> void:
 	grab_punch()
 	#letGoOfTheDead()
 	throw()
-	#get_hurt()
+	get_hurt()
 	
 	Global_variables_functions.player_position_3D = get_position()
 
@@ -226,7 +229,7 @@ func attack_seq():
 
 func attack():
 
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false) && (block_parriable_state == false) && (block_parry_state == false):
+	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_parriable_state == false): 
 		attack_seq() 
 
 
@@ -329,6 +332,10 @@ func block_seq():
 	timer_attack_charge.stop()
 	animation.play("Block", 0.2, 1.3)
 	timer_block.start(0.32)
+	if (DEF == 100):
+		perfect_block_state = true
+		print("CACA")
+		timer_block_perfect_window.start(0.4)
 
 
 func block():
@@ -410,18 +417,36 @@ func block_parry_buffer():
 
 func block_parry_successfull():
 	
-	if (block_parriable_state == true) && (enemy.attack_parry_connection == true) && (block_release_state == false):
-		enemy.attack_parry_connection = false
+	if (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == true):
+		
+		enemy.attack_hit_blocked_parried = false
+		enemy.attack_hit_perfect_parried = false
 		block_parry_state = false
 		block_parriable_state = false
 		block_state = false
 		successfull_parry = false
-		block_successfull_state = true
+		timer_block.stop()
 		timer_block_parry.stop()
 		timer_block_parriable.stop()
 		animation.play_section("Block_Parry", 0.3, 0.6, 1)
+		block_successfull_state = true
 		timer_block_successfull.start(0.3)
-
+		
+		
+	elif (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == false):
+		
+		enemy.attack_hit_blocked_parried = false
+		enemy.attack_hit_perfect_parried = false
+		block_parry_state = false
+		block_parriable_state = false
+		block_state = false
+		successfull_parry = false
+		timer_block_parry.stop()
+		timer_block_parriable.stop()
+		animation.play_section("Block_Parry", 0.3, 0.6, 1)
+		block_successfull_state = true
+		timer_block_successfull.start(0.3)
+		
 
 func grab_seq():
 	
@@ -516,7 +541,7 @@ func buffer():
 		if(Input.is_action_just_pressed("attack")):
 			
 			if (clinch_state == false):
-				#print("ATTACK")
+				print("ATTACK BUFFFER")
 				last_action = "attack"
 			else:
 				#print("GRAB_PUNCH", nr)
@@ -551,6 +576,46 @@ func buffer():
 		if (Input.is_action_just_pressed("dash")):
 			
 			last_action = "dash"
+
+
+func TakeHPDamage():
+	
+	if (HP - enemy.damage > 0):
+		HP = HP - enemy.damage
+		HP_meter.value = HP
+	elif (HP - enemy.damage <= 0):
+		HP = 0
+		HP_meter.value = HP
+
+
+func TakeDEFDamage():
+	
+	if (DEF - enemy.damage > 0):
+		DEF = DEF - enemy.damage
+		DEF_meter.value = DEF
+	elif (DEF - enemy.damage <= 0):
+		DEF = 0
+		DEF_meter.value = DEF
+
+
+func get_hurt():
+	
+	if (enemy.attack_hit_connection == true):
+		enemy.attack_hit_connection = false
+		
+		if (block_state == false) && (block_hold_state == false) && ((block_parriable_state == false) || (block_successfull_state == false)):
+			print("PLAYER_HURT")
+			TakeHPDamage()
+
+
+func GainDEF():
+	
+	if (DEF + 25 < 100):
+		DEF = DEF + 25
+		DEF_meter.value = DEF
+	elif (DEF + 25 >= 100):
+		DEF = 100
+		DEF_meter.value = DEF
 
 
 func choose_action_buffer():
@@ -705,7 +770,7 @@ func _on_timer_block_successfull_timeout() -> void:
 	block_successfull_state = false
 	block_hold()
 	block_release()
-	
+
 
 func _on_timer_grab_connected_timeout() -> void:
 	
@@ -763,3 +828,7 @@ func _on_timer_dash_reovery_timeout() -> void:
 		timer_dash_recovery.stop()
 	else:
 		timer_dash_recovery.start(1)
+
+
+func _on_timer_block_perfect_window_timeout() -> void:
+	perfect_block_state = false
