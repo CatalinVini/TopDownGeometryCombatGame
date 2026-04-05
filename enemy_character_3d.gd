@@ -22,6 +22,7 @@ var attack_hit_connection = false
 var attack_hit_blocked_parried = false
 var attack_parry_connection = false
 var attack_hit_perfect_parried = false
+var attack_hit_blocked = false
 var player
 
 
@@ -166,15 +167,19 @@ func _on_timer_attack_timeout_timeout() -> void:
 
 func _on_timer_attack_impact_timeout() -> void:
 	
-	if (area_attack_range == true) && (player.block_parriable_state == false) && (player.perfect_block_state == false):
+	if (area_attack_range == true) && (player.block_state == false) && (player.block_hold_state == false) && (player.block_parriable_state == false) && (player.perfect_block_state == false):
 		print("ENEMY HIT CONNECTED")
 		attack_hit_connection = true
-		
-	elif (area_attack_range == true) && (player.block_parriable_state == true) && (player.perfect_block_state == false):
+	
+	elif (area_attack_range == true) && ((player.block_state == true) || (player.block_hold_state == true)) && (player.block_parriable_state == false) && (player.perfect_block_state == false):
+		print("HITBlocked")
+		attack_hit_blocked = true
+
+	elif (area_attack_range == true) && (player.block_state == false) && (player.block_hold_state == false) && (player.block_parriable_state == true) && (player.perfect_block_state == false):
 		print("HITParried")
 		attack_hit_blocked_parried = true
-		
-	elif (area_attack_range == true) && (player.block_parriable_state == true) && (player.perfect_block_state == true):  
+	
+	elif (area_attack_range == true) && (player.block_state == false) && (player.block_hold_state == false) && (player.block_parriable_state == true) && (player.perfect_block_state == true):  
 		print("PERFECT_PARRIED")
 		attack_hit_perfect_parried = true
 		parried()

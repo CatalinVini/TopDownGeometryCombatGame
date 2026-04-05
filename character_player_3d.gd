@@ -214,14 +214,15 @@ func attack_seq():
 	attack_state = true
 	
 	block_successfull_state = false
+	block_parry_state = false
 	timer_block_successfull.stop()
+	timer_block_parry.stop()
 	timer_attack.start(0.83)
 	timer_attack_impact.start(0.5)
 	
 	if (right_left_hand == true):
 		animation.play("Attack_R")
 		right_left_hand = false
-		
 	else:
 		animation.play("Attack_L")
 		right_left_hand = true
@@ -306,7 +307,7 @@ func attack_release():
 
 
 func block_seq():
-	
+		
 	areaparry.monitoring = true
 	block_state = true
 	
@@ -417,10 +418,10 @@ func block_parry_buffer():
 
 func block_parry_successfull():
 	
-	if (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == true):
+	if (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == false):
 		
 		enemy.attack_hit_blocked_parried = false
-		enemy.attack_hit_perfect_parried = false
+		GainDEF()
 		block_parry_state = false
 		block_parriable_state = false
 		block_state = false
@@ -433,9 +434,8 @@ func block_parry_successfull():
 		timer_block_successfull.start(0.3)
 		
 		
-	elif (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == false):
+	elif (block_parriable_state == true) && (enemy.attack_hit_perfect_parried == true) && (block_release_state == false) && (perfect_block_state == true): 
 		
-		enemy.attack_hit_blocked_parried = false
 		enemy.attack_hit_perfect_parried = false
 		block_parry_state = false
 		block_parriable_state = false
@@ -534,6 +534,50 @@ func grab_punch_idle_transition():
 	grab_idle_transition_state = false
 
 
+func TakeHPDamage():
+	
+	if (HP - enemy.damage > 0):
+		HP = HP - enemy.damage
+		HP_meter.value = HP
+	elif (HP - enemy.damage <= 0):
+		HP = 0
+		HP_meter.value = HP
+
+
+func TakeDEFDamage():
+	
+	if (DEF - enemy.damage > 0):
+		DEF = DEF - enemy.damage
+		DEF_meter.value = DEF
+	elif (DEF - enemy.damage <= 0):
+		DEF = 0
+		DEF_meter.value = DEF
+
+
+func get_hurt():
+	
+	if (enemy.attack_hit_connection == true):
+		enemy.attack_hit_connection = false
+		TakeHPDamage()
+	
+	if (enemy.attack_hit_blocked == true) && (DEF > 0):
+		enemy.attack_hit_blocked = false
+		TakeDEFDamage()
+	elif (enemy.attack_hit_blocked == true) && (DEF == 0):
+		enemy.attack_hit_blocked = false
+		TakeHPDamage()
+
+
+func GainDEF():
+	
+	if (DEF + 25 < 100):
+		DEF = DEF + 25
+		DEF_meter.value = DEF
+	elif (DEF + 25 >= 100):
+		DEF = 100
+		DEF_meter.value = DEF
+
+
 func buffer():
 	
 	if  (timer_attack.is_stopped() == false) || (timer_block_parry.is_stopped() == false) || (timer_block_release.is_stopped() == false) || (timer_grab.is_stopped() == false) || (timer_grab_punch.is_stopped() == false) || (timer_dash.is_stopped() == false) || (timer_attack_charge.is_stopped() == false):
@@ -576,46 +620,6 @@ func buffer():
 		if (Input.is_action_just_pressed("dash")):
 			
 			last_action = "dash"
-
-
-func TakeHPDamage():
-	
-	if (HP - enemy.damage > 0):
-		HP = HP - enemy.damage
-		HP_meter.value = HP
-	elif (HP - enemy.damage <= 0):
-		HP = 0
-		HP_meter.value = HP
-
-
-func TakeDEFDamage():
-	
-	if (DEF - enemy.damage > 0):
-		DEF = DEF - enemy.damage
-		DEF_meter.value = DEF
-	elif (DEF - enemy.damage <= 0):
-		DEF = 0
-		DEF_meter.value = DEF
-
-
-func get_hurt():
-	
-	if (enemy.attack_hit_connection == true):
-		enemy.attack_hit_connection = false
-		
-		if (block_state == false) && (block_hold_state == false) && ((block_parriable_state == false) || (block_successfull_state == false)):
-			print("PLAYER_HURT")
-			TakeHPDamage()
-
-
-func GainDEF():
-	
-	if (DEF + 25 < 100):
-		DEF = DEF + 25
-		DEF_meter.value = DEF
-	elif (DEF + 25 >= 100):
-		DEF = 100
-		DEF_meter.value = DEF
 
 
 func choose_action_buffer():
