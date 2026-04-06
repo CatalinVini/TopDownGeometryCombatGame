@@ -121,7 +121,7 @@ func _physics_process(delta: float) -> void:
 	throw()
 	get_hurt()
 	
-	Global_variables_functions.player_position_3D = get_position()
+	Global_3D.player_position_3D = get_position()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -418,35 +418,36 @@ func block_parry_buffer():
 
 func block_parry_successfull():
 	
-	if (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == false):
-		
-		enemy.attack_hit_blocked_parried = false
-		GainDEF()
-		block_parry_state = false
-		block_parriable_state = false
-		block_state = false
-		successfull_parry = false
-		timer_block.stop()
-		timer_block_parry.stop()
-		timer_block_parriable.stop()
-		animation.play_section("Block_Parry", 0.3, 0.6, 1)
-		block_successfull_state = true
-		timer_block_successfull.start(0.3)
-		
-		
-	elif (block_parriable_state == true) && (enemy.attack_hit_perfect_parried == true) && (block_release_state == false) && (perfect_block_state == true): 
-		
-		enemy.attack_hit_perfect_parried = false
-		block_parry_state = false
-		block_parriable_state = false
-		block_state = false
-		successfull_parry = false
-		timer_block_parry.stop()
-		timer_block_parriable.stop()
-		animation.play_section("Block_Parry", 0.3, 0.6, 1)
-		block_successfull_state = true
-		timer_block_successfull.start(0.3)
-		
+	for enemy in Global_3D.enemy_array:
+		if (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == false):
+			
+			enemy.attack_hit_blocked_parried = false
+			GainDEF()
+			block_parry_state = false
+			block_parriable_state = false
+			block_state = false
+			successfull_parry = false
+			timer_block.stop()
+			timer_block_parry.stop()
+			timer_block_parriable.stop()
+			animation.play_section("Block_Parry", 0.3, 0.6, 1)
+			block_successfull_state = true
+			timer_block_successfull.start(0.3)
+			
+			
+		elif (block_parriable_state == true) && (enemy.attack_hit_perfect_parried == true) && (block_release_state == false) && (perfect_block_state == true): 
+			
+			enemy.attack_hit_perfect_parried = false
+			block_parry_state = false
+			block_parriable_state = false
+			block_state = false
+			successfull_parry = false
+			timer_block_parry.stop()
+			timer_block_parriable.stop()
+			animation.play_section("Block_Parry", 0.3, 0.6, 1)
+			block_successfull_state = true
+			timer_block_successfull.start(0.3)
+
 
 func grab_seq():
 	
@@ -534,7 +535,7 @@ func grab_punch_idle_transition():
 	grab_idle_transition_state = false
 
 
-func TakeHPDamage():
+func TakeHPDamage(enemy):
 	
 	if (HP - enemy.damage > 0):
 		HP = HP - enemy.damage
@@ -544,7 +545,7 @@ func TakeHPDamage():
 		HP_meter.value = HP
 
 
-func TakeDEFDamage():
+func TakeDEFDamage(enemy):
 	
 	if (DEF - enemy.damage > 0):
 		DEF = DEF - enemy.damage
@@ -556,16 +557,17 @@ func TakeDEFDamage():
 
 func get_hurt():
 	
-	if (enemy.attack_hit_connection == true):
-		enemy.attack_hit_connection = false
-		TakeHPDamage()
-	
-	if (enemy.attack_hit_blocked == true) && (DEF > 0):
-		enemy.attack_hit_blocked = false
-		TakeDEFDamage()
-	elif (enemy.attack_hit_blocked == true) && (DEF == 0):
-		enemy.attack_hit_blocked = false
-		TakeHPDamage()
+	for enemy in Global_3D.enemy_array:
+		if (enemy.attack_hit_connection == true):
+			enemy.attack_hit_connection = false
+			TakeHPDamage(enemy)
+		
+		if (enemy.attack_hit_blocked == true) && (DEF > 0):
+			enemy.attack_hit_blocked = false
+			TakeDEFDamage(enemy)
+		elif (enemy.attack_hit_blocked == true) && (DEF == 0):
+			enemy.attack_hit_blocked = false
+			TakeHPDamage(enemy)
 
 
 func GainDEF():

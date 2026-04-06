@@ -27,7 +27,9 @@ var player
 
 
 func _ready():
+	
 	player = get_tree().get_first_node_in_group("Player_3D")
+	Global_3D.enemy_array.push_front(self)
 
 
 func _physics_process(delta):

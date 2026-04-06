@@ -21,7 +21,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Global_variables_functions="*res://global.gd"
+Global_3D="*res://global.gd"
 
 [global_group]
 
