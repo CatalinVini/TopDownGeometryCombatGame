@@ -173,7 +173,7 @@ func _on_timer_attack_impact_timeout() -> void:
 		print("ENEMY HIT CONNECTED")
 		attack_hit_connection = true
 	
-	elif (area_attack_range == true) && ((player.block_state == true) || (player.block_hold_state == true)) && (player.block_parriable_state == false) && (player.perfect_block_state == false):
+	elif (area_attack_range == true) && ((player.block_state == true) || (player.block_hold_state == true)) && (player.block_parriable_state == false):
 		print("HITBlocked")
 		attack_hit_blocked = true
 

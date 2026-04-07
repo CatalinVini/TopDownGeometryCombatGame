@@ -92,7 +92,6 @@ const JUMP_VELOCITY = 4.5
 
 func _ready():
 	
-	enemy = get_tree().get_first_node_in_group("Enemy_3D")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	grab_dash_enemy.add_exception($".")
 	ray_cast_attack.add_exception($".")
@@ -215,6 +214,7 @@ func attack_seq():
 	
 	block_successfull_state = false
 	block_parry_state = false
+	block_hold_state = false
 	timer_block_successfull.stop()
 	timer_block_parry.stop()
 	timer_attack.start(0.83)
@@ -230,13 +230,13 @@ func attack_seq():
 
 func attack():
 
-	if (Input.is_action_just_pressed("attack")) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_parriable_state == false): 
+	if (Input.is_action_just_pressed("attack") && Input.is_action_pressed("block") == false) && (block_hold_state == false) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_successfull_state == false) && (block_parry_state == false): 
 		attack_seq() 
 
 
 func attack_buffer():
 	
-	if (Input.is_action_pressed("attack") == false) && (block_state == false) && (block_parry_state == false):
+	if (Input.is_action_pressed("attack") == false) && (block_hold_state == false) && (block_state == false) && (block_parry_state == false) && (block_successfull_state == false):
 		attack_seq()
 	elif (Input.is_action_pressed("attack")) && (block_state == false):
 		right_left_hand = !right_left_hand
@@ -259,7 +259,7 @@ func attack_charge():
 func attack_release():
 	
 	if (Input.is_action_just_released("attack")) && (attack_charge_state == true):
-		#print("Released")
+		print("ATTACK_REleased")
 		attack_charge_state = false
 		animation.stop()
 		
@@ -333,9 +333,8 @@ func block_seq():
 	timer_attack_charge.stop()
 	animation.play("Block", 0.2, 1.3)
 	timer_block.start(0.32)
-	if (DEF == 100):
+	if (DEF >= 100):
 		perfect_block_state = true
-		print("CACA")
 		timer_block_perfect_window.start(0.4)
 
 
@@ -419,7 +418,8 @@ func block_parry_buffer():
 func block_parry_successfull():
 	
 	for enemy in Global_3D.enemy_array:
-		if (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == false):
+		
+		if (block_parry_state == true) && (block_parriable_state == true) && (enemy.attack_hit_blocked_parried == true) && (block_release_state == false) && (perfect_block_state == false): 
 			
 			enemy.attack_hit_blocked_parried = false
 			GainDEF()
@@ -435,13 +435,14 @@ func block_parry_successfull():
 			timer_block_successfull.start(0.3)
 			
 			
-		elif (block_parriable_state == true) && (enemy.attack_hit_perfect_parried == true) && (block_release_state == false) && (perfect_block_state == true): 
+		elif (block_parry_state == true) && (block_parriable_state == true) && (enemy.attack_hit_perfect_parried == true) && (block_release_state == false) && (perfect_block_state == true): 
 			
 			enemy.attack_hit_perfect_parried = false
 			block_parry_state = false
 			block_parriable_state = false
 			block_state = false
 			successfull_parry = false
+			timer_block.stop()
 			timer_block_parry.stop()
 			timer_block_parriable.stop()
 			animation.play_section("Block_Parry", 0.3, 0.6, 1)
@@ -463,6 +464,7 @@ func grab():
 
 
 func grab_buffer():
+	
 	if (block_state == false)&& (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (power_attack_release_state == false):
 		grab_seq()
 
@@ -689,8 +691,10 @@ func comboVariety(action_name):
 
 
 func _on_timer_attack_timeout() -> void:
+	
 	attack_state = false
 	
+	block_hold()
 	choose_action_buffer()
 	attack_charge()
 
