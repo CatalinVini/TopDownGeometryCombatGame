@@ -1,14 +1,15 @@
 extends CharacterBody3D
 
 @export var mouse_sensitivity = 0.002
+@export var sensitivity = 2
+@export var deadzone = 0.1
 @export var SPEED = 90.0
 @export var damage_base = 5
 @export var gravity = 9.8
-@export var sensitivity = 0.01
-@export var deadzone = 0.15
 @export var HP = 100
 @onready var HP_meter = $Camera3D/CanvasLayer/HealthBar
 @export var DEF = 100
+
 @onready var DEF_meter = $Camera3D/CanvasLayer/DefenseBar
 @onready var CameraFPS = $Camera3D
 @onready var Armature = $Armature/Skeleton3D
@@ -43,6 +44,7 @@ extends CharacterBody3D
 
 ##################STATES###########################
 
+var mouse_look_state = false
 var attack_state = false
 var block_state = false
 var block_hold_state = false
@@ -86,7 +88,7 @@ var successfull_parry = false
 var y_rotation = 0.0
 var x_rotation = 0.0
 
-var look_input = Input.get_vector("lookleft", "lookright", "lookup", "lookdown")
+var input_vec = Input.get_vector("lookleft", "lookright", "lookup", "lookdown")
 var enemy
 var vertical_look = 0.0
 var current_look = Vector2.ZERO
@@ -122,13 +124,14 @@ func _physics_process(delta: float) -> void:
 	#letGoOfTheDead()
 	throw()
 	get_hurt()
-	
+	aim(delta)
 	Global_3D.player_position_3D = get_position()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	
-	if event is InputEventMouseMotion:
+	if (event is InputEventMouseMotion):
+		mouse_look_state = true
 		y_rotation -= event.relative.x * mouse_sensitivity
 		x_rotation -= event.relative.y * mouse_sensitivity
 		
@@ -140,34 +143,29 @@ func _unhandled_input(event: InputEvent) -> void:
 		Armature.rotation.x = -x_rotation
 		Armature.rotation.y = y_rotation
 	else:
-		var target_input = Input.get_vector("lookleft", "lookright", "lookup", "lookdown")
+		mouse_look_state = false
 
-	# Smooth input (this is the fix)
-		current_look = current_look.lerp(target_input, 10)
+func aim(delta):
+	
+	if (mouse_look_state == false):
+		# Deadzone handling
+		var x = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)
+		var y = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
+		
+		if abs(x) < deadzone:
+			x = 0
+		if abs(y) < deadzone:
+			y = 0
+		
+		var look_input = Vector2(x, y)
 
-		rotate_y(-current_look.x * sensitivity)
+		rotate_y(-look_input.x * sensitivity * delta)
 
-		vertical_look -= current_look.y * sensitivity
+		vertical_look -= look_input.y * sensitivity * delta
 		vertical_look = clamp(vertical_look, deg_to_rad(-80), deg_to_rad(80))
 
 		CameraFPS.rotation.x = vertical_look
-		
-
-func aim():
-	
-	var target_input = Input.get_vector("lookleft", "lookright", "lookup", "lookdown")
-
-	# Smooth input (this is the fix)
-	current_look = current_look.lerp(target_input, 10)
-
-	rotate_y(-current_look.x * sensitivity)
-
-	vertical_look -= current_look.y * sensitivity
-	vertical_look = clamp(vertical_look, deg_to_rad(-80), deg_to_rad(80))
-
-	CameraFPS.rotation.x = vertical_look
-	
-	
+		Armature.rotation.x = -vertical_look
 
 
 func move():
