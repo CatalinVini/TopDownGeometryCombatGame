@@ -131,7 +131,7 @@ func _physics_process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	
 	if (event is InputEventMouseMotion):
-		mouse_look_state = true
+		
 		y_rotation -= event.relative.x * mouse_sensitivity
 		x_rotation -= event.relative.y * mouse_sensitivity
 		
@@ -142,13 +142,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		CameraFPS.rotation.y = y_rotation
 		Armature.rotation.x = -x_rotation
 		Armature.rotation.y = y_rotation
-	else:
-		mouse_look_state = false
+
 
 func aim(delta):
 	
-	if (mouse_look_state == false):
-		# Deadzone handling
+	if (Input.get_vector("lookleft","lookright","lookup","lookdown")):
+		
 		var x = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)
 		var y = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
 		
@@ -490,6 +489,7 @@ func grab_seq():
 
 
 func grab():
+	
 	if (Input.is_action_just_pressed("grab")) && (block_state == false) && (attack_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (dash_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false):
 		grab_seq()
 
