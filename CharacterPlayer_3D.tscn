@@ -1362,6 +1362,9 @@ progress = 1.4138
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1806462, 0)
 current = true
 
+[node name="MarkerForDirection\'W\'" type="Marker3D" parent="Camera3D" unique_id=617822163]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.2, -2.004918)
+
 [node name="CanvasLayer" type="CanvasLayer" parent="Camera3D" unique_id=115491731]
 follow_viewport_enabled = true
 script = ExtResource("2_f7bb4")

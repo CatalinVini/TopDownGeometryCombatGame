@@ -20,6 +20,7 @@ extends CharacterBody3D
 @onready var dash_path_to_fallow = $DashPath/DashPathFallow
 @onready var grab_dash_enemy = $Camera3D/GrabDashOverEnemy
 @onready var AKBS = $AreaKnockBackStaggered
+@onready var markW = $"Camera3D/MarkerForDirection'W'"
 
 ###################TIMERS############################
 
@@ -64,6 +65,14 @@ var block_parriable_state = false
 var block_successfull_state = false
 var perfect_block_state = false
 
+
+enum State {
+	IDLE,
+	MOVE
+}
+
+var current_state: State = State.MOVE
+
 ##################STATES###########################
 var nr
 
@@ -107,6 +116,14 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	
+	#function_call_old_way(delta) 
+	function_call_NEW_way(delta)
+	
+	Global_3D.player_position_3D = get_position()
+
+
+func function_call_old_way(delta):
+	
 	move()
 	move_and_slide()
 	buffer() #it needs to be called before other actions
@@ -125,7 +142,55 @@ func _physics_process(delta: float) -> void:
 	throw()
 	get_hurt()
 	aim(delta)
-	Global_3D.player_position_3D = get_position()
+
+
+func function_call_NEW_way(delta):
+	
+	move_seq()
+	move_and_slide()
+	aim(delta)
+	handle_state(delta)
+
+
+###############################################
+
+
+func handle_state(delta):
+	
+	match current_state:
+		State.IDLE:
+			_idle_state()
+		State.MOVE:
+			_move_state()
+
+
+func change_state(new_state: State):
+	
+	if current_state == new_state:
+		return
+	
+	exit_state(current_state)
+	current_state = new_state
+	enter_state(new_state)
+
+
+func enter_state(state):
+	
+	match state:
+		State.IDLE:
+			print("Enter Idle")
+		State.MOVE:
+			print("Enter Move")
+
+
+func exit_state(state):
+	
+	match state:
+		State.MOVE:
+			print("Exit Run")
+
+
+###############################
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -135,7 +200,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		y_rotation -= event.relative.x * mouse_sensitivity
 		x_rotation -= event.relative.y * mouse_sensitivity
 		
-		x_rotation = clamp(x_rotation, deg_to_rad(-90), deg_to_rad(90))
+		x_rotation = clamp(x_rotation, deg_to_rad(-80), deg_to_rad(80))
 		
 		rotation.y = y_rotation
 		CameraFPS.rotation.x = x_rotation
@@ -167,11 +232,46 @@ func aim(delta):
 		Armature.rotation.x = -vertical_look
 
 
-func move():
+##################################
+
+
+func _idle_state():
 	
 	var input_dir = Input.get_vector("left", "right", "up", "down")
-	var direction = (CameraFPS.global_transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	#print(CameraFPS.global_rotation)
+	
+	if (input_dir == Vector2.ZERO):
+		block_successfull_state = false
+		animation.play("Idle", 0.2)
+	
+	if (input_dir):
+		change_state(State.MOVE)
+	
+	
+
+func _move_state():
+
+	block_successfull_state = false
+	animation.play("Move", 0.2)
+
+
+func _dash_state():
+	pass
+
+###################################
+
+func move_seq():
+	
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var forward = CameraFPS.global_transform.basis.z
+	var right = CameraFPS.global_transform.basis.x
+	
+	forward.y = 0
+	right.y = 0
+	forward = forward.normalized()
+	right = right.normalized()
+	
+	var direction = (right * input_dir.x + forward * input_dir.y).normalized()
+	
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
@@ -179,6 +279,30 @@ func move():
 		velocity.x = move_toward(velocity.x,0, SPEED)
 		velocity.z = move_toward(velocity.z,0, SPEED)
 
+##################################
+
+
+func move():
+
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var forward = CameraFPS.global_transform.basis.z
+	var right = CameraFPS.global_transform.basis.x
+	
+	forward.y = 0
+	right.y = 0
+	forward = forward.normalized()
+	right = right.normalized()
+	
+	var direction = (right * input_dir.x + forward * input_dir.y).normalized()
+	
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x,0, SPEED)
+		velocity.z = move_toward(velocity.z,0, SPEED)
+		
+		
 	if (input_dir) && (attack_state == false) && (block_state == false) && (grab_state == false) && (pull_state == false) && (clinch_state == false) && (throw_state == false) && (grab_idle_transition_state == false) && (power_attack_release_state == false) && (attack_charge_state == false) && (block_hold_state == false) && (block_release_state == false) && (block_parry_state == false):
 		block_successfull_state = false
 		animation.play("Move", 0.2)
@@ -188,7 +312,6 @@ func move():
 
 
 func dash_seq():
-	
 	
 	if (dash_nr > 0):
 		if (Input.is_action_just_pressed("dash")) && ((grab_dash_enemy.get_collider() != enemy_raycast_collided) || (grab_dash_enemy.is_colliding() == false)) && (dash_state == false) && (block_state == false) && (block_hold_state == false) && (block_release_state == false):
