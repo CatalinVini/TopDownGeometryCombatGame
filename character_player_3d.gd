@@ -43,6 +43,8 @@ extends CharacterBody3D
 @onready var timer_block_successfull = $Timer_block_successfull
 @onready var timer_block_perfect_window = $Timer_block_perfect_window
 
+@onready var timer_general_states = $Timer_general_states
+
 ##################STATES###########################
 
 var mouse_look_state = false
@@ -68,7 +70,9 @@ var perfect_block_state = false
 
 enum State {
 	IDLE,
-	MOVE
+	MOVE,
+	ATTACK,
+	BLOCK,
 }
 
 var current_state: State = State.MOVE
@@ -150,6 +154,7 @@ func function_call_NEW_way(delta):
 	move_and_slide()
 	aim(delta)
 	handle_state(delta)
+	buffer_states()
 
 
 ###############################################
@@ -162,6 +167,10 @@ func handle_state(delta):
 			_idle_state()
 		State.MOVE:
 			_move_state()
+		State.ATTACK:
+			_attack_state()
+		State.BLOCK:
+			_block_state()
 
 
 func change_state(new_state: State):
@@ -181,13 +190,23 @@ func enter_state(state):
 			print("Enter Idle")
 		State.MOVE:
 			print("Enter Move")
+		State.ATTACK:
+			print("Enter Attack")
+		State.BLOCK:
+			print("Enter Block")
 
 
 func exit_state(state):
 	
 	match state:
+		State.IDLE:
+			print("Exit Idle")
 		State.MOVE:
 			print("Exit Run")
+		State.ATTACK:
+			print("Exit Attack")
+		State.BLOCK:
+			print("Exit Block")
 
 
 ###############################
@@ -232,33 +251,6 @@ func aim(delta):
 		Armature.rotation.x = -vertical_look
 
 
-##################################
-
-
-func _idle_state():
-	
-	var input_dir = Input.get_vector("left", "right", "up", "down")
-	
-	if (input_dir == Vector2.ZERO):
-		block_successfull_state = false
-		animation.play("Idle", 0.2)
-	
-	if (input_dir):
-		change_state(State.MOVE)
-	
-	
-
-func _move_state():
-
-	block_successfull_state = false
-	animation.play("Move", 0.2)
-
-
-func _dash_state():
-	pass
-
-###################################
-
 func move_seq():
 	
 	var input_dir = Input.get_vector("left", "right", "up", "down")
@@ -279,7 +271,121 @@ func move_seq():
 		velocity.x = move_toward(velocity.x,0, SPEED)
 		velocity.z = move_toward(velocity.z,0, SPEED)
 
+
+func buffer_states():
+
+	if (timer_general_states.is_stopped() == false):
+		if(Input.is_action_just_pressed("attack")):
+			
+			if (clinch_state == false):
+				last_action = "attack"
+			else:
+				#print("GRAB_PUNCH", nr)
+				last_action = "grab_punch"
+			
+		if (Input.is_action_just_pressed("block")):
+			
+			last_action = "block"
+
+
+func choose_action_buffer_states():
+
+
+	if (last_action == "attack"):
+		change_state(State.ATTACK)
+		last_action_release = "attack"
+	
+	if (last_action == "block"):
+		print("")
+		change_state(State.BLOCK)
+		
+	
+	if (last_action == "grab"):
+		grab_buffer()
+	
+	if (last_action == "grab_punch"):
+		grab_punch_buffer()
+	
+	if (last_action == "throw"):
+		throw_buffer()
+	
+	if (last_action == "dash"):
+		dash_seq()
+	
+	if (last_action == "block_parry"):
+		block_parry_buffer()
+	
+	last_action = "new"
+	nr = 0
+
+
 ##################################
+
+
+func _idle_state():
+	
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	
+	if (input_dir == Vector2.ZERO):
+		block_successfull_state = false
+		animation.play("Idle", 0.2)
+	
+	if (input_dir):
+		change_state(State.MOVE)
+	
+	if (Input.is_action_just_pressed("attack")):
+		change_state(State.ATTACK)
+	
+	if (Input.is_action_just_pressed("block")):
+		change_state(State.BLOCK)
+
+
+func _move_state():
+
+	block_successfull_state = false
+	animation.play("Move", 0.2)
+	
+	if (Input.is_action_just_pressed("attack")):
+		change_state(State.ATTACK)
+	
+	if (Input.is_action_just_pressed("block")):
+		change_state(State.BLOCK)
+
+
+func _dash_state():
+	pass
+
+
+func _attack_state():
+	
+	if (timer_general_states.is_stopped()):
+		if (right_left_hand == true):
+			animation.play("Attack_R")
+			timer_general_states.start(animation.get_current_animation_length())
+			right_left_hand = false
+		else:
+			animation.play("Attack_L")
+			timer_general_states.start(animation.get_current_animation_length())
+			right_left_hand = true
+	
+	if (Input.is_action_just_pressed("block")):
+		change_state(State.BLOCK)
+
+
+func _block_state():
+	
+	if (animation.current_animation != "Block_Hold"):
+		animation.play("Block")
+		timer_general_states.start(animation.get_current_animation_length())
+		
+	if (animation.current_animation == "Block_Hold"):
+		if (!Input.is_action_pressed("block")):
+			if (last_action == "new"):
+				change_state(State.IDLE)
+			else:
+				choose_action_buffer_states()
+
+###################################
 
 
 func move():
@@ -996,3 +1102,24 @@ func _on_timer_dash_reovery_timeout() -> void:
 
 func _on_timer_block_perfect_window_timeout() -> void:
 	perfect_block_state = false
+
+
+func _on_timer_general_states_timeout() -> void:
+	
+	if (last_action == "new"):
+		change_state(State.IDLE)
+	else:
+		choose_action_buffer_states()
+
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	
+	if (last_action == "block"):
+		
+		choose_action_buffer_states()
+	else:
+		
+		if (anim_name == "Block"):
+			timer_general_states.stop()
+			animation.play("Block_Hold")
+		
