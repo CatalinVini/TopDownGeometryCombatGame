@@ -284,9 +284,11 @@ func buffer_states():
 				last_action = "grab_punch"
 			
 		if (Input.is_action_just_pressed("block")):
-			
 			last_action = "block"
-
+	
+	if (animation.current_animation == "Block_Hold_Release"):
+		if (Input.is_action_just_pressed("block")):
+			last_action = "block"
 
 func choose_action_buffer_states():
 
@@ -341,7 +343,9 @@ func _idle_state():
 
 
 func _move_state():
-
+	
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	
 	block_successfull_state = false
 	animation.play("Move", 0.2)
 	
@@ -350,6 +354,9 @@ func _move_state():
 	
 	if (Input.is_action_just_pressed("block")):
 		change_state(State.BLOCK)
+		
+	if (input_dir == Vector2.ZERO):
+		change_state(State.IDLE)
 
 
 func _dash_state():
@@ -374,16 +381,17 @@ func _attack_state():
 
 func _block_state():
 	
-	if (animation.current_animation != "Block_Hold"):
+	if (animation.current_animation != "Block_Hold") && (animation.current_animation != "Block_Hold_Release"):
 		animation.play("Block")
 		timer_general_states.start(animation.get_current_animation_length())
 		
 	if (animation.current_animation == "Block_Hold"):
 		if (!Input.is_action_pressed("block")):
-			if (last_action == "new"):
-				change_state(State.IDLE)
-			else:
-				choose_action_buffer_states()
+			animation.play("Block_Hold_Release",0,2)
+			
+	if (animation.current_animation == "Block_Hold_Release"):
+		if (Input.is_action_just_pressed("attack")):
+			change_state(State.ATTACK)
 
 ###################################
 
@@ -1114,12 +1122,13 @@ func _on_timer_general_states_timeout() -> void:
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	
-	if (last_action == "block"):
+	if (anim_name == "Block"):
+		timer_general_states.stop()
+		animation.play("Block_Hold")
+	
+	if (anim_name == "Block_Hold_Release"):
 		
-		choose_action_buffer_states()
-	else:
-		
-		if (anim_name == "Block"):
-			timer_general_states.stop()
-			animation.play("Block_Hold")
-		
+		if (last_action == "new"):
+			change_state(State.IDLE)
+		else:
+			choose_action_buffer_states()
