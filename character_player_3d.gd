@@ -286,9 +286,10 @@ func buffer_states():
 		if (Input.is_action_just_pressed("block")):
 			last_action = "block"
 	
-	if (animation.current_animation == "Block_Hold_Release"):
-		if (Input.is_action_just_pressed("block")):
-			last_action = "block"
+		if (animation.current_animation == "Block_Hold_Release"):
+			if (Input.is_action_just_pressed("block")):
+				last_action = "block"
+
 
 func choose_action_buffer_states():
 
@@ -298,10 +299,8 @@ func choose_action_buffer_states():
 		last_action_release = "attack"
 	
 	if (last_action == "block"):
-		print("")
 		change_state(State.BLOCK)
 		
-	
 	if (last_action == "grab"):
 		grab_buffer()
 	
@@ -381,19 +380,50 @@ func _attack_state():
 
 func _block_state():
 	
-	if (animation.current_animation != "Block_Hold") && (animation.current_animation != "Block_Hold_Release"):
+	if (timer_general_states.is_stopped() == true) && (animation.current_animation != "Block_Hold") && (animation.current_animation != "Block_Hold_Release") && (animation.current_animation != "Block_Parry"):  
 		animation.play("Block")
 		timer_general_states.start(animation.get_current_animation_length())
 		
 	if (animation.current_animation == "Block_Hold"):
 		if (!Input.is_action_pressed("block")):
-			animation.play("Block_Hold_Release",0,2)
+			animation.play("Block_Hold_Release",0.2,2)
+			timer_general_states.start(animation.get_current_animation_length()/animation.get_playing_speed())
+		if (Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
+			animation.play("Block_Parry")
+			timer_general_states.start(animation.get_current_animation_length())
 			
 	if (animation.current_animation == "Block_Hold_Release"):
 		if (Input.is_action_just_pressed("attack")):
+			timer_general_states.stop()
 			change_state(State.ATTACK)
 
+
 ###################################
+
+func _on_timer_general_states_timeout() -> void:
+	
+	if ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")) && (last_action == "new"):
+		change_state(State.IDLE)
+	else:
+		choose_action_buffer_states()
+	
+	if (animation.current_animation == "Block"):
+		print("Block_HOLD")
+		animation.play("Block_Hold")
+	
+	if (animation.current_animation == "Block_Hold_Release"):
+		
+		if (last_action == "new"):
+			change_state(State.IDLE)
+		else:
+			choose_action_buffer_states()
+	
+	if (animation.current_animation == "Block_Parry"):
+		
+		if(Input.is_action_pressed("block")):
+			animation.play("Block_Hold")
+
+#####################################################################
 
 
 func move():
@@ -1110,25 +1140,3 @@ func _on_timer_dash_reovery_timeout() -> void:
 
 func _on_timer_block_perfect_window_timeout() -> void:
 	perfect_block_state = false
-
-
-func _on_timer_general_states_timeout() -> void:
-	
-	if (last_action == "new"):
-		change_state(State.IDLE)
-	else:
-		choose_action_buffer_states()
-
-
-func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	
-	if (anim_name == "Block"):
-		timer_general_states.stop()
-		animation.play("Block_Hold")
-	
-	if (anim_name == "Block_Hold_Release"):
-		
-		if (last_action == "new"):
-			change_state(State.IDLE)
-		else:
-			choose_action_buffer_states()
