@@ -103,8 +103,8 @@ func parried():
 
 func getHurt():
 	
-	if (player.attack_connection == true) && (self == player.enemy_body_ID) && (parried_state == false):
-		player.attack_connection = false
+	if (player.raycastcolis == true) && (self == player.enemy_body_ID) && (parried_state == false):
+		player.attack_connection = true
 		velocity = Vector3.ZERO
 		hurt_state = true
 		attack_state = false
@@ -114,7 +114,7 @@ func getHurt():
 		animation.play("GettingHurt")
 		
 	elif (player.attack_connection == true) && (self == player.enemy_body_ID) && (parried_state == true):
-		player.attack_connection = false
+		player.attack_connection = true
 		velocity = Vector3.ZERO
 		hurt_state = true
 		attack_state = false

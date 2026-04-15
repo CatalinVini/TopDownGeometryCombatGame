@@ -76,6 +76,7 @@ var last_action = "new"
 var last_action_release = "new"
 var enemy_body_ID
 var attack_connection = false
+var raycastcolis = false
 var power_attack_connection = false
 var dash_nr = 2
 var enemy_raycast_collided = null
@@ -160,7 +161,6 @@ func function_call_NEW_way(delta):
 	aim(delta)
 	handle_state(delta)
 	buffer_states()
-
 
 ###############################################
 
@@ -298,7 +298,7 @@ func move_seq():
 func buffer_states():
 
 	if (timer_general_states.is_stopped() == false):
-		if(Input.is_action_just_pressed("attack")) && (animation.current_animation != "Block") && (animation.current_animation != "Block_Parry"):
+		if(Input.is_action_just_pressed("attack")) && (animation.current_animation != "Block_Hold") && (animation.current_animation != "Block_Parry"):
 			
 			if (clinch_state == false):
 				last_action = "attack"
@@ -307,13 +307,8 @@ func buffer_states():
 			
 		if (Input.is_action_just_pressed("block")):
 			last_action = "block"
-	
-		if (animation.current_animation == "Block_Hold_Release"):
-			if (Input.is_action_just_pressed("block")):
-				print("BLOCK RELLEASED BUFFFER")
-				last_action = "block"
 		
-		if (animation.current_animation == "Block_Parry") && (last_action != "new"):
+		if (animation.current_animation == "Block_Parry"):
 			if (Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
 				last_action = "block_parry"
 
@@ -341,9 +336,8 @@ func choose_action_buffer_states():
 		dash_seq()
 	
 	if (last_action == "block_parry"):
-		animation.play("Block_Parry", 0, 1.5)
-		timer_general_states.start(animation.current_animation_length / 1.5)
-	
+		change_state(State.BLOCK_PARRY)
+		
 	last_action = "new"
 	nr = 0
 
@@ -401,10 +395,22 @@ func _attack_state():
 			animation.play("Attack_L")
 			timer_general_states.start(animation.get_current_animation_length())
 			right_left_hand = true
-	
+		
+	attack_impact()
+		
 	if (Input.is_action_just_pressed("block")):
 		timer_general_states.stop()
 		change_state(State.BLOCK)
+
+
+func attack_impact():
+	
+	if ((animation.current_animation == "Attack_R") || (animation.current_animation == "Attack_L")) && (timer_general_states.get_time_left() < 0.6) && (timer_general_states.get_time_left() > 0.4): 
+		if (ray_cast_attack.is_colliding()) && (attack_connection == false):
+			raycastcolis = true
+			enemy_body_ID = ray_cast_attack.get_collider()
+		else:
+			raycastcolis = false
 
 
 func _block_state():
@@ -441,8 +447,10 @@ func _block_release_state():
 	if (timer_general_states.is_stopped() == true):
 		animation.play("Block_Hold_Release", 0.2, 1.5)
 		timer_general_states.start(animation.current_animation_length / 1.5)
-		if (Input.is_action_just_pressed("attack")):
-			change_state(State.ATTACK)
+		
+	if (Input.is_action_just_pressed("attack")):
+		timer_general_states.stop()
+		change_state(State.ATTACK)
 
 
 ###################################
@@ -450,25 +458,38 @@ func _block_release_state():
 func _on_timer_general_states_timeout() -> void:
 	
 	if ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")) && (last_action == "new"):
+		attack_connection = false
+		raycastcolis = false
 		change_state(State.IDLE)
+		
 	elif (animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R"):
+		attack_connection = false
+		raycastcolis = false
 		choose_action_buffer_states()
-	
+		
+		
 	if (animation.current_animation == "Block"):
 		if (Input.is_action_pressed("block")):
 			change_state(State.BLOCK_HOLD)
 		else:
-			change_state(State.BLOCK_RELEASE)
+			if (last_action == "new") || (last_action == "block"):
+				change_state(State.BLOCK_RELEASE)
+			else:
+				choose_action_buffer_states()
 			
+		
 	if (animation.current_animation == "Block_Hold_Release"):
 		change_state(State.IDLE)
 	
 	if (animation.current_animation == "Block_Parry"):
-		
-		if (Input.is_action_pressed("block")):
-			change_state(State.BLOCK_HOLD)
+		if (last_action == "new"):
+			if (Input.is_action_pressed("block")):
+				change_state(State.BLOCK_HOLD)
+			else:
+				change_state(State.BLOCK_RELEASE)
 		else:
-			change_state(State.BLOCK_RELEASE)
+			animation.stop(true)
+			choose_action_buffer_states()
 
 #####################################################################
 
