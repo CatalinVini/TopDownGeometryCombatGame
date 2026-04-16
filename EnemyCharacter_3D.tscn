@@ -2112,6 +2112,9 @@ collision_mask = 3
 script = ExtResource("1_2b0n5")
 gravity = 5.0
 
+[node name="Timer_general_states" type="Timer" parent="." unique_id=979276938]
+one_shot = true
+
 [node name="Armature" type="Node3D" parent="." unique_id=394285260]
 
 [node name="Skeleton3D" type="Skeleton3D" parent="Armature" unique_id=843682496]
@@ -2162,7 +2165,7 @@ bones/6/parent = 3
 bones/6/rest = Transform3D(-0.88270575, 0.46992636, -1.1324436e-06, -0.42855254, -0.8049884, 0.4102883, 0.1928044, 0.3621643, 0.9119559, 3.6912796, 1.001765, 0.9602514)
 bones/6/enabled = true
 bones/6/position = Vector3(3.6912796, 1.001765, 0.9602514)
-bones/6/rotation = Quaternion(0.044910073, 0.20533015, 0.96231866, -0.17252676)
+bones/6/rotation = Quaternion(0.04491007, 0.20533015, 0.9623186, -0.17252676)
 bones/6/scale = Vector3(1.0000001, 1, 1)
 bones/7/name = "lowerarm.l"
 bones/7/parent = 6
@@ -2312,6 +2315,7 @@ one_shot = true
 [node name="Timer_hurt" type="Timer" parent="." unique_id=1056925978]
 one_shot = true
 
+[connection signal="timeout" from="Timer_general_states" to="." method="_on_timer_general_states_timeout"]
 [connection signal="body_entered" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_entered"]
 [connection signal="body_exited" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_exited"]
 [connection signal="body_entered" from="AreaAttackRange" to="." method="_on_area_attack_range_body_entered"]

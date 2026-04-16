@@ -25,6 +25,19 @@ var attack_hit_perfect_parried = false
 var attack_hit_blocked = false
 var player
 
+@onready var timer_general_states = $Timer_general_states
+
+enum State {
+	IDLE,
+	MOVE,
+	ATTACK,
+	HURT,
+	PARRIED,
+	PERRIED_COUNTERED
+}
+
+var current_state: State = State.IDLE
+
 
 func _ready():
 	
@@ -38,9 +51,123 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-	enemy_behaviour(delta)
-	
+	#enemy_behaviour(delta)
+	enemy_behaviour_NEW(delta)
 	move_and_slide()
+
+
+###########################################################
+
+
+func enemy_behaviour_NEW(delta):
+	
+	handle_state(delta)
+
+
+############################################################
+
+func handle_state(delta):
+	
+	match current_state:
+		State.IDLE:
+			_idle_state()
+		State.MOVE:
+			_move_state()
+		State.ATTACK:
+			_attack_state()
+		State.PARRIED:
+			pass
+
+
+func change_state(new_state: State):
+	
+	if current_state == new_state:
+		return
+	
+	exit_state(current_state)
+	current_state = new_state
+	enter_state(new_state)
+
+
+func enter_state(state):
+	
+	match state:
+		State.IDLE:
+			print("Enter Idle")
+		State.MOVE:
+			print("Enter Move")
+		State.ATTACK:
+			print("Enter Attack")
+		State.PARRIED:
+			pass
+
+
+func exit_state(state):
+	
+	match state:
+		State.IDLE:
+			print("Exit Idle")
+		State.MOVE:
+			print("Exit Move")
+		State.ATTACK:
+			print("Exit Attack")
+		State.PARRIED:
+			pass
+
+
+####################################################
+
+
+func _idle_state():
+	
+	velocity = Vector3.ZERO
+	animation.play("Idle")
+	
+	look_at(player.global_position)
+	
+	if (attack_zone == false):
+		change_state(State.MOVE)
+	
+	if (timer_general_states.is_stopped() == true) && (attack_zone == true):
+		timer_general_states.start(1)
+
+func _move_state():
+	
+	var direction = (player.global_position - global_position).normalized()
+	
+	velocity.x = direction.x * speed
+	velocity.z = direction.z * speed
+	
+	look_at(player.global_position)
+	
+	animation.play("Move")
+	
+	if (attack_zone == true):
+		change_state(State.ATTACK)
+	
+
+func _attack_state():
+	
+	velocity.x = 0
+	velocity.z = 0
+	
+	if (timer_general_states.is_stopped() == true):
+		animation.play("Attack")
+		timer_general_states.start(animation.current_animation_length)
+	
+
+#####################################################
+
+func _on_timer_general_states_timeout() -> void:
+	
+	if (animation.current_animation == "Attack"):
+		change_state(State.IDLE)
+	
+	if (animation.current_animation == "Idle"):
+		change_state(State.ATTACK)
+		print("ATTACL FROM IDLE")
+	
+#######################################################
 
 
 func enemy_behaviour(delta):

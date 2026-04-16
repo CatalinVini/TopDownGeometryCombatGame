@@ -1282,6 +1282,9 @@ gravity = 5.0
 [node name="Timer_general_states" type="Timer" parent="." unique_id=1354440191]
 one_shot = true
 
+[node name="Timer_Perfect_Block_Window" type="Timer" parent="." unique_id=2080292913]
+one_shot = true
+
 [node name="Armature" type="Node3D" parent="." unique_id=116372846]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 3.1, 0)
 
@@ -1464,6 +1467,7 @@ one_shot = true
 one_shot = true
 
 [connection signal="timeout" from="Timer_general_states" to="." method="_on_timer_general_states_timeout"]
+[connection signal="timeout" from="Timer_Perfect_Block_Window" to="." method="_on_timer_perfect_block_window_timeout"]
 [connection signal="timeout" from="Timer_attack_charge" to="." method="_on_timer_attack_charge_timeout"]
 [connection signal="timeout" from="Timer_attack" to="." method="_on_timer_attack_timeout"]
 [connection signal="timeout" from="Timer_attack_impact" to="." method="_on_timer_attack_impact_timeout"]

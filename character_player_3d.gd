@@ -44,6 +44,7 @@ extends CharacterBody3D
 @onready var timer_block_perfect_window = $Timer_block_perfect_window
 
 @onready var timer_general_states = $Timer_general_states
+@onready var timer_perfect_block_window = $Timer_Perfect_Block_Window
 
 ##################STATES###########################
 
@@ -98,7 +99,6 @@ var enemy
 var vertical_look = 0.0
 var current_look = Vector2.ZERO
 const JUMP_VELOCITY = 4.5
-
 
 
 enum State {
@@ -161,6 +161,7 @@ func function_call_NEW_way(delta):
 	aim(delta)
 	handle_state(delta)
 	buffer_states()
+
 
 ###############################################
 
@@ -416,8 +417,10 @@ func attack_impact():
 func _block_state():
 	
 	if (timer_general_states.is_stopped() == true):  
-		animation.play("Block")
+		animation.play("Block", 0.2, 1)
 		timer_general_states.start(animation.current_animation_length)
+		if (DEF == 100):
+			timer_perfect_block_window.start(animation.current_animation_length)
 		
 	if (Input.is_action_pressed("block") && Input.is_action_just_pressed("attack")):
 		timer_general_states.stop()
@@ -426,7 +429,7 @@ func _block_state():
 
 func _block_hold_state():
 	
-	animation.play("Block_Hold")
+	animation.play("Block_Hold", 0.2, 1)
 	
 	if (Input.is_action_just_released("block")):
 		change_state(State.BLOCK_RELEASE)
@@ -437,7 +440,8 @@ func _block_hold_state():
 
 func _block_parry_state():
 	
-	if (timer_general_states.is_stopped() == true):  
+	if (timer_general_states.is_stopped() == true):
+		  
 		animation.play("Block_Parry", 0.1, 1.5)
 		timer_general_states.start(animation.current_animation_length / 1.5)
 
@@ -490,6 +494,11 @@ func _on_timer_general_states_timeout() -> void:
 		else:
 			animation.stop(true)
 			choose_action_buffer_states()
+
+
+func _on_timer_perfect_block_window_timeout() -> void:
+	pass
+
 
 #####################################################################
 
@@ -933,6 +942,7 @@ func get_hurt():
 		if (enemy.attack_hit_blocked == true) && (DEF > 0):
 			enemy.attack_hit_blocked = false
 			TakeDEFDamage(enemy)
+			
 		elif (enemy.attack_hit_blocked == true) && (DEF == 0):
 			enemy.attack_hit_blocked = false
 			TakeHPDamage(enemy)
