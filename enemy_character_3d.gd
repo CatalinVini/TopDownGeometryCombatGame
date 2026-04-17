@@ -37,6 +37,7 @@ enum State {
 }
 
 var current_state: State = State.IDLE
+var already_hit = false
 
 
 func _ready():
@@ -66,6 +67,7 @@ func enemy_behaviour_NEW(delta):
 
 ############################################################
 
+
 func handle_state(delta):
 	
 	match current_state:
@@ -75,6 +77,8 @@ func handle_state(delta):
 			_move_state()
 		State.ATTACK:
 			_attack_state()
+		State.HURT:
+			_hurt_state()
 		State.PARRIED:
 			pass
 
@@ -98,6 +102,8 @@ func enter_state(state):
 			print("Enter Move")
 		State.ATTACK:
 			print("Enter Attack")
+		State.HURT:
+			print("Enter Hurt")
 		State.PARRIED:
 			pass
 
@@ -111,6 +117,8 @@ func exit_state(state):
 			print("Exit Move")
 		State.ATTACK:
 			print("Exit Attack")
+		State.HURT:
+			print("Exit Hurt")
 		State.PARRIED:
 			pass
 
@@ -130,6 +138,10 @@ func _idle_state():
 	
 	if (timer_general_states.is_stopped() == true) && (attack_zone == true):
 		timer_general_states.start(1)
+	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true):
+		change_state(State.HURT)
+
 
 func _move_state():
 	
@@ -143,8 +155,13 @@ func _move_state():
 	animation.play("Move")
 	
 	if (attack_zone == true):
+		animation.stop(true)
+		timer_general_states.stop()
 		change_state(State.ATTACK)
 	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true):
+		change_state(State.HURT)
+
 
 func _attack_state():
 	
@@ -155,7 +172,30 @@ func _attack_state():
 		animation.play("Attack")
 		timer_general_states.start(animation.current_animation_length)
 	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true):
+		timer_general_states.stop()
+		change_state(State.HURT)
 
+
+func _hurt_state():
+	
+	if (timer_general_states.is_stopped()) && (already_hit == false):
+		already_hit = true
+		velocity.x = 0
+		velocity.z = 0
+		animation.stop(true)
+		animation.play("GettingHurt")
+		timer_general_states.start(animation.current_animation_length)
+	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (already_hit == false):
+		already_hit = true
+		velocity.x = 0
+		velocity.z = 0
+		animation.stop(true)
+		animation.play("GettingHurt")
+		timer_general_states.start(animation.current_animation_length)
+		
+		
 #####################################################
 
 func _on_timer_general_states_timeout() -> void:
@@ -165,8 +205,10 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Idle"):
 		change_state(State.ATTACK)
-		print("ATTACL FROM IDLE")
 	
+	if (animation.current_animation == "GettingHurt"):
+		change_state(State.IDLE)
+
 #######################################################
 
 

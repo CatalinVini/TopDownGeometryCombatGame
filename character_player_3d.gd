@@ -76,7 +76,6 @@ var right_left_hand = true
 var last_action = "new"
 var last_action_release = "new"
 var enemy_body_ID
-var attack_connection = false
 var raycastcolis = false
 var power_attack_connection = false
 var dash_nr = 2
@@ -112,6 +111,9 @@ enum State {
 }
 
 var current_state: State = State.MOVE
+var attack_damage_condition = false
+var attack_connection = false
+var attack_one_hit = false
 
 
 func _ready():
@@ -119,6 +121,7 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	grab_dash_enemy.add_exception($".")
 	ray_cast_attack.add_exception($".")
+	enemy = get_tree().get_first_node_in_group("Enemy_3D")
 
 
 func _physics_process(delta: float) -> void:
@@ -159,10 +162,11 @@ func function_call_NEW_way(delta):
 	move_seq()
 	move_and_slide()
 	aim(delta)
+	make_attack_condition_false()
 	handle_state(delta)
 	buffer_states()
-
-
+	
+	
 ###############################################
 
 
@@ -343,6 +347,12 @@ func choose_action_buffer_states():
 	nr = 0
 
 
+func make_attack_condition_false():
+	
+	if current_state != State.ATTACK:
+		attack_damage_condition = false
+
+
 ##################################
 
 
@@ -401,17 +411,20 @@ func _attack_state():
 		
 	if (Input.is_action_just_pressed("block")):
 		timer_general_states.stop()
+		enemy.already_hit = false
 		change_state(State.BLOCK)
 
 
 func attack_impact():
 	
 	if ((animation.current_animation == "Attack_R") || (animation.current_animation == "Attack_L")) && (timer_general_states.get_time_left() < 0.6) && (timer_general_states.get_time_left() > 0.4): 
-		if (ray_cast_attack.is_colliding()) && (attack_connection == false):
-			raycastcolis = true
+		if (ray_cast_attack.is_colliding()):
 			enemy_body_ID = ray_cast_attack.get_collider()
+			attack_damage_condition = true
 		else:
-			raycastcolis = false
+			attack_damage_condition = false
+	else:
+		attack_damage_condition = false
 
 
 func _block_state():
@@ -462,13 +475,10 @@ func _block_release_state():
 func _on_timer_general_states_timeout() -> void:
 	
 	if ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")) && (last_action == "new"):
-		attack_connection = false
-		raycastcolis = false
+		enemy.already_hit = false
 		change_state(State.IDLE)
-		
 	elif (animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R"):
-		attack_connection = false
-		raycastcolis = false
+		enemy.already_hit = false
 		choose_action_buffer_states()
 		
 		
