@@ -38,7 +38,7 @@ enum State {
 
 var current_state: State = State.IDLE
 var already_hit = false
-
+var hit_flag_on_player = false
 
 func _ready():
 	
@@ -172,9 +172,25 @@ func _attack_state():
 		animation.play("Attack")
 		timer_general_states.start(animation.current_animation_length)
 	
+	attack_impact()
+		
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true):
 		timer_general_states.stop()
 		change_state(State.HURT)
+
+
+func attack_impact():
+	
+	if (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2):
+		
+		if (attack_hit_connection == false):
+			attack_hit_connection = true
+			
+		if (attack_hit_connection == true) && (player.current_state == player.State.BLOCK_PARRY):
+			print("PARRIED")##############################
+			
+	else:
+		attack_hit_connection = false
 
 
 func _hurt_state():
@@ -194,21 +210,23 @@ func _hurt_state():
 		animation.stop(true)
 		animation.play("GettingHurt")
 		timer_general_states.start(animation.current_animation_length)
-		
-		
+
+
 #####################################################
 
 func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Attack"):
 		change_state(State.IDLE)
+		hit_flag_on_player = false
 	
 	if (animation.current_animation == "Idle"):
 		change_state(State.ATTACK)
 	
 	if (animation.current_animation == "GettingHurt"):
 		change_state(State.IDLE)
-
+		hit_flag_on_player = false
+		
 #######################################################
 
 

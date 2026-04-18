@@ -107,7 +107,8 @@ enum State {
 	BLOCK,
 	BLOCK_HOLD,
 	BLOCK_RELEASE,
-	BLOCK_PARRY
+	BLOCK_PARRY,
+	BLOCK_PARRY_SUCCESS
 }
 
 var current_state: State = State.MOVE
@@ -187,6 +188,8 @@ func handle_state(delta):
 			_block_release_state()
 		State.BLOCK_PARRY:
 			_block_parry_state()
+		State.BLOCK_PARRY_SUCCESS:
+			_block_parry_success_state()
 
 
 func change_state(new_state: State):
@@ -216,6 +219,8 @@ func enter_state(state):
 			print("Enter Block_Release")
 		State.BLOCK_PARRY:
 			print("Enter Block_Parry")
+		State.BLOCK_PARRY_SUCCESS:
+			print("Enter Block_Parry_Success")
 
 
 func exit_state(state):
@@ -230,11 +235,13 @@ func exit_state(state):
 		State.BLOCK:
 			print("Exit Block")
 		State.BLOCK_HOLD:
-			print("Enter Block_Hold")
+			print("Exit Block_Hold")
 		State.BLOCK_RELEASE:
-			print("Enter Block_Release")
+			print("Exit Block_Release")
 		State.BLOCK_PARRY:
-			print("Enter Block_Parry")
+			print("Exit Block_Parry")
+		State.BLOCK_PARRY_SUCCESS:
+			print("Exit Block_Parry_Success")
 
 
 ###############################
@@ -417,12 +424,9 @@ func _attack_state():
 
 func attack_impact():
 	
-	if ((animation.current_animation == "Attack_R") || (animation.current_animation == "Attack_L")) && (timer_general_states.get_time_left() < 0.6) && (timer_general_states.get_time_left() > 0.4): 
-		if (ray_cast_attack.is_colliding()):
-			enemy_body_ID = ray_cast_attack.get_collider()
-			attack_damage_condition = true
-		else:
-			attack_damage_condition = false
+	if (timer_general_states.get_time_left() < 0.5) && (timer_general_states.get_time_left() > 0.4) && ray_cast_attack.is_colliding(): 
+		enemy_body_ID = ray_cast_attack.get_collider()
+		attack_damage_condition = true
 	else:
 		attack_damage_condition = false
 
@@ -457,6 +461,22 @@ func _block_parry_state():
 		  
 		animation.play("Block_Parry", 0.1, 1.5)
 		timer_general_states.start(animation.current_animation_length / 1.5)
+	
+	if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5):
+		enemy.hit_flag_on_player = true
+		change_state(State.BLOCK_PARRY_SUCCESS)
+
+
+func _block_parry_success_state():
+	
+	if (timer_general_states.is_stopped() == true):
+		animation.play_section("Block_Parry", 0.2, 0.83, 0.3)
+		timer_general_states.start(0.63)
+	
+	if(Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
+		timer_general_states.stop()
+		animation.stop()
+		change_state(State.BLOCK_PARRY)
 
 
 func _block_release_state():
@@ -471,6 +491,7 @@ func _block_release_state():
 
 
 ###################################
+
 
 func _on_timer_general_states_timeout() -> void:
 	
