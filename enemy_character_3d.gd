@@ -40,6 +40,7 @@ var current_state: State = State.IDLE
 var already_hit = false
 var hit_flag_on_player = false
 
+
 func _ready():
 	
 	player = get_tree().get_first_node_in_group("Player_3D")
@@ -80,7 +81,7 @@ func handle_state(delta):
 		State.HURT:
 			_hurt_state()
 		State.PARRIED:
-			pass
+			_parried_state()
 
 
 func change_state(new_state: State):
@@ -88,6 +89,7 @@ func change_state(new_state: State):
 	if current_state == new_state:
 		return
 	
+	hit_flag_on_player = false
 	exit_state(current_state)
 	current_state = new_state
 	enter_state(new_state)
@@ -105,7 +107,7 @@ func enter_state(state):
 		State.HURT:
 			print("Enter Hurt")
 		State.PARRIED:
-			pass
+			print("Enter Parried")
 
 
 func exit_state(state):
@@ -120,7 +122,7 @@ func exit_state(state):
 		State.HURT:
 			print("Exit Hurt")
 		State.PARRIED:
-			pass
+			print("Exit Parried")
 
 
 ####################################################
@@ -186,8 +188,9 @@ func attack_impact():
 		if (attack_hit_connection == false):
 			attack_hit_connection = true
 			
-		if (attack_hit_connection == true) && (player.current_state == player.State.BLOCK_PARRY):
-			print("PARRIED")##############################
+		if (attack_hit_connection == true) && (!player.timer_perfect_block_window.is_stopped()) && (player.current_state == player.State.BLOCK_PARRY):
+			timer_general_states.stop()
+			change_state(State.PARRIED)
 			
 	else:
 		attack_hit_connection = false
@@ -212,21 +215,34 @@ func _hurt_state():
 		timer_general_states.start(animation.current_animation_length)
 
 
+func _parried_state():
+	
+	var direction = (global_position - player.global_position).normalized()
+	velocity.x = direction.x * speed/3  
+	velocity.z = direction.z * speed/3
+	
+	
+	if (timer_general_states.is_stopped() == true):
+		animation.play("Parried", 0.2)
+		timer_general_states.start(animation.current_animation_length)
+
+
 #####################################################
 
 func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Attack"):
 		change_state(State.IDLE)
-		hit_flag_on_player = false
-	
+		
 	if (animation.current_animation == "Idle"):
 		change_state(State.ATTACK)
 	
 	if (animation.current_animation == "GettingHurt"):
 		change_state(State.IDLE)
-		hit_flag_on_player = false
 		
+	if (animation.current_animation == "Parried"):
+		change_state(State.IDLE)
+
 #######################################################
 
 

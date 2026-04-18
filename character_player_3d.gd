@@ -434,10 +434,10 @@ func attack_impact():
 func _block_state():
 	
 	if (timer_general_states.is_stopped() == true):  
-		animation.play("Block", 0.2, 1)
-		timer_general_states.start(animation.current_animation_length)
+		animation.play("Block", 0.2, 1.5)
+		timer_general_states.start(animation.current_animation_length/1.5)
 		if (DEF == 100):
-			timer_perfect_block_window.start(animation.current_animation_length)
+			timer_perfect_block_window.start(animation.current_animation_length/1.5)
 		
 	if (Input.is_action_pressed("block") && Input.is_action_just_pressed("attack")):
 		timer_general_states.stop()
@@ -477,6 +477,10 @@ func _block_parry_success_state():
 		timer_general_states.stop()
 		animation.stop()
 		change_state(State.BLOCK_PARRY)
+	
+	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
+		timer_general_states.stop()
+		change_state(State.ATTACK)
 
 
 func _block_release_state():
