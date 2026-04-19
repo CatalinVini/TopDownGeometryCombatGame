@@ -115,7 +115,7 @@ var current_state: State = State.MOVE
 var attack_damage_condition = false
 var attack_connection = false
 var attack_one_hit = false
-
+var from_BPS = false
 
 func _ready():
 	
@@ -458,7 +458,6 @@ func _block_hold_state():
 func _block_parry_state():
 	
 	if (timer_general_states.is_stopped() == true):
-		  
 		animation.play("Block_Parry", 0.1, 1.5)
 		timer_general_states.start(animation.current_animation_length / 1.5)
 	
