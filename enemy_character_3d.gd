@@ -89,7 +89,6 @@ func change_state(new_state: State):
 	if current_state == new_state:
 		return
 	
-	hit_flag_on_player = false
 	exit_state(current_state)
 	current_state = new_state
 	enter_state(new_state)
@@ -99,31 +98,31 @@ func enter_state(state):
 	
 	match state:
 		State.IDLE:
-			print("Enter Idle")
+			print("ENEMY: Enter Idle")
 		State.MOVE:
-			print("Enter Move")
+			print("ENEMY: Enter Move")
 		State.ATTACK:
-			print("Enter Attack")
+			print("ENEMY: Enter Attack")
 		State.HURT:
-			print("Enter Hurt")
+			print("ENEMY: Enter Hurt")
 		State.PARRIED:
-			print("Enter Parried")
+			print("ENEMY: Enter Parried")
 
 
 func exit_state(state):
 	
 	match state:
 		State.IDLE:
-			print("Exit Idle")
+			print("ENEMY: Exit Idle")
 		State.MOVE:
-			print("Exit Move")
+			print("ENEMY: Exit Move")
 		State.ATTACK:
-			print("Exit Attack")
+			print("ENEMY: Exit Attack")
 		State.HURT:
-			print("Exit Hurt")
+			print("ENEMY: Exit Hurt")
 		State.PARRIED:
-			print("Exit Parried")
-
+			print("ENEMY: Exit Parried")
+			hit_flag_on_player = false
 
 ####################################################
 
@@ -188,7 +187,7 @@ func attack_impact():
 		if (attack_hit_connection == false):
 			attack_hit_connection = true
 			
-		if (attack_hit_connection == true) && (!player.timer_perfect_block_window.is_stopped()) && (player.current_state == player.State.BLOCK_PARRY):
+		if (attack_hit_connection == true) && (!player.timer_perfect_block_window.is_stopped()) && (player.current_state == player.State.BLOCK_PARRY_SUCCESS):
 			timer_general_states.stop()
 			change_state(State.PARRIED)
 			
@@ -232,6 +231,7 @@ func _parried_state():
 func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Attack"):
+		hit_flag_on_player = false
 		change_state(State.IDLE)
 		
 	if (animation.current_animation == "Idle"):

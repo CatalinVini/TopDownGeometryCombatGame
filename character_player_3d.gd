@@ -206,42 +206,42 @@ func enter_state(state):
 	
 	match state:
 		State.IDLE:
-			print("Enter Idle")
+			print("PLAYER: Enter Idle")
 		State.MOVE:
-			print("Enter Move")
+			print("PLAYER: Enter Move")
 		State.ATTACK:
-			print("Enter Attack")
+			print("PLAYER: Enter Attack")
 		State.BLOCK:
-			print("Enter Block")
+			print("PLAYER: Enter Block")
 		State.BLOCK_HOLD:
-			print("Enter Block_Hold")
+			print("PLAYER: Enter Block_Hold")
 		State.BLOCK_RELEASE:
-			print("Enter Block_Release")
+			print("PLAYER: Enter Block_Release")
 		State.BLOCK_PARRY:
-			print("Enter Block_Parry")
+			print("PLAYER: Enter Block_Parry")
 		State.BLOCK_PARRY_SUCCESS:
-			print("Enter Block_Parry_Success")
+			print("PLAYER: Enter Block_Parry_Success")
 
 
 func exit_state(state):
 	
 	match state:
 		State.IDLE:
-			print("Exit Idle")
+			print("PLAYER: Exit Idle")
 		State.MOVE:
-			print("Exit Run")
+			print("PLAYER: Exit Run")
 		State.ATTACK:
-			print("Exit Attack")
+			print("PLAYER: Exit Attack")
 		State.BLOCK:
-			print("Exit Block")
+			print("PLAYER: Exit Block")
 		State.BLOCK_HOLD:
-			print("Exit Block_Hold")
+			print("PLAYER: Exit Block_Hold")
 		State.BLOCK_RELEASE:
-			print("Exit Block_Release")
+			print("PLAYER: Exit Block_Release")
 		State.BLOCK_PARRY:
-			print("Exit Block_Parry")
+			print("PLAYER: Exit Block_Parry")
 		State.BLOCK_PARRY_SUCCESS:
-			print("Exit Block_Parry_Success")
+			print("PLAYER:Exit Block_Parry_Success")
 
 
 ###############################
@@ -473,9 +473,9 @@ func _block_parry_success_state():
 		animation.play_section("Block_Parry", 0.2, 0.83, 0.3)
 		timer_general_states.start(0.63)
 	
-	if(Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
+	if (Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
 		timer_general_states.stop()
-		animation.stop()
+		animation.stop(true)
 		change_state(State.BLOCK_PARRY)
 	
 	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
@@ -506,7 +506,6 @@ func _on_timer_general_states_timeout() -> void:
 		enemy.already_hit = false
 		choose_action_buffer_states()
 		
-		
 	if (animation.current_animation == "Block"):
 		if (Input.is_action_pressed("block")):
 			change_state(State.BLOCK_HOLD)
@@ -516,11 +515,10 @@ func _on_timer_general_states_timeout() -> void:
 			else:
 				choose_action_buffer_states()
 			
-		
 	if (animation.current_animation == "Block_Hold_Release"):
 		change_state(State.IDLE)
 	
-	if (animation.current_animation == "Block_Parry"):
+	if (animation.current_animation == "Block_Parry") && (current_state == State.BLOCK_PARRY):
 		if (last_action == "new"):
 			if (Input.is_action_pressed("block")):
 				change_state(State.BLOCK_HOLD)
@@ -529,6 +527,12 @@ func _on_timer_general_states_timeout() -> void:
 		else:
 			animation.stop(true)
 			choose_action_buffer_states()
+	
+	if (animation.current_animation == "Block_Parry") && (current_state == State.BLOCK_PARRY_SUCCESS):
+		if (Input.is_action_pressed("block")):
+			change_state(State.BLOCK_HOLD)
+		else:
+			change_state(State.BLOCK_RELEASE)
 
 
 func _on_timer_perfect_block_window_timeout() -> void:
