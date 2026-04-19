@@ -188,7 +188,8 @@ func attack_impact():
 		if (attack_hit_connection == false):
 			attack_hit_connection = true
 			
-		if (attack_hit_connection == true) && (!player.timer_perfect_block_window.is_stopped()) && (player.current_state == player.State.BLOCK_PARRY_SUCCESS):
+		if (attack_hit_connection == true) && (player.BPS == true):
+			player.BPS = false
 			timer_general_states.stop()
 			change_state(State.PARRIED)
 			

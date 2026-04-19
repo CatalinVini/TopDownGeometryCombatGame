@@ -115,7 +115,8 @@ var current_state: State = State.MOVE
 var attack_damage_condition = false
 var attack_connection = false
 var attack_one_hit = false
-var from_BPS = false
+var counter_ready = false
+var BPS = false
 
 func _ready():
 	
@@ -241,7 +242,7 @@ func exit_state(state):
 		State.BLOCK_PARRY:
 			print("PLAYER: Exit Block_Parry")
 		State.BLOCK_PARRY_SUCCESS:
-			print("PLAYER:Exit Block_Parry_Success")
+			print("PLAYER: Exit Block_Parry_Success")
 
 
 ###############################
@@ -437,7 +438,7 @@ func _block_state():
 		animation.play("Block", 0.2, 1.5)
 		timer_general_states.start(animation.current_animation_length/1.5)
 		if (DEF == 100):
-			timer_perfect_block_window.start(animation.current_animation_length/1.5)
+			timer_perfect_block_window.start(0.3)
 		
 	if (Input.is_action_pressed("block") && Input.is_action_just_pressed("attack")):
 		timer_general_states.stop()
@@ -461,9 +462,20 @@ func _block_parry_state():
 		animation.play("Block_Parry", 0.1, 1.5)
 		timer_general_states.start(animation.current_animation_length / 1.5)
 	
-	if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5):
+	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
+		counter_ready = true
+	
+	if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
+		
 		enemy.hit_flag_on_player = true
-		change_state(State.BLOCK_PARRY_SUCCESS)
+		BPS = true
+		if (counter_ready == false):
+			timer_general_states.stop()
+			change_state(State.BLOCK_PARRY_SUCCESS)
+		else:
+			counter_ready = false
+			timer_general_states.stop()
+			change_state(State.ATTACK)
 
 
 func _block_parry_success_state():
