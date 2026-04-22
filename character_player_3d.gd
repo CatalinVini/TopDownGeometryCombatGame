@@ -167,8 +167,8 @@ func function_call_NEW_way(delta):
 	make_attack_condition_false()
 	handle_state(delta)
 	buffer_states()
-	
-	
+
+
 ###############################################
 
 
@@ -471,6 +471,7 @@ func _block_parry_state():
 		BPS = true
 		if (counter_ready == false):
 			timer_general_states.stop()
+			timer_perfect_block_window.stop()
 			change_state(State.BLOCK_PARRY_SUCCESS)
 		else:
 			counter_ready = false
@@ -481,8 +482,8 @@ func _block_parry_state():
 func _block_parry_success_state():
 	
 	if (timer_general_states.is_stopped() == true):
-		animation.play_section("Block_Parry", 0.2, 0.83, 0.3)
-		timer_general_states.start(0.63)
+		animation.play_section("Block_Parry", 0.2, 0.83, 0.3, 1.5)
+		timer_general_states.start(0.63 / 1.5)
 	
 	if (Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
 		timer_general_states.stop()
