@@ -436,7 +436,7 @@ func _block_state():
 	
 	if (timer_general_states.is_stopped() == true):  
 		animation.play("Block", 0.2, 1.5)
-		timer_general_states.start(animation.current_animation_length/1.5)
+		timer_general_states.start(animation.current_animation_length / 1.5)
 		if (DEF == 100):
 			timer_perfect_block_window.start(0.3)
 		
@@ -461,7 +461,7 @@ func _block_parry_state():
 	if (timer_general_states.is_stopped() == true):
 		animation.play("Block_Parry", 0.1, 1.5)
 		timer_general_states.start(animation.current_animation_length / 1.5)
-	
+		
 	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
 		counter_ready = true
 	
@@ -471,19 +471,21 @@ func _block_parry_state():
 		BPS = true
 		if (counter_ready == false):
 			timer_general_states.stop()
-			timer_perfect_block_window.stop()
+			timer_perfect_block_window.start(0.3)
 			change_state(State.BLOCK_PARRY_SUCCESS)
 		else:
 			counter_ready = false
 			timer_general_states.stop()
+			timer_perfect_block_window.stop()
 			change_state(State.ATTACK)
 
 
 func _block_parry_success_state():
 	
+	print(timer_general_states.time_left)
 	if (timer_general_states.is_stopped() == true):
-		animation.play_section("Block_Parry", 0.2, 0.83, 0.3, 1.5)
-		timer_general_states.start(0.63 / 1.5)
+		animation.play_section("Block_Parry", 0.2, 0.83, -1, 1.5)
+		timer_general_states.start((animation.current_animation_length - 0.4)/1.5)
 	
 	if (Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
 		timer_general_states.stop()
@@ -493,7 +495,7 @@ func _block_parry_success_state():
 	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
 		timer_general_states.stop()
 		change_state(State.ATTACK)
-
+		
 
 func _block_release_state():
 	
@@ -539,8 +541,10 @@ func _on_timer_general_states_timeout() -> void:
 		else:
 			animation.stop(true)
 			choose_action_buffer_states()
+			
 	
 	if (animation.current_animation == "Block_Parry") && (current_state == State.BLOCK_PARRY_SUCCESS):
+		animation.stop(true)
 		if (Input.is_action_pressed("block")):
 			change_state(State.BLOCK_HOLD)
 		else:
