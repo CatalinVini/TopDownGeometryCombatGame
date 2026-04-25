@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://8bdmdx14xe4r"
-path="res://.godot/imported/TopDownGameARMS_MODEL_finished._updated2.glb-fbb85578b9538e12f2f3280f76fe3c4f.scn"
+uid="uid://qql2byu2768s"
+path="res://.godot/imported/TopDownGameARMS_MODEL_finished._updated3.glb-ecb813f326b52fc6b26403dbcc84cc21.scn"
 
 [deps]
 
-source_file="res://TopDownGameARMS_MODEL_finished._updated2.glb"
-dest_files=["res://.godot/imported/TopDownGameARMS_MODEL_finished._updated2.glb-fbb85578b9538e12f2f3280f76fe3c4f.scn"]
+source_file="res://TopDownGameARMS_MODEL_finished._updated3.glb"
+dest_files=["res://.godot/imported/TopDownGameARMS_MODEL_finished._updated3.glb-ecb813f326b52fc6b26403dbcc84cc21.scn"]
 
 [params]
 

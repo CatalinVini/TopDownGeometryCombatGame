@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dpnsba3gii5t4"]
 
 [ext_resource type="Script" uid="uid://rclgvskwqwpe" path="res://world_3d.gd" id="1_df4i4"]
-[ext_resource type="PackedScene" uid="uid://bh22gop501wom" path="res://CharacterPlayer_3D.tscn" id="1_n2rlg"]
 [ext_resource type="PackedScene" uid="uid://cc4517y273la8" path="res://EnemyCharacter_3D.tscn" id="2_26jq8"]
+[ext_resource type="PackedScene" uid="uid://bh22gop501wom" path="res://CharacterPlayer_3D.tscn" id="2_df4i4"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_gc53e"]
 
@@ -16,8 +16,7 @@ script = ExtResource("1_df4i4")
 transform = Transform3D(0.87206936, 0.48714906, 0.046701193, -2.9802322e-08, -0.095428765, 0.9954363, 0.48938242, -0.86808944, -0.08322054, -27.389063, 65.29733, 48.806744)
 directional_shadow_max_distance = 1.0
 
-[node name="CharacterPlayer3D" parent="." unique_id=240290894 groups=["Player_3D"] instance=ExtResource("1_n2rlg")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 3.5695496, 0)
+[node name="CharacterPlayer3D" parent="." unique_id=240290894 groups=["Player_3D"] instance=ExtResource("2_df4i4")]
 
 [node name="EnemyCharacter" parent="." unique_id=1466998257 instance=ExtResource("2_26jq8")]
 transform = Transform3D(-0.9999994, 0, 0.001064688, 0, 1, 0, -0.001064688, 0, -0.9999994, 0.44835138, 0, -55.002)

@@ -495,7 +495,7 @@ func _block_parry_success_state():
 	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
 		timer_general_states.stop()
 		change_state(State.ATTACK)
-		
+
 
 func _block_release_state():
 	
