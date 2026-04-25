@@ -484,8 +484,8 @@ func _block_parry_success_state():
 	
 	print(timer_general_states.time_left)
 	if (timer_general_states.is_stopped() == true):
-		animation.play_section("Block_Parry", 0.2, 0.83, -1, 1.5)
-		timer_general_states.start((animation.current_animation_length - 0.4)/1.5)
+		animation.play("Block_Parry_Successful", 0.1)
+		timer_general_states.start((animation.current_animation_length))
 	
 	if (Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
 		timer_general_states.stop()
@@ -543,7 +543,7 @@ func _on_timer_general_states_timeout() -> void:
 			choose_action_buffer_states()
 			
 	
-	if (animation.current_animation == "Block_Parry") && (current_state == State.BLOCK_PARRY_SUCCESS):
+	if (animation.current_animation == "Block_Parry_Successful"):
 		animation.stop(true)
 		if (Input.is_action_pressed("block")):
 			change_state(State.BLOCK_HOLD)
