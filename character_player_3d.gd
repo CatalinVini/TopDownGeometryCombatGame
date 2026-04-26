@@ -96,6 +96,7 @@ var input_vec = Input.get_vector("lookleft", "lookright", "lookup", "lookdown")
 var enemy
 var vertical_look = 0.0
 var current_look = Vector2.ZERO
+var direction
 const JUMP_VELOCITY = 4.5
 
 
@@ -306,14 +307,18 @@ func move_seq():
 	forward = forward.normalized()
 	right = right.normalized()
 	
-	var direction = (right * input_dir.x + forward * input_dir.y).normalized()
 	
-	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-	else:
-		velocity.x = move_toward(velocity.x,0, SPEED)
-		velocity.z = move_toward(velocity.z,0, SPEED)
+	
+	if (current_state != State.DASH):
+		
+		direction = (right * input_dir.x + forward * input_dir.y).normalized()
+		
+		if direction:
+			velocity.x = direction.x * SPEED
+			velocity.z = direction.z * SPEED
+		else:
+			velocity.x = move_toward(velocity.x,0, SPEED)
+			velocity.z = move_toward(velocity.z,0, SPEED)
 
 
 func buffer_states():
@@ -416,6 +421,13 @@ func _dash_state():
 		timer_general_states.start(0.2)
 		SPEED = SPEED * 5
 		
+		if direction:
+			velocity.x = direction.x * SPEED
+			velocity.z = direction.z * SPEED
+		else:
+			velocity.x = move_toward(velocity.x,0, SPEED)
+			velocity.z = move_toward(velocity.z,0, SPEED)
+
 
 func _attack_state():
 	
