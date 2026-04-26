@@ -102,6 +102,7 @@ const JUMP_VELOCITY = 4.5
 enum State {
 	IDLE,
 	MOVE,
+	DASH,
 	ATTACK,
 	BLOCK,
 	BLOCK_HOLD,
@@ -135,6 +136,8 @@ func _physics_process(delta: float) -> void:
 	
 	Global_3D.player_position_3D = get_position()
 
+
+###############################################
 
 func function_call_old_way(delta):
 	
@@ -178,6 +181,8 @@ func handle_state(delta):
 			_idle_state()
 		State.MOVE:
 			_move_state()
+		State.DASH:
+			_dash_state()
 		State.ATTACK:
 			_attack_state()
 		State.BLOCK:
@@ -209,6 +214,8 @@ func enter_state(state):
 			print("PLAYER: Enter Idle")
 		State.MOVE:
 			print("PLAYER: Enter Move")
+		State.DASH:
+			print("PLAYER: Enter Dash")
 		State.ATTACK:
 			print("PLAYER: Enter Attack")
 		State.BLOCK:
@@ -230,6 +237,8 @@ func exit_state(state):
 			print("PLAYER: Exit Idle")
 		State.MOVE:
 			print("PLAYER: Exit Run")
+		State.DASH:
+			print("PLAYER: Exit Dash")	
 		State.ATTACK:
 			print("PLAYER: Exit Attack")
 		State.BLOCK:
@@ -397,10 +406,16 @@ func _move_state():
 	if (input_dir == Vector2.ZERO):
 		change_state(State.IDLE)
 
+	if (Input.is_action_just_pressed("dash")):
+		change_state(State.DASH)
+
 
 func _dash_state():
-	pass
-
+	
+	if (timer_general_states.is_stopped()):
+		timer_general_states.start(0.2)
+		SPEED = SPEED * 5
+		
 
 func _attack_state():
 	
@@ -526,6 +541,11 @@ func _on_timer_general_states_timeout() -> void:
 			
 	if (animation.current_animation == "Block_Hold_Release"):
 		change_state(State.IDLE)
+	
+	if (current_state == State.DASH):
+		SPEED = SPEED / 5 
+		change_state(State.IDLE)
+		
 	
 	if (animation.current_animation == "Block_Parry") && (current_state == State.BLOCK_PARRY):
 		if (last_action == "new"):
