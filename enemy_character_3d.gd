@@ -240,8 +240,10 @@ func _parried_countered_state():
 		velocity.z = 0
 		animation.play("GettingCountered")
 		timer_general_states.start(animation.current_animation_length)
-
-
+	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (already_hit == false): 
+		change_state(State.HURT)
+		
 #####################################################
 
 func _on_timer_general_states_timeout() -> void:
@@ -258,7 +260,10 @@ func _on_timer_general_states_timeout() -> void:
 		
 	if (animation.current_animation == "Parried"):
 		change_state(State.IDLE)
-
+	
+	if (animation.current_animation == "GettingCountered"):
+		change_state(State.IDLE)
+	
 #######################################################
 
 

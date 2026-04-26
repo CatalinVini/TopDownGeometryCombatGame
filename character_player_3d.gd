@@ -20,7 +20,6 @@ extends CharacterBody3D
 @onready var dash_path_to_fallow = $DashPath/DashPathFallow
 @onready var grab_dash_enemy = $Camera3D/GrabDashOverEnemy
 @onready var AKBS = $AreaKnockBackStaggered
-@onready var markW = $"Camera3D/MarkerForDirection'W'"
 
 ###################TIMERS############################
 
@@ -491,10 +490,6 @@ func _block_parry_success_state():
 		timer_general_states.stop()
 		animation.stop(true)
 		change_state(State.BLOCK_PARRY)
-	
-	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
-		timer_general_states.stop()
-		change_state(State.ATTACK)
 
 
 func _block_release_state():
@@ -545,10 +540,14 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Block_Parry_Successful"):
 		animation.stop(true)
-		if (Input.is_action_pressed("block")):
-			change_state(State.BLOCK_HOLD)
+		
+		if (last_action == "new"):
+			if (Input.is_action_pressed("block")):
+				change_state(State.BLOCK_HOLD)
+			else:
+				change_state(State.BLOCK_RELEASE)
 		else:
-			change_state(State.BLOCK_RELEASE)
+			choose_action_buffer_states()
 
 
 func _on_timer_perfect_block_window_timeout() -> void:
