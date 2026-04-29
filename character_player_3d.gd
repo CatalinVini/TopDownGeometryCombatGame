@@ -35,7 +35,6 @@ extends CharacterBody3D
 @onready var timer_grab_connected = $Timer_grab_connected
 @onready var timer_throw = $Timer_throw
 @onready var timer_dash = $Timer_dash
-@onready var timer_dash_recovery = $Timer_dash_reovery
 @onready var timer_block_release = $Timer_block_release
 @onready var timer_block_parry = $Timer_block_parry
 @onready var timer_block_parriable = $Timer_block_parriable
@@ -44,6 +43,7 @@ extends CharacterBody3D
 
 @onready var timer_general_states = $Timer_general_states
 @onready var timer_perfect_block_window = $Timer_Perfect_Block_Window
+@onready var timer_dash_recovery = $Timer_Dash_Recovery
 
 ##################STATES###########################
 
@@ -77,7 +77,6 @@ var last_action_release = "new"
 var enemy_body_ID
 var raycastcolis = false
 var power_attack_connection = false
-var dash_nr = 2
 var enemy_raycast_collided = null
 
 var fr = ["attackL", "attackR", "PowerAttack", "throw", "grab", "grab_punch"]
@@ -105,6 +104,8 @@ enum State {
 	MOVE,
 	DASH,
 	ATTACK,
+	ATTACK_CHARGE,
+	ATTACK_RELEASE,
 	BLOCK,
 	BLOCK_HOLD,
 	BLOCK_RELEASE,
@@ -118,6 +119,8 @@ var attack_connection = false
 var attack_one_hit = false
 var counter_ready = false
 var BPS = false
+var dash_nr = 1
+
 
 func _ready():
 	
@@ -186,6 +189,10 @@ func handle_state(delta):
 			_dash_state()
 		State.ATTACK:
 			_attack_state()
+		State.ATTACK_CHARGE:
+			_attack_charge_state()
+		State.ATTACK_RELEASE:
+			_attack_release_state()
 		State.BLOCK:
 			_block_state()
 		State.BLOCK_HOLD:
@@ -219,6 +226,8 @@ func enter_state(state):
 			print("PLAYER: Enter Dash")
 		State.ATTACK:
 			print("PLAYER: Enter Attack")
+		State.ATTACK_CHARGE:
+			print("PLAYER: Enter Attack Charge")
 		State.BLOCK:
 			print("PLAYER: Enter Block")
 		State.BLOCK_HOLD:
@@ -242,6 +251,8 @@ func exit_state(state):
 			print("PLAYER: Exit Dash")	
 		State.ATTACK:
 			print("PLAYER: Exit Attack")
+		State.ATTACK_CHARGE:
+			print("PLAYER: Exit Attack Charge")
 		State.BLOCK:
 			print("PLAYER: Exit Block")
 		State.BLOCK_HOLD:
@@ -411,7 +422,7 @@ func _move_state():
 	if (input_dir == Vector2.ZERO):
 		change_state(State.IDLE)
 
-	if (Input.is_action_just_pressed("dash")):
+	if (Input.is_action_just_pressed("dash")) && (dash_nr >= 1):
 		change_state(State.DASH)
 
 
@@ -419,6 +430,8 @@ func _dash_state():
 	
 	if (timer_general_states.is_stopped()):
 		timer_general_states.start(0.2)
+		timer_dash_recovery.start(2)
+		dash_nr -= 1
 		SPEED = SPEED * 5
 		
 		if direction:
@@ -447,6 +460,38 @@ func _attack_state():
 		timer_general_states.stop()
 		enemy.already_hit = false
 		change_state(State.BLOCK)
+
+
+func _attack_charge_state():
+	
+	if (timer_general_states.is_stopped()):
+		
+		if (right_left_hand == true):
+			animation.play("Power_attack_charge_R")
+			timer_general_states.start(animation.get_current_animation_length())
+		else:
+			animation.play("Power_attack_charge_L")
+			timer_general_states.start(animation.get_current_animation_length())
+		
+	if (Input.is_action_just_released("attack")) && (timer_general_states.time_left < 0.7):
+		timer_general_states.stop()
+		change_state(State.ATTACK_RELEASE)
+	elif (Input.is_action_just_released("attack")) && (timer_general_states.time_left >= 0.7):
+		timer_general_states.stop()
+		change_state(State.ATTACK)
+
+
+func _attack_release_state():
+	
+	if (timer_general_states.is_stopped()):
+		if (right_left_hand == true):
+			animation.play("Power_attack_release_R")
+			timer_general_states.start(animation.get_current_animation_length())
+			right_left_hand = false
+		else:
+			animation.play("Power_attack_release_L")
+			timer_general_states.start(animation.get_current_animation_length())
+			right_left_hand = true
 
 
 func attack_impact():
@@ -535,13 +580,22 @@ func _block_release_state():
 
 func _on_timer_general_states_timeout() -> void:
 	
-	if ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")) && (last_action == "new"):
+	if (!Input.is_action_pressed("attack")) && ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")) && (last_action == "new"):
 		enemy.already_hit = false
 		change_state(State.IDLE)
-	elif (animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R"):
+	elif (Input.is_action_pressed("attack")) && ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")):
+		enemy.already_hit = false
+		change_state(State.ATTACK_CHARGE)
+	elif (!Input.is_action_pressed("attack")) && ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")):
 		enemy.already_hit = false
 		choose_action_buffer_states()
-		
+	
+	if (animation.current_animation == "Power_attack_charge_R") || (animation.current_animation == "Power_attack_charge_L"): 
+		change_state(State.ATTACK_RELEASE)
+	
+	if (animation.current_animation == "Power_attack_release_R") || (animation.current_animation == "Power_attack_release_L"):
+		change_state(State.IDLE)
+	
 	if (animation.current_animation == "Block"):
 		if (Input.is_action_pressed("block")):
 			change_state(State.BLOCK_HOLD)
@@ -584,6 +638,12 @@ func _on_timer_general_states_timeout() -> void:
 
 func _on_timer_perfect_block_window_timeout() -> void:
 	pass
+
+
+func _on_timer_dash_recovery_timeout() -> void:
+	
+	if (dash_nr < 1):
+		dash_nr += 1
 
 
 #####################################################################
