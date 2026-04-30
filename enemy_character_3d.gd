@@ -130,6 +130,7 @@ func exit_state(state):
 		State.PARRIED_COUNTERED:
 			print("ENEMY: Parried Countered")
 
+
 ####################################################
 
 
@@ -222,7 +223,6 @@ func _parried_state():
 	var direction = (global_position - player.global_position).normalized()
 	velocity.x = direction.x * speed/3  
 	velocity.z = direction.z * speed/3
-	
 	
 	if (timer_general_states.is_stopped() == true):
 		animation.play("Parried", 0.2)

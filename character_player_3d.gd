@@ -529,35 +529,36 @@ func _block_hold_state():
 
 func _block_parry_state():
 	
-	if (timer_general_states.is_stopped() == true):
-		animation.play("Block_Parry", 0.1, 1.5)
-		timer_general_states.start(animation.current_animation_length / 1.5)
+	for enemy in Global_3D.enemy_array:
+		if (timer_general_states.is_stopped() == true):
+			animation.play("Block_Parry", 0.1, 1.5)
+			timer_general_states.start(animation.current_animation_length / 1.5)
+			
+		if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
+			counter_ready = true
 		
-	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
-		counter_ready = true
-	
-	if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
-		
-		enemy.hit_flag_on_player = true
-		BPS = true
-		if (counter_ready == false):
-			timer_general_states.stop()
-			timer_perfect_block_window.start(0.3)
-			change_state(State.BLOCK_PARRY_SUCCESS)
-		else:
-			counter_ready = false
-			timer_general_states.stop()
-			timer_perfect_block_window.stop()
-			change_state(State.ATTACK)
+		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
+			
+			enemy.hit_flag_on_player = true
+			BPS = true
+			if (counter_ready == false):
+				timer_general_states.stop()
+				timer_perfect_block_window.start(0.3)
+				change_state(State.BLOCK_PARRY_SUCCESS)
+			else:
+				counter_ready = false
+				timer_general_states.stop()
+				timer_perfect_block_window.stop()
+				change_state(State.ATTACK)
 
 
 func _block_parry_success_state():
 	
-	print(timer_general_states.time_left)
 	if (timer_general_states.is_stopped() == true):
 		animation.play("Block_Parry_Successful", 0.1)
 		timer_general_states.start((animation.current_animation_length))
-	
+		timer_perfect_block_window.start(0.3)
+		
 	if (Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
 		timer_general_states.stop()
 		animation.stop(true)
