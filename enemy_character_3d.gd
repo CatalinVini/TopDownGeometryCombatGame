@@ -122,11 +122,12 @@ func exit_state(state):
 			print("ENEMY: Exit Move")
 		State.ATTACK:
 			print("ENEMY: Exit Attack")
+			attack_hit_connection = false
+			hit_flag_on_player = false
 		State.HURT:
 			print("ENEMY: Exit Hurt")
 		State.PARRIED:
 			print("ENEMY: Exit Parried")
-			hit_flag_on_player = false
 		State.PARRIED_COUNTERED:
 			print("ENEMY: Parried Countered")
 
@@ -189,16 +190,13 @@ func _attack_state():
 
 func attack_impact():
 	
-	if (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2):
+	if (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2) && (attack_zone == true): 
+		attack_hit_connection = true
 		
-		if (attack_hit_connection == false):
-			attack_hit_connection = true
-			
-		if (attack_hit_connection == true) && (player.BPS == true):
+		if  (player.BPS == true):
 			player.BPS = false
 			timer_general_states.stop()
 			change_state(State.PARRIED)
-			
 	else:
 		attack_hit_connection = false
 
@@ -248,10 +246,10 @@ func _parried_countered_state():
 
 #####################################################
 
+
 func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Attack"):
-		hit_flag_on_player = false
 		change_state(State.IDLE)
 		
 	if (animation.current_animation == "Idle"):
@@ -264,7 +262,8 @@ func _on_timer_general_states_timeout() -> void:
 		change_state(State.IDLE)
 	
 	if (animation.current_animation == "GettingCountered"):
-		change_state(State.IDLE)	
+		change_state(State.IDLE)
+
 
 #######################################################
 

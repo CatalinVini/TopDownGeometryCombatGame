@@ -172,6 +172,7 @@ func function_call_NEW_way(delta):
 	aim(delta)
 	make_attack_condition_false()
 	handle_state(delta)
+	get_hurt()
 	buffer_states()
 
 
@@ -385,6 +386,60 @@ func make_attack_condition_false():
 		attack_damage_condition = false
 
 
+func TakeHPDamage(enemy):
+	
+	if (HP - enemy.damage > 0):
+		HP = HP - enemy.damage
+		HP_meter.value = HP
+	elif (HP - enemy.damage <= 0):
+		HP = 0
+		HP_meter.value = HP
+
+
+func TakeDEFDamage(enemy):
+	
+	if (DEF - enemy.damage > 0):
+		DEF = DEF - enemy.damage
+		DEF_meter.value = DEF
+	elif (DEF - enemy.damage <= 0):
+		DEF = 0
+		DEF_meter.value = DEF
+
+
+func get_hurt():
+	
+	for enemy in Global_3D.enemy_array:
+		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && (current_state != State.BLOCK) && (current_state != State.BLOCK_HOLD) && (current_state != State.BLOCK_PARRY) && (current_state != State.BLOCK_PARRY_SUCCESS):
+			enemy.attack_hit_connection = false
+			enemy.hit_flag_on_player = true
+			TakeHPDamage(enemy)
+		
+		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state == State.BLOCK) || (current_state == State.BLOCK_HOLD)) && (current_state != State.BLOCK_PARRY_SUCCESS) && (DEF > 0):
+			enemy.attack_hit_connection = false
+			enemy.hit_flag_on_player = true
+			TakeDEFDamage(enemy)
+			
+		elif (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state == State.BLOCK) || (current_state == State.BLOCK_HOLD)) && (current_state != State.BLOCK_PARRY_SUCCESS) && (DEF == 0):
+			enemy.attack_hit_connection = false
+			enemy.hit_flag_on_player = true
+			TakeHPDamage(enemy)
+		
+		elif (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && (current_state == State.BLOCK_PARRY) && (current_state != State.BLOCK_PARRY_SUCCESS):
+			enemy.attack_hit_connection = false
+			enemy.hit_flag_on_player = true
+			GainDEF()
+
+
+func GainDEF():
+	
+	if (DEF + 25 < 100):
+		DEF = DEF + 25
+		DEF_meter.value = DEF
+	elif (DEF + 25 >= 100):
+		DEF = 100
+		DEF_meter.value = DEF
+
+
 ##################################
 
 
@@ -493,6 +548,8 @@ func _attack_release_state():
 			timer_general_states.start(animation.get_current_animation_length())
 			right_left_hand = true
 
+	attack_impact()
+
 
 func attack_impact():
 	
@@ -530,6 +587,7 @@ func _block_hold_state():
 func _block_parry_state():
 	
 	for enemy in Global_3D.enemy_array:
+		
 		if (timer_general_states.is_stopped() == true):
 			animation.play("Block_Parry", 0.1, 1.5)
 			timer_general_states.start(animation.current_animation_length / 1.5)
@@ -539,7 +597,6 @@ func _block_parry_state():
 		
 		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
 			
-			enemy.hit_flag_on_player = true
 			BPS = true
 			if (counter_ready == false):
 				timer_general_states.stop()
@@ -557,7 +614,7 @@ func _block_parry_success_state():
 	if (timer_general_states.is_stopped() == true):
 		animation.play("Block_Parry_Successful", 0.1)
 		timer_general_states.start((animation.current_animation_length))
-		timer_perfect_block_window.start(0.3)
+		timer_perfect_block_window.start(0.9)
 		
 	if (Input.is_action_pressed("block") && (Input.is_action_just_pressed("attack"))):
 		timer_general_states.stop()
@@ -574,6 +631,11 @@ func _block_release_state():
 	if (Input.is_action_just_pressed("attack")):
 		timer_general_states.stop()
 		change_state(State.ATTACK)
+	
+	if (Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
+		change_state(State.BLOCK_PARRY)
+		if (DEF == 100):
+			timer_perfect_block_window.start(0.3)
 
 
 ###################################
@@ -608,7 +670,7 @@ func _on_timer_general_states_timeout() -> void:
 			
 	if (animation.current_animation == "Block_Hold_Release"):
 		change_state(State.IDLE)
-	
+		
 	if (current_state == State.DASH):
 		SPEED = SPEED / 5 
 		change_state(State.IDLE)
@@ -1057,52 +1119,6 @@ func throw_buffer():
 
 func grab_punch_idle_transition():
 	grab_idle_transition_state = false
-
-
-func TakeHPDamage(enemy):
-	
-	if (HP - enemy.damage > 0):
-		HP = HP - enemy.damage
-		HP_meter.value = HP
-	elif (HP - enemy.damage <= 0):
-		HP = 0
-		HP_meter.value = HP
-
-
-func TakeDEFDamage(enemy):
-	
-	if (DEF - enemy.damage > 0):
-		DEF = DEF - enemy.damage
-		DEF_meter.value = DEF
-	elif (DEF - enemy.damage <= 0):
-		DEF = 0
-		DEF_meter.value = DEF
-
-
-func get_hurt():
-	
-	for enemy in Global_3D.enemy_array:
-		if (enemy.attack_hit_connection == true):
-			enemy.attack_hit_connection = false
-			TakeHPDamage(enemy)
-		
-		if (enemy.attack_hit_blocked == true) && (DEF > 0):
-			enemy.attack_hit_blocked = false
-			TakeDEFDamage(enemy)
-			
-		elif (enemy.attack_hit_blocked == true) && (DEF == 0):
-			enemy.attack_hit_blocked = false
-			TakeHPDamage(enemy)
-
-
-func GainDEF():
-	
-	if (DEF + 25 < 100):
-		DEF = DEF + 25
-		DEF_meter.value = DEF
-	elif (DEF + 25 >= 100):
-		DEF = 100
-		DEF_meter.value = DEF
 
 
 func buffer():
