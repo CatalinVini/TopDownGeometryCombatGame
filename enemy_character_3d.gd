@@ -148,7 +148,7 @@ func _idle_state():
 	if (timer_general_states.is_stopped() == true) && (attack_zone == true):
 		timer_general_states.start(1)
 	
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (already_hit == false):
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false):
 		change_state(State.HURT)
 
 
@@ -168,7 +168,7 @@ func _move_state():
 		timer_general_states.stop()
 		change_state(State.ATTACK)
 	
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (already_hit == false):
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false):
 		change_state(State.HURT)
 
 
@@ -183,7 +183,7 @@ func _attack_state():
 	
 	attack_impact()
 		
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (already_hit == false): 
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		timer_general_states.stop()
 		change_state(State.HURT)
 
@@ -204,14 +204,14 @@ func attack_impact():
 func _hurt_state():
 	
 	if (timer_general_states.is_stopped()):
-		already_hit = true
+		self.already_hit = true
 		velocity.x = 0
 		velocity.z = 0
 		animation.stop(true)
 		animation.play("GettingHurt")
 		timer_general_states.start(animation.current_animation_length)
 		
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (already_hit == false): 
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		timer_general_states.stop()
 		change_state(State.HURT)
 
@@ -240,7 +240,7 @@ func _parried_countered_state():
 		animation.play("GettingCountered")
 		timer_general_states.start(animation.current_animation_length)
 	
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (already_hit == false): 
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		change_state(State.HURT)
 
 
@@ -329,7 +329,6 @@ func parried():
 func getHurt():
 	
 	if (player.raycastcolis == true) && (self == player.enemy_body_ID) && (parried_state == false):
-		player.attack_connection = true
 		velocity = Vector3.ZERO
 		hurt_state = true
 		attack_state = false
@@ -338,8 +337,7 @@ func getHurt():
 		animation.stop(true)
 		animation.play("GettingHurt")
 		
-	elif (player.attack_connection == true) && (self == player.enemy_body_ID) && (parried_state == true):
-		player.attack_connection = true
+	elif (player.raycastcolis == true) && (self == player.enemy_body_ID) && (parried_state == true): 
 		velocity = Vector3.ZERO
 		hurt_state = true
 		attack_state = false

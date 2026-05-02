@@ -252,6 +252,8 @@ func exit_state(state):
 			print("PLAYER: Exit Dash")	
 		State.ATTACK:
 			print("PLAYER: Exit Attack")
+			for enemy in Global_3D.enemy_array:
+				enemy.already_hit = false
 		State.ATTACK_CHARGE:
 			print("PLAYER: Exit Attack Charge")
 		State.BLOCK:
@@ -355,6 +357,8 @@ func choose_action_buffer_states():
 
 
 	if (last_action == "attack"):
+		for enemy in Global_3D.enemy_array:
+			enemy.already_hit = false
 		change_state(State.ATTACK)
 		last_action_release = "attack"
 	
@@ -513,7 +517,6 @@ func _attack_state():
 		
 	if (Input.is_action_just_pressed("block")):
 		timer_general_states.stop()
-		enemy.already_hit = false
 		change_state(State.BLOCK)
 
 
@@ -592,21 +595,11 @@ func _block_parry_state():
 			animation.play("Block_Parry", 0.1, 1.5)
 			timer_general_states.start(animation.current_animation_length / 1.5)
 			
-		if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
-			counter_ready = true
-		
 		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
-			
 			BPS = true
-			if (counter_ready == false):
-				timer_general_states.stop()
-				timer_perfect_block_window.start(0.3)
-				change_state(State.BLOCK_PARRY_SUCCESS)
-			else:
-				counter_ready = false
-				timer_general_states.stop()
-				timer_perfect_block_window.stop()
-				change_state(State.ATTACK)
+			timer_general_states.stop()
+			timer_perfect_block_window.start(0.3)
+			change_state(State.BLOCK_PARRY_SUCCESS)
 
 
 func _block_parry_success_state():
@@ -620,7 +613,11 @@ func _block_parry_success_state():
 		timer_general_states.stop()
 		animation.stop(true)
 		change_state(State.BLOCK_PARRY)
-
+	
+	if (!Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
+		timer_general_states.stop()
+		timer_perfect_block_window.stop()
+		change_state(State.ATTACK)
 
 func _block_release_state():
 	
@@ -644,13 +641,10 @@ func _block_release_state():
 func _on_timer_general_states_timeout() -> void:
 	
 	if (!Input.is_action_pressed("attack")) && ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")) && (last_action == "new"):
-		enemy.already_hit = false
 		change_state(State.IDLE)
 	elif (Input.is_action_pressed("attack")) && ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")):
-		enemy.already_hit = false
 		change_state(State.ATTACK_CHARGE)
 	elif (!Input.is_action_pressed("attack")) && ((animation.current_animation == "Attack_L") || (animation.current_animation == "Attack_R")):
-		enemy.already_hit = false
 		choose_action_buffer_states()
 	
 	if (animation.current_animation == "Power_attack_charge_R") || (animation.current_animation == "Power_attack_charge_L"): 
