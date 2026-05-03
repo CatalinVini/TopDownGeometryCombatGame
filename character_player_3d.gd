@@ -17,6 +17,7 @@ extends CharacterBody3D
 @onready var ray_cast_attack = $Camera3D/RayCastAttack3D
 @onready var areaparry = $Camera3D/AreaParry
 @onready var AKBS = $AreaKnockBackStaggered
+@onready var GrabMarker = $Camera3D/Marker3D
 
 ###################TIMERS############################
 
@@ -48,7 +49,6 @@ var y_rotation = 0.0
 var x_rotation = 0.0
 
 var input_vec = Input.get_vector("lookleft", "lookright", "lookup", "lookdown")
-var enemy
 var vertical_look = 0.0
 var current_look = Vector2.ZERO
 var direction
@@ -82,7 +82,6 @@ func _ready():
 	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	ray_cast_attack.add_exception($".")
-	enemy = get_tree().get_first_node_in_group("Enemy_3D")
 
 
 func _physics_process(delta: float) -> void:
@@ -90,7 +89,6 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	
-	#function_call_old_way(delta) 
 	function_call_NEW_way(delta)
 	
 	Global_3D.player_position_3D = get_position()
@@ -108,6 +106,8 @@ func function_call_NEW_way(delta):
 	handle_state(delta)
 	get_hurt()
 	buffer_states()
+	GrabMarker.global_position.y = 27
+	print(GrabMarker.global_position)
 
 
 ###############################################
@@ -272,7 +272,7 @@ func move_seq():
 
 func buffer_states():
 
-	if (timer_general_states.is_stopped() == false):
+	if (timer_general_states.is_stopped() == false) && (timer_general_states.time_left < 0.3):
 		
 		if(Input.is_action_just_pressed("attack")) && (animation.current_animation != "Block_Hold") && (animation.current_animation != "Block_Parry"):
 			last_action = "attack"

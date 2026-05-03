@@ -1333,22 +1333,22 @@ bones/0/name = "body"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03186014, -3.047197, -0.15193193)
 bones/0/enabled = true
-bones/0/position = Vector3(-0.03186014, -4.1126747, -0.15193193)
+bones/0/position = Vector3(-0.027591541, -3.047197, -0.15193193)
 bones/0/rotation = Quaternion(0, 0, 0, 1)
 bones/0/scale = Vector3(1, 1, 1)
 bones/1/name = "upperarm.l"
 bones/1/parent = 0
 bones/1/rest = Transform3D(-0.9326512, -0.35987893, -0.025447974, 0.36077726, -0.9303625, -0.065306894, -0.00017326685, -0.07008965, 0.99754065, -4.159723, 1.0616113, 2.4735928e-06)
 bones/1/enabled = true
-bones/1/position = Vector3(-4.1157193, 1.0551798, 0.09537396)
-bones/1/rotation = Quaternion(-0.30234876, 0.5546732, 0.7095038, -0.3122934)
+bones/1/position = Vector3(-4.159723, 1.0616115, 2.5986703e-06)
+bones/1/rotation = Quaternion(-0.103354625, 0.5217206, 0.83484185, 0.14200194)
 bones/1/scale = Vector3(0.9999993, 0.9999999, 0.99999994)
 bones/2/name = "lowerarn.l"
 bones/2/parent = 1
 bones/2/rest = Transform3D(0.99953794, 0.030341461, -0.0018223994, -0.030320503, 0.99103, -0.13015492, -0.0021430384, 0.13015004, 0.991492, -2.859815e-07, 6.080368, -1.0430813e-07)
 bones/2/enabled = true
 bones/2/position = Vector3(-2.859815e-07, 6.080368, -1.0430813e-07)
-bones/2/rotation = Quaternion(-0.04141999, -0.20028761, 0.7753742, 0.59746486)
+bones/2/rotation = Quaternion(0.20087163, 0.19024791, 0.7193486, 0.6371764)
 bones/2/scale = Vector3(1, 1, 0.99999994)
 bones/3/name = "hand.l"
 bones/3/parent = 2
@@ -1361,15 +1361,15 @@ bones/4/name = "upperarm.r"
 bones/4/parent = 0
 bones/4/rest = Transform3D(-0.9326513, 0.35987893, 0.025446419, -0.36077714, -0.9303626, -0.0653075, 0.00017160446, -0.070089646, 0.9975407, 4.234506, 1.0616113, 2.4735928e-06)
 bones/4/enabled = true
-bones/4/position = Vector3(4.110108, 1.0358852, 0.09114569)
-bones/4/rotation = Quaternion(0.45248783, 0.5309088, 0.61492264, 0.36777815)
+bones/4/position = Vector3(4.234506, 1.0616113, 2.5745194e-06)
+bones/4/rotation = Quaternion(0.38247505, 0.5714986, 0.7226999, -0.06933355)
 bones/4/scale = Vector3(0.9999993, 0.99999994, 1)
 bones/5/name = "lowerarn.r"
 bones/5/parent = 4
 bones/5/rest = Transform3D(0.99953794, -0.030341737, 0.0018224342, 0.030320775, 0.9910301, -0.13015492, 0.002143038, 0.13015004, 0.99149215, -1.861772e-07, 6.080368, -8.940697e-08)
 bones/5/enabled = true
 bones/5/position = Vector3(-1.861772e-07, 6.080368, -8.940697e-08)
-bones/5/rotation = Quaternion(-0.12231398, 0.39688745, -0.67478144, 0.6100735)
+bones/5/rotation = Quaternion(0.040084448, 0.0038323621, -0.78720224, 0.61537886)
 bones/5/scale = Vector3(1, 1.0000001, 1.0000001)
 bones/6/name = "hand.r"
 bones/6/parent = 5
@@ -1404,6 +1404,9 @@ transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 30, 0)
 current = true
 fov = 69.21637
 
+[node name="Marker3D" type="Marker3D" parent="Camera3D" unique_id=1110596899]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, -10)
+
 [node name="CanvasLayer" type="CanvasLayer" parent="Camera3D" unique_id=115491731]
 follow_viewport_enabled = true
 script = ExtResource("2_f7bb4")
@@ -1428,16 +1431,10 @@ value = 100.0
 
 [node name="RayCastAttack3D" type="RayCast3D" parent="Camera3D" unique_id=1746698236]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016, -0.24500012, 0.016)
-target_position = Vector3(0, 0, -30)
+target_position = Vector3(0, 0, -20)
 collision_mask = 2
 hit_from_inside = true
 debug_shape_custom_color = Color(0.87177813, 2.2140146e-06, 2.8878452e-07, 1)
-
-[node name="GrabDashOverEnemy" type="RayCast3D" parent="Camera3D" unique_id=366047710]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2750001, 0)
-target_position = Vector3(0, 0, -1.7)
-hit_from_inside = true
-debug_shape_custom_color = Color(0.8414504, 0.7053853, 0, 1)
 
 [node name="AreaParry" type="Area3D" parent="Camera3D" unique_id=855794147]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
