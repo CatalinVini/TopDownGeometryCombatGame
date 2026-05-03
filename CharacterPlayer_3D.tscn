@@ -1320,13 +1320,6 @@ size = Vector3(1.9932976, 1, 1)
 height = 4.1314087
 radius = 1.0019531
 
-[sub_resource type="Curve3D" id="Curve3D_1loh5"]
-_data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, -3, -2),
-"tilts": PackedFloat32Array(0, 0)
-}
-point_count = 2
-
 [node name="CharacterPlayer3D" type="CharacterBody3D" unique_id=240290894]
 collision_mask = 3
 script = ExtResource("1_1loh5")
@@ -1460,86 +1453,6 @@ transform = Transform3D(9, 0, 0, 0, 9, 0, 0, 0, 9, 0, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.050887, 0)
 shape = SubResource("CylinderShape3D_1loh5")
 
-[node name="DashPath" type="Path3D" parent="." unique_id=1990649287]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2416584, 0)
-curve = SubResource("Curve3D_1loh5")
-
-[node name="DashPathFallow" type="PathFollow3D" parent="DashPath" unique_id=847459883]
-transform = Transform3D(0.9999961, 0, 0, 0, 0.9999988, 0, 0, 0, 0.99999475, 0, -3, -1.415132)
-progress = 1.4138
-
-[node name="Timer_attack_charge" type="Timer" parent="." unique_id=702903589]
-one_shot = true
-
-[node name="Timer_attack" type="Timer" parent="." unique_id=71016877]
-one_shot = true
-
-[node name="Timer_attack_impact" type="Timer" parent="." unique_id=805248726]
-one_shot = true
-
-[node name="Timer_attack_release" type="Timer" parent="." unique_id=896087230]
-one_shot = true
-
-[node name="Timer_attack_release_impact" type="Timer" parent="." unique_id=486350554]
-one_shot = true
-
-[node name="Timer_dash" type="Timer" parent="." unique_id=153362126]
-one_shot = true
-
-[node name="Timer_dash_reovery" type="Timer" parent="." unique_id=1985316995]
-one_shot = true
-
-[node name="Timer_pull" type="Timer" parent="." unique_id=1755867607]
-one_shot = true
-
-[node name="Timer_grab" type="Timer" parent="." unique_id=2003738901]
-one_shot = true
-
-[node name="Timer_grab_connected" type="Timer" parent="." unique_id=1383748003]
-one_shot = true
-
-[node name="Timer_grab_punch" type="Timer" parent="." unique_id=975217901]
-one_shot = true
-
-[node name="Timer_block" type="Timer" parent="." unique_id=773551109]
-one_shot = true
-
-[node name="Timer_block_release" type="Timer" parent="." unique_id=433302038]
-one_shot = true
-
-[node name="Timer_throw" type="Timer" parent="." unique_id=1978382330]
-one_shot = true
-
-[node name="Timer_block_parry" type="Timer" parent="." unique_id=795301644]
-one_shot = true
-
-[node name="Timer_block_parriable" type="Timer" parent="." unique_id=623027511]
-one_shot = true
-
-[node name="Timer_block_successfull" type="Timer" parent="." unique_id=1069526233]
-one_shot = true
-
-[node name="Timer_block_perfect_window" type="Timer" parent="." unique_id=371748646]
-one_shot = true
-
 [connection signal="timeout" from="Timer_general_states" to="." method="_on_timer_general_states_timeout"]
 [connection signal="timeout" from="Timer_Perfect_Block_Window" to="." method="_on_timer_perfect_block_window_timeout"]
 [connection signal="timeout" from="Timer_Dash_Recovery" to="." method="_on_timer_dash_recovery_timeout"]
-[connection signal="timeout" from="Timer_attack_charge" to="." method="_on_timer_attack_charge_timeout"]
-[connection signal="timeout" from="Timer_attack" to="." method="_on_timer_attack_timeout"]
-[connection signal="timeout" from="Timer_attack_impact" to="." method="_on_timer_attack_impact_timeout"]
-[connection signal="timeout" from="Timer_attack_release" to="." method="_on_timer_attack_release_timeout"]
-[connection signal="timeout" from="Timer_attack_release_impact" to="." method="_on_timer_attack_release_impact_timeout"]
-[connection signal="timeout" from="Timer_dash" to="." method="_on_timer_dash_timeout"]
-[connection signal="timeout" from="Timer_dash_reovery" to="." method="_on_timer_dash_reovery_timeout"]
-[connection signal="timeout" from="Timer_pull" to="." method="_on_timer_pull_timeout"]
-[connection signal="timeout" from="Timer_grab" to="." method="_on_timer_grab_timeout"]
-[connection signal="timeout" from="Timer_grab_connected" to="." method="_on_timer_grab_connected_timeout"]
-[connection signal="timeout" from="Timer_grab_punch" to="." method="_on_timer_grab_punch_timeout"]
-[connection signal="timeout" from="Timer_block" to="." method="_on_timer_block_timeout"]
-[connection signal="timeout" from="Timer_block_release" to="." method="_on_timer_block_release_timeout"]
-[connection signal="timeout" from="Timer_throw" to="." method="_on_timer_throw_timeout"]
-[connection signal="timeout" from="Timer_block_parry" to="." method="_on_timer_block_parry_timeout"]
-[connection signal="timeout" from="Timer_block_parriable" to="." method="_on_timer_block_parriable_timeout"]
-[connection signal="timeout" from="Timer_block_successfull" to="." method="_on_timer_block_successfull_timeout"]
-[connection signal="timeout" from="Timer_block_perfect_window" to="." method="_on_timer_block_perfect_window_timeout"]
