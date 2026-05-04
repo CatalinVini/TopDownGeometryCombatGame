@@ -17,7 +17,7 @@ extends CharacterBody3D
 @onready var ray_cast_attack = $Camera3D/RayCastAttack3D
 @onready var areaparry = $Camera3D/AreaParry
 @onready var AKBS = $AreaKnockBackStaggered
-@onready var GrabMarker = $Camera3D/Marker3D
+@onready var GrabMarker = $Marker3D
 
 ###################TIMERS############################
 
@@ -66,13 +66,16 @@ enum State {
 	BLOCK_HOLD,
 	BLOCK_RELEASE,
 	BLOCK_PARRY,
-	BLOCK_PARRY_SUCCESS
+	BLOCK_PARRY_SUCCESS,
+	GRAB,
+	GRAB_CLINCH
 }
 
 var current_state: State = State.MOVE
 var attack_damage_condition = false
 var attack_connection = false
 var attack_one_hit = false
+var grab_condition = false
 var counter_ready = false
 var BPS = false
 var dash_nr = 1
@@ -106,10 +109,9 @@ func function_call_NEW_way(delta):
 	handle_state(delta)
 	get_hurt()
 	buffer_states()
-	GrabMarker.global_position.y = 27
-	print(GrabMarker.global_position)
-
-
+	
+	
+	
 ###############################################
 
 
@@ -138,6 +140,10 @@ func handle_state(delta):
 			_block_parry_state()
 		State.BLOCK_PARRY_SUCCESS:
 			_block_parry_success_state()
+		State.GRAB:
+			_grab_state()
+		State.GRAB_CLINCH:
+			_grab_clinch_state()
 
 
 func change_state(new_state: State):
@@ -173,6 +179,10 @@ func enter_state(state):
 			print("PLAYER: Enter Block_Parry")
 		State.BLOCK_PARRY_SUCCESS:
 			print("PLAYER: Enter Block_Parry_Success")
+		State.GRAB:
+			print("PLAYER: Enter Grab")
+		State.GRAB_CLINCH:
+			print("PLAYER: Enter Grab_Clinch")
 
 
 func exit_state(state):
@@ -201,6 +211,10 @@ func exit_state(state):
 			print("PLAYER: Exit Block_Parry")
 		State.BLOCK_PARRY_SUCCESS:
 			print("PLAYER: Exit Block_Parry_Success")
+		State.GRAB:
+			print("PLAYER: Exit Grab")
+		State.GRAB_CLINCH:
+			print("PLAYER: Exit Grab_Clinch")
 
 
 ###############################
@@ -218,7 +232,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotation.y = y_rotation
 		CameraFPS.rotation.x = x_rotation
 		CameraFPS.rotation.y = y_rotation
-		Armature.rotation.x = -x_rotation
+		
+		if (current_state != State.GRAB_CLINCH):
+			Armature.rotation.x = -x_rotation
+		else:
+			Armature.rotation.x = 0
+		
 		Armature.rotation.y = y_rotation
 
 
@@ -394,6 +413,9 @@ func _idle_state():
 	
 	if (Input.is_action_just_pressed("block")):
 		change_state(State.BLOCK)
+	
+	if (Input.is_action_just_pressed("grab")):
+		change_state(State.GRAB)
 
 
 func _move_state():
@@ -410,9 +432,12 @@ func _move_state():
 		
 	if (input_dir == Vector2.ZERO):
 		change_state(State.IDLE)
-
+		
 	if (Input.is_action_just_pressed("dash")) && (dash_nr >= 1):
 		change_state(State.DASH)
+		
+	if (Input.is_action_just_pressed("grab")):
+		change_state(State.GRAB)
 
 
 func _dash_state():
@@ -591,6 +616,32 @@ func _block_release_state():
 		change_state(State.DASH)
 
 
+func _grab_state():
+	
+	if (timer_general_states.is_stopped() == true):
+		animation.play("Grab")
+		timer_general_states.start(animation.current_animation_length)
+	
+	grab_impact()
+
+
+func grab_impact():
+	
+	if (timer_general_states.time_left < 0.4) && (timer_general_states.time_left > 0.3) && ray_cast_attack.is_colliding():
+		enemy_body_ID = ray_cast_attack.get_collider()
+		grab_condition = true
+		print("GRAB IMPACT")
+		change_state(State.GRAB_CLINCH)
+	else:
+		grab_condition = false
+
+
+func _grab_clinch_state():
+	
+	animation.play("Clinch", 0.2)
+
+	GrabMarker.position = Vector3(0.0, 0.0, -15)
+
 ###################################
 
 
@@ -624,7 +675,6 @@ func _on_timer_general_states_timeout() -> void:
 	if (current_state == State.DASH):
 		change_state(State.IDLE)
 		
-	
 	if (animation.current_animation == "Block_Parry") && (current_state == State.BLOCK_PARRY):
 		if (last_action == "new"):
 			if (Input.is_action_pressed("block")):
@@ -635,7 +685,6 @@ func _on_timer_general_states_timeout() -> void:
 			animation.stop(true)
 			choose_action_buffer_states()
 			
-	
 	if (animation.current_animation == "Block_Parry_Successful"):
 		animation.stop(true)
 		
@@ -646,6 +695,9 @@ func _on_timer_general_states_timeout() -> void:
 				change_state(State.BLOCK_RELEASE)
 		else:
 			choose_action_buffer_states()
+	
+	if (animation.current_animation == "Grab"):
+		change_state(State.IDLE)
 
 
 func _on_timer_perfect_block_window_timeout() -> void:

@@ -5,6 +5,7 @@ extends CharacterBody3D
 @export var damage = 20
 
 @onready var animation = $AnimationPlayer
+@onready var collision_shape = $CollisionShape3D
 
 ###############################################################
 
@@ -18,7 +19,8 @@ enum State {
 	ATTACK,
 	HURT,
 	PARRIED,
-	PARRIED_COUNTERED
+	PARRIED_COUNTERED,
+	CLINCHED
 }
 
 var current_state: State = State.IDLE
@@ -27,7 +29,6 @@ var hit_flag_on_player = false
 var attack_zone = false
 var area_attack_range = false
 var attack_hit_connection = false
-
 var player
 
 
@@ -45,7 +46,9 @@ func _physics_process(delta):
 
 	#enemy_behaviour(delta)
 	enemy_behaviour_NEW(delta)
-	move_and_slide()
+	
+	if current_state != State.CLINCHED:
+		move_and_slide()
 
 
 ###########################################################
@@ -74,6 +77,8 @@ func handle_state(delta):
 			_parried_state()
 		State.PARRIED_COUNTERED:
 			_parried_countered_state()
+		State.CLINCHED:
+			_clinched_state()
 
 
 func change_state(new_state: State):
@@ -100,7 +105,11 @@ func enter_state(state):
 		State.PARRIED:
 			print("ENEMY: Enter Parried")
 		State.PARRIED_COUNTERED:
-			print("ENEMY: Parried Countered")
+			print("ENEMY: Enter Parried Countered")
+		State.CLINCHED:
+			velocity = Vector3.ZERO
+			collision_shape.disabled = true
+			print("ENEMY: Enter Clinched")
 
 
 func exit_state(state):
@@ -119,7 +128,10 @@ func exit_state(state):
 		State.PARRIED:
 			print("ENEMY: Exit Parried")
 		State.PARRIED_COUNTERED:
-			print("ENEMY: Parried Countered")
+			print("ENEMY: Exit Parried Countered")
+		State.CLINCHED:
+			collision_shape.disabled = false
+			print("ENEMY: Exit: Clinched")
 
 
 ####################################################
@@ -140,6 +152,9 @@ func _idle_state():
 	
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false):
 		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		change_state(State.CLINCHED)
 
 
 func _move_state():
@@ -160,6 +175,9 @@ func _move_state():
 	
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false):
 		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		change_state(State.CLINCHED)
 
 
 func _attack_state():
@@ -176,6 +194,9 @@ func _attack_state():
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		timer_general_states.stop()
 		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		change_state(State.CLINCHED)
 
 
 func attack_impact():
@@ -204,6 +225,9 @@ func _hurt_state():
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		timer_general_states.stop()
 		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		change_state(State.CLINCHED)
 
 
 func _parried_state():
@@ -219,6 +243,9 @@ func _parried_state():
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true):
 		timer_general_states.stop()
 		change_state(State.PARRIED_COUNTERED)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		change_state(State.CLINCHED)
 
 
 func _parried_countered_state():
@@ -232,6 +259,25 @@ func _parried_countered_state():
 	
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		change_state(State.CLINCHED)
+
+
+func _clinched_state():
+	
+	velocity = Vector3.ZERO
+	animation.play("Clinch")
+
+	global_position = Vector3(
+		player.GrabMarker.global_position.x, 
+		0, 
+		player.GrabMarker.global_position.z
+	)
+
+	var look_target = player.global_position
+	look_target.y = global_position.y
+	look_at(look_target, Vector3.UP)
 
 
 #####################################################
