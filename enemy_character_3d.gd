@@ -20,7 +20,8 @@ enum State {
 	HURT,
 	PARRIED,
 	PARRIED_COUNTERED,
-	CLINCHED
+	CLINCHED,
+	THROWN
 }
 
 var current_state: State = State.IDLE
@@ -79,6 +80,8 @@ func handle_state(delta):
 			_parried_countered_state()
 		State.CLINCHED:
 			_clinched_state()
+		State.THROWN:
+			_thrown_state()
 
 
 func change_state(new_state: State):
@@ -110,6 +113,8 @@ func enter_state(state):
 			velocity = Vector3.ZERO
 			collision_shape.disabled = true
 			print("ENEMY: Enter Clinched")
+		State.THROWN:
+			print("ENEMY: Enter Thrown")
 
 
 func exit_state(state):
@@ -131,7 +136,9 @@ func exit_state(state):
 			print("ENEMY: Exit Parried Countered")
 		State.CLINCHED:
 			collision_shape.disabled = false
-			print("ENEMY: Exit: Clinched")
+			print("ENEMY: Exit Clinched")
+		State.THROWN:
+			print("ENEMY: Exit Thrown")
 
 
 ####################################################
@@ -278,6 +285,20 @@ func _clinched_state():
 	var look_target = player.global_position
 	look_target.y = global_position.y
 	look_at(look_target, Vector3.UP)
+	
+	if (player.current_state == player.State.GRAB_THROW):
+		change_state(State.THROWN)
+
+
+func _thrown_state():
+	
+	var direction = (global_position - player.global_position).normalized()
+	velocity.x = direction.x * speed  
+	velocity.z = direction.z * speed
+	
+	if (timer_general_states.is_stopped()):
+		animation.play("Thrown")
+		timer_general_states.start(animation.current_animation_length)
 
 
 #####################################################
@@ -298,6 +319,9 @@ func _on_timer_general_states_timeout() -> void:
 		change_state(State.IDLE)
 	
 	if (animation.current_animation == "GettingCountered"):
+		change_state(State.IDLE)
+	
+	if (animation.current_animation == "Thrown"):
 		change_state(State.IDLE)
 
 

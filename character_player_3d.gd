@@ -68,7 +68,8 @@ enum State {
 	BLOCK_PARRY,
 	BLOCK_PARRY_SUCCESS,
 	GRAB,
-	GRAB_CLINCH
+	GRAB_CLINCH,
+	GRAB_THROW
 }
 
 var current_state: State = State.MOVE
@@ -144,6 +145,8 @@ func handle_state(delta):
 			_grab_state()
 		State.GRAB_CLINCH:
 			_grab_clinch_state()
+		State.GRAB_THROW:
+			_grab_throw_state()
 
 
 func change_state(new_state: State):
@@ -183,6 +186,9 @@ func enter_state(state):
 			print("PLAYER: Enter Grab")
 		State.GRAB_CLINCH:
 			print("PLAYER: Enter Grab_Clinch")
+		State.GRAB_THROW:
+			grab_condition = false
+			print("PLAYER: Enter Grab_Throw")
 
 
 func exit_state(state):
@@ -215,6 +221,8 @@ func exit_state(state):
 			print("PLAYER: Exit Grab")
 		State.GRAB_CLINCH:
 			print("PLAYER: Exit Grab_Clinch")
+		State.GRAB_THROW:
+			print("PLAYER: Exit Grab_Throw")
 
 
 ###############################
@@ -637,8 +645,17 @@ func grab_impact():
 func _grab_clinch_state():
 	
 	animation.play("Clinch", 0.2)
-
 	GrabMarker.position = Vector3(0.0, 0.0, -15)
+	
+	if (Input.is_action_just_pressed("grab")):
+		change_state(State.GRAB_THROW)
+
+
+func _grab_throw_state():
+	
+	if (timer_general_states.is_stopped()):
+		animation.play("Throw")
+		timer_general_states.start(animation.current_animation_length)
 
 
 ###################################
@@ -696,6 +713,9 @@ func _on_timer_general_states_timeout() -> void:
 			choose_action_buffer_states()
 	
 	if (animation.current_animation == "Grab"):
+		change_state(State.IDLE)
+	
+	if (animation.current_animation == "Throw"):
 		change_state(State.IDLE)
 
 
