@@ -231,14 +231,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		rotation.y = y_rotation
 		CameraFPS.rotation.x = x_rotation
-		CameraFPS.rotation.y = y_rotation
+		self.rotation.y = y_rotation
 		
 		if (current_state != State.GRAB_CLINCH):
 			Armature.rotation.x = -x_rotation
 		else:
 			Armature.rotation.x = 0
-		
-		Armature.rotation.y = y_rotation
 
 
 func aim(delta):
@@ -641,6 +639,7 @@ func _grab_clinch_state():
 	animation.play("Clinch", 0.2)
 
 	GrabMarker.position = Vector3(0.0, 0.0, -15)
+
 
 ###################################
 

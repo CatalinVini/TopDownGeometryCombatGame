@@ -3,8 +3,6 @@
 [ext_resource type="Script" uid="uid://djo43q68cahv4" path="res://character_player_3d.gd" id="1_1loh5"]
 [ext_resource type="Script" uid="uid://dhaifvkffmd5v" path="res://CharacterPlayer3D_canvas_layer.gd" id="2_f7bb4"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_f7bb4"]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xrk8m"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_f7bb4"]
@@ -1329,10 +1327,7 @@ script = ExtResource("1_1loh5")
 gravity = 5.0
 
 [node name="Marker3D" type="Marker3D" parent="." unique_id=1110596899]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, -10)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Marker3D" unique_id=883583539]
-mesh = SubResource("BoxMesh_f7bb4")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, -9.399015)
 
 [node name="Armature" type="Node3D" parent="." unique_id=512534762]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 30, 0)
