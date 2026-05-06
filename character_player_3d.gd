@@ -69,7 +69,8 @@ enum State {
 	BLOCK_PARRY_SUCCESS,
 	GRAB,
 	GRAB_CLINCH,
-	GRAB_THROW
+	GRAB_THROW,
+	GRAB_PUNCH
 }
 
 var current_state: State = State.MOVE
@@ -110,9 +111,8 @@ func function_call_NEW_way(delta):
 	handle_state(delta)
 	get_hurt()
 	buffer_states()
-	
-	
-	
+
+
 ###############################################
 
 
@@ -147,6 +147,8 @@ func handle_state(delta):
 			_grab_clinch_state()
 		State.GRAB_THROW:
 			_grab_throw_state()
+		State.GRAB_PUNCH:
+			_grab_punch_state()
 
 
 func change_state(new_state: State):
@@ -189,6 +191,8 @@ func enter_state(state):
 		State.GRAB_THROW:
 			grab_condition = false
 			print("PLAYER: Enter Grab_Throw")
+		State.GRAB_PUNCH:
+			print("PLAYER: Enter Grab_Punch")
 
 
 func exit_state(state):
@@ -223,6 +227,8 @@ func exit_state(state):
 			print("PLAYER: Exit Grab_Clinch")
 		State.GRAB_THROW:
 			print("PLAYER: Exit Grab_Throw")
+		State.GRAB_PUNCH:
+			print("PLAYER: Exit Grab_Punch")
 
 
 ###############################
@@ -267,7 +273,10 @@ func aim(delta):
 		vertical_look = clamp(vertical_look, deg_to_rad(-80), deg_to_rad(80))
 
 		CameraFPS.rotation.x = vertical_look
-		Armature.rotation.x = -vertical_look
+		if (current_state != State.GRAB_CLINCH):
+			Armature.rotation.x = -vertical_look
+		else:
+			Armature.rotation.x = 0
 
 
 func move_seq():
@@ -637,6 +646,7 @@ func grab_impact():
 		enemy_body_ID = ray_cast_attack.get_collider()
 		grab_condition = true
 		print("GRAB IMPACT")
+		timer_general_states.stop()
 		change_state(State.GRAB_CLINCH)
 	else:
 		grab_condition = false
@@ -649,12 +659,22 @@ func _grab_clinch_state():
 	
 	if (Input.is_action_just_pressed("grab")):
 		change_state(State.GRAB_THROW)
+	
+	if (Input.is_action_just_pressed("attack")):
+		change_state(State.GRAB_PUNCH)
 
 
 func _grab_throw_state():
 	
 	if (timer_general_states.is_stopped()):
 		animation.play("Throw")
+		timer_general_states.start(animation.current_animation_length)
+
+
+func _grab_punch_state():
+	
+	if (timer_general_states.is_stopped()):
+		animation.play("Grab_punch")
 		timer_general_states.start(animation.current_animation_length)
 
 
@@ -717,6 +737,9 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Throw"):
 		change_state(State.IDLE)
+	
+	if (animation.current_animation == "Grab_punch"):
+		change_state(State.GRAB_CLINCH)
 
 
 func _on_timer_perfect_block_window_timeout() -> void:

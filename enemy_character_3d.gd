@@ -21,7 +21,8 @@ enum State {
 	PARRIED,
 	PARRIED_COUNTERED,
 	CLINCHED,
-	THROWN
+	THROWN,
+	CLINCHED_HIT
 }
 
 var current_state: State = State.IDLE
@@ -82,6 +83,8 @@ func handle_state(delta):
 			_clinched_state()
 		State.THROWN:
 			_thrown_state()
+		State.CLINCHED_HIT:
+			_clinched_hit_state()
 
 
 func change_state(new_state: State):
@@ -115,6 +118,8 @@ func enter_state(state):
 			print("ENEMY: Enter Clinched")
 		State.THROWN:
 			print("ENEMY: Enter Thrown")
+		State.CLINCHED_HIT:
+			print("ENEMY: Enter CLINCHED_HIT")
 
 
 func exit_state(state):
@@ -139,6 +144,8 @@ func exit_state(state):
 			print("ENEMY: Exit Clinched")
 		State.THROWN:
 			print("ENEMY: Exit Thrown")
+		State.CLINCHED_HIT:
+			print("ENEMY: Exit CLINCHED_HIT")
 
 
 ####################################################
@@ -265,9 +272,11 @@ func _parried_countered_state():
 		timer_general_states.start(animation.current_animation_length)
 	
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
 		change_state(State.HURT)
 	
 	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
 		change_state(State.CLINCHED)
 
 
@@ -288,7 +297,17 @@ func _clinched_state():
 	
 	if (player.current_state == player.State.GRAB_THROW):
 		change_state(State.THROWN)
+	
+	if (player.current_state == player.State.GRAB_PUNCH) && (player.timer_general_states.time_left < 0.4):
+		change_state(State.CLINCHED_HIT)
 
+
+func _clinched_hit_state():
+	
+	if (timer_general_states.is_stopped()):
+		animation.play("Clinch_hit")
+		timer_general_states.start(animation.current_animation_length)
+		
 
 func _thrown_state():
 	
@@ -323,6 +342,9 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Thrown"):
 		change_state(State.IDLE)
+	
+	if (animation.current_animation == "Clinch_hit"):
+		change_state(State.CLINCHED)
 
 
 ###########################--AREAS_ZONES_BEHAVIOUR--###########################
