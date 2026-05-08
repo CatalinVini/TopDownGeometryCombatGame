@@ -119,7 +119,7 @@ func enter_state(state):
 		State.THROWN:
 			print("ENEMY: Enter Thrown")
 		State.CLINCHED_HIT:
-			print("ENEMY: Enter CLINCHED_HIT")
+			print("ENEMY: Enter Clinched Hit")
 
 
 func exit_state(state):
@@ -145,7 +145,7 @@ func exit_state(state):
 		State.THROWN:
 			print("ENEMY: Exit Thrown")
 		State.CLINCHED_HIT:
-			print("ENEMY: Exit CLINCHED_HIT")
+			print("ENEMY: Exit Clinched Hit")
 
 
 ####################################################
@@ -259,6 +259,7 @@ func _parried_state():
 		change_state(State.PARRIED_COUNTERED)
 	
 	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
 		change_state(State.CLINCHED)
 
 
@@ -298,16 +299,32 @@ func _clinched_state():
 	if (player.current_state == player.State.GRAB_THROW):
 		change_state(State.THROWN)
 	
-	if (player.current_state == player.State.GRAB_PUNCH) && (player.timer_general_states.time_left < 0.4):
+	if (player.current_state == player.State.GRAB_PUNCH) && (player.timer_general_states.time_left > 0.3):
 		change_state(State.CLINCHED_HIT)
 
 
 func _clinched_hit_state():
 	
+	velocity = Vector3.ZERO
+
+	global_position = Vector3(
+		player.GrabMarker.global_position.x, 
+		0, 
+		player.GrabMarker.global_position.z
+	)
+
+	var look_target = player.global_position
+	look_target.y = global_position.y
+	look_at(look_target, Vector3.UP)
+	
 	if (timer_general_states.is_stopped()):
 		animation.play("Clinch_hit")
 		timer_general_states.start(animation.current_animation_length)
-		
+	
+	if (player.current_state == player.State.GRAB_THROW):
+		timer_general_states.stop()
+		change_state(State.THROWN)
+
 
 func _thrown_state():
 	
