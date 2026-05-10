@@ -108,7 +108,6 @@ func function_call_NEW_way(delta):
 	move_seq()
 	move_and_slide()
 	aim(delta)
-	make_attack_condition_false()
 	handle_state(delta)
 	get_hurt()
 	buffer_states()
@@ -191,6 +190,7 @@ func enter_state(state):
 			print("PLAYER: Enter Grab_Clinch")
 		State.GRAB_THROW:
 			grab_condition = false
+			ray_cast_attack.enabled = true
 			print("PLAYER: Enter Grab_Throw")
 		State.GRAB_PUNCH:
 			print("PLAYER: Enter Grab_Punch")
@@ -230,7 +230,6 @@ func exit_state(state):
 			print("PLAYER: Exit Grab_Throw")
 		State.GRAB_PUNCH:
 			print("PLAYER: Exit Grab_Punch")
-
 
 ###############################
 
@@ -303,12 +302,6 @@ func move_seq():
 		else:
 			velocity.x = move_toward(velocity.x,0, SPEED)
 			velocity.z = move_toward(velocity.z,0, SPEED)
-
-
-func make_attack_condition_false():
-	
-	if current_state != State.ATTACK:
-		attack_damage_condition = false
 
 
 func TakeHPDamage(enemy):
@@ -695,6 +688,7 @@ func grab_impact():
 		grab_condition = true
 		timer_general_states.stop()
 		change_state(State.GRAB_CLINCH)
+		ray_cast_attack.enabled = false
 	else:
 		grab_condition = false
 
@@ -723,23 +717,27 @@ func _grab_throw_state():
 func _grab_punch_state():
 	
 	if (timer_general_states.is_stopped()):
+		enemy_body_ID.already_hit = false
 		animation.stop(true)
 		animation.play("Grab_punch")
 		timer_general_states.start(animation.current_animation_length)
 	
 	grab_punch_impact()
-	
-	
+
+
 func grab_punch_impact():
 	
-	if timer_general_states.time_left < 0.4:
+	if timer_general_states.time_left < 0.4 && timer_general_states.time_left > 0.2 && grab_punch_damage_condition == false && enemy_body_ID.already_hit == false:
 		grab_punch_damage_condition = true
+		
+
 
 ###################################
 
 
 func _on_timer_general_states_timeout() -> void:
 	
+	attack_damage_condition = false
 	if (!Input.is_action_pressed("attack")) && (current_state == State.ATTACK) && (last_action == "new"):
 		change_state(State.IDLE)
 		return

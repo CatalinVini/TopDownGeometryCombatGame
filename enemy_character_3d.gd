@@ -210,6 +210,7 @@ func _attack_state():
 		change_state(State.HURT)
 	
 	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
 		change_state(State.CLINCHED)
 
 
@@ -241,6 +242,7 @@ func _hurt_state():
 		change_state(State.HURT)
 	
 	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
 		change_state(State.CLINCHED)
 
 
@@ -297,10 +299,12 @@ func _clinched_state():
 	look_at(look_target, Vector3.UP)
 	
 	if (player.current_state == player.State.GRAB_THROW):
+		timer_general_states.stop()
 		change_state(State.THROWN)
 	
-	if player.grab_punch_damage_condition == true:
+	if player.grab_punch_damage_condition == true && already_hit == false:
 		player.grab_punch_damage_condition = false
+		timer_general_states.stop()
 		change_state(State.CLINCHED_HIT)
 
 
@@ -319,6 +323,7 @@ func _clinched_hit_state():
 	look_at(look_target, Vector3.UP)
 	
 	if (timer_general_states.is_stopped()):
+		already_hit = true
 		animation.stop(true)
 		animation.play("Clinch_hit")
 		timer_general_states.start(animation.current_animation_length)
