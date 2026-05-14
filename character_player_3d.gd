@@ -80,6 +80,7 @@ var attack_connection = false
 var attack_one_hit = false
 var grab_condition = false
 var counter_ready = false
+var B_simple_parried = false
 var BPS = false
 var dash_nr = 1
 
@@ -231,6 +232,7 @@ func exit_state(state):
 		State.GRAB_PUNCH:
 			print("PLAYER: Exit Grab_Punch")
 
+
 ###############################
 
 
@@ -327,22 +329,22 @@ func TakeDEFDamage(enemy):
 func get_hurt():
 	
 	for enemy in Global_3D.enemy_array:
-		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && (current_state != State.BLOCK) && (current_state != State.BLOCK_HOLD) && (current_state != State.BLOCK_PARRY) && (current_state != State.BLOCK_PARRY_SUCCESS):
+		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state != State.BLOCK) && (current_state != State.BLOCK_HOLD) && (current_state != State.BLOCK_PARRY)) && (BPS == false) && (B_simple_parried == false):
 			enemy.attack_hit_connection = false
 			enemy.hit_flag_on_player = true
 			TakeHPDamage(enemy)
 		
-		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state == State.BLOCK) || (current_state == State.BLOCK_HOLD)) && (current_state != State.BLOCK_PARRY_SUCCESS) && (DEF > 0):
+		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state == State.BLOCK) || (current_state == State.BLOCK_HOLD) || (current_state == State.BLOCK_PARRY)) && (B_simple_parried == false) && (DEF > 0):
 			enemy.attack_hit_connection = false
 			enemy.hit_flag_on_player = true
 			TakeDEFDamage(enemy)
 			
-		elif (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state == State.BLOCK) || (current_state == State.BLOCK_HOLD)) && (current_state != State.BLOCK_PARRY_SUCCESS) && (DEF == 0):
+		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state == State.BLOCK) || (current_state == State.BLOCK_HOLD)) && (B_simple_parried == false) && (BPS == false) && (DEF == 0):
 			enemy.attack_hit_connection = false
 			enemy.hit_flag_on_player = true
 			TakeHPDamage(enemy)
 		
-		elif (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && (current_state == State.BLOCK_PARRY) && (current_state != State.BLOCK_PARRY_SUCCESS):
+		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && (B_simple_parried == true):
 			enemy.attack_hit_connection = false
 			enemy.hit_flag_on_player = true
 			GainDEF()
@@ -362,29 +364,6 @@ func buffer_states():
 
 	if (timer_general_states.is_stopped() == false) && (timer_general_states.time_left < 0.3):
 		
-		#if (Input.is_action_just_pressed("attack")) && (current_state != State.GRAB_PUNCH) && (animation.current_animation != "Block_Hold") && (animation.current_animation != "Block_Parry"):
-			#last_action = "attack"
-		#
-		#if (Input.is_action_just_pressed("block")):
-			#last_action = "block"
-		#
-		#if (animation.current_animation == "Block_Parry"):
-			#if (Input.is_action_pressed("block")) && (Input.is_action_just_pressed("attack")):
-				#last_action = "block_parry"
-		#
-		#if (Input.is_action_just_pressed("grab") && (current_state != State.GRAB) && (current_state != State.GRAB_PUNCH)):
-			#last_action = "grab"
-		#elif (Input.is_action_just_pressed("grab") && ((current_state == State.GRAB) || (current_state == State.GRAB_PUNCH))):
-			#last_action = "throw"
-			#
-		#if (current_state == State.GRAB):
-			#if (Input.is_action_just_pressed("attack")):
-				#last_action = "grab_punch"
-		#
-		#if (current_state == State.GRAB_PUNCH):
-			#if (Input.is_action_just_pressed("attack")):
-				#last_action = "grab_punch"
-		
 		if (current_state == State.ATTACK) || (current_state == State.ATTACK_RELEASE):
 			
 			if (Input.is_action_just_pressed("attack")):
@@ -403,6 +382,7 @@ func buffer_states():
 			
 			if (Input.is_action_just_pressed("grab")):
 				last_action = "grab"
+				
 			if (Input.is_action_just_pressed("attack")):
 				last_action = "attack"
 		
@@ -413,6 +393,11 @@ func buffer_states():
 			
 			if (Input.is_action_just_pressed("grab")):
 				last_action = "throw"
+				
+		if (current_state == State.GRAB_THROW):
+			
+			if (Input.is_action_just_pressed("attack")):
+				last_action = "attack"
 
 
 func choose_action_buffer_states():
@@ -623,8 +608,13 @@ func _block_parry_state():
 			animation.play("Block_Parry", 0.1, 1.5)
 			timer_general_states.start(animation.current_animation_length / 1.5)
 			
-		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
+		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.3 / 1.5): 
 			BPS = true
+			timer_general_states.stop()
+			timer_perfect_block_window.start(0.3)
+			change_state(State.BLOCK_PARRY_SUCCESS)
+		elif (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == true) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
+			B_simple_parried = true
 			timer_general_states.stop()
 			timer_perfect_block_window.start(0.3)
 			change_state(State.BLOCK_PARRY_SUCCESS)
@@ -729,7 +719,6 @@ func grab_punch_impact():
 	
 	if timer_general_states.time_left < 0.4 && timer_general_states.time_left > 0.2 && grab_punch_damage_condition == false && enemy_body_ID.already_hit == false:
 		grab_punch_damage_condition = true
-		
 
 
 ###################################

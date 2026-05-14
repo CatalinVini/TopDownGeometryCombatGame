@@ -114,7 +114,6 @@ func enter_state(state):
 			print("ENEMY: Enter Parried Countered")
 		State.CLINCHED:
 			velocity = Vector3.ZERO
-			collision_shape.disabled = true
 			print("ENEMY: Enter Clinched")
 		State.THROWN:
 			print("ENEMY: Enter Thrown")
@@ -140,7 +139,6 @@ func exit_state(state):
 		State.PARRIED_COUNTERED:
 			print("ENEMY: Exit Parried Countered")
 		State.CLINCHED:
-			collision_shape.disabled = false
 			print("ENEMY: Exit Clinched")
 		State.THROWN:
 			print("ENEMY: Exit Thrown")
@@ -218,6 +216,9 @@ func attack_impact():
 	
 	if (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2) && (area_attack_range == true): 
 		attack_hit_connection = true
+		
+		if (player.B_simple_parried == true):
+			player.B_simple_parried = false
 		
 		if  (player.BPS == true):
 			player.BPS = false
@@ -342,6 +343,10 @@ func _thrown_state():
 	if (timer_general_states.is_stopped()):
 		animation.play("Thrown")
 		timer_general_states.start(animation.current_animation_length)
+	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
+		change_state(State.HURT)
 
 
 #####################################################
