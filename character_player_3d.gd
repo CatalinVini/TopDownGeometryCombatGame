@@ -9,8 +9,8 @@ extends CharacterBody3D
 @export var HP = 100
 @onready var HP_meter = $Camera3D/CanvasLayer/HealthBar
 @export var DEF = 100
-
 @onready var DEF_meter = $Camera3D/CanvasLayer/DefenseBar
+@onready var Enemy_HP_bar = $Camera3D/CanvasLayer/EnemyHealthBar
 @onready var CameraFPS = $Camera3D
 @onready var Armature = $Armature/Skeleton3D
 @onready var animation = $AnimationPlayer
@@ -40,7 +40,7 @@ var fr = ["attackL", "attackR", "PowerAttack", "throw", "grab", "grab_punch"]
 var action_array = []
 var variety = 1
 var variety_for_text = 1
-var damage = 1
+var damage = 20
 
 var parry_ok = false
 var successfull_parry = false
@@ -112,7 +112,7 @@ func function_call_NEW_way(delta):
 	handle_state(delta)
 	get_hurt()
 	buffer_states()
-
+	Enemy_Health_Bar()
 
 ###############################################
 
@@ -324,6 +324,13 @@ func TakeDEFDamage(enemy):
 	elif (DEF - enemy.damage <= 0):
 		DEF = 0
 		DEF_meter.value = DEF
+
+
+func Enemy_Health_Bar():
+	
+	if (enemy_body_ID):
+		Enemy_HP_bar.visible = enemy_body_ID.HP_visible
+		Enemy_HP_bar.value = enemy_body_ID.HP
 
 
 func get_hurt():

@@ -1314,6 +1314,9 @@ bg_color = Color(0.14333999, 0.14333999, 0.14333999, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1msux"]
 bg_color = Color(3.657937e-06, 0.4171475, 0.5573796, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nsres"]
+bg_color = Color(0.93707275, 0.06811772, 1.92523e-07, 1)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_1loh5"]
 size = Vector3(1.9932976, 1, 1)
 
@@ -1428,6 +1431,15 @@ offset_right = 288.0
 offset_bottom = 571.0
 theme_override_styles/background = SubResource("StyleBoxFlat_scdrw")
 theme_override_styles/fill = SubResource("StyleBoxFlat_1msux")
+value = 100.0
+
+[node name="EnemyHealthBar" type="ProgressBar" parent="Camera3D/CanvasLayer" unique_id=229742256]
+visible = false
+offset_left = 64.0
+offset_top = 37.0
+offset_right = 288.0
+offset_bottom = 64.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_nsres")
 value = 100.0
 
 [node name="RayCastAttack3D" type="RayCast3D" parent="Camera3D" unique_id=1746698236]

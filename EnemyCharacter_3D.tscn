@@ -2116,6 +2116,9 @@ gravity = 5.0
 [node name="Timer_general_states" type="Timer" parent="." unique_id=979276938]
 one_shot = true
 
+[node name="Timer_HP_visible" type="Timer" parent="." unique_id=68177866]
+one_shot = true
+
 [node name="Armature" type="Node3D" parent="." unique_id=363225647]
 
 [node name="Skeleton3D" type="Skeleton3D" parent="Armature" unique_id=263776200]
@@ -2299,6 +2302,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2777748, 30.616682, -16.105
 shape = SubResource("BoxShape3D_2b0n5")
 
 [connection signal="timeout" from="Timer_general_states" to="." method="_on_timer_general_states_timeout"]
+[connection signal="timeout" from="Timer_HP_visible" to="." method="_on_timer_hp_visible_timeout"]
 [connection signal="body_entered" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_entered"]
 [connection signal="body_exited" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_exited"]
 [connection signal="body_entered" from="AreaAttackRange" to="." method="_on_area_attack_range_body_entered"]

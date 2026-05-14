@@ -3,6 +3,7 @@ extends CharacterBody3D
 @export var speed = 30
 @export var gravity = 9.8
 @export var damage = 20
+@export var HP = 100
 
 @onready var animation = $AnimationPlayer
 @onready var collision_shape = $CollisionShape3D
@@ -10,6 +11,7 @@ extends CharacterBody3D
 ###############################################################
 
 @onready var timer_general_states = $Timer_general_states
+@onready var timer_HP_visible = $Timer_HP_visible
 
 ##############################################################
 
@@ -31,6 +33,7 @@ var hit_flag_on_player = false
 var attack_zone = false
 var area_attack_range = false
 var attack_hit_connection = false
+var HP_visible = false
 var player
 
 
@@ -60,6 +63,17 @@ func enemy_behaviour_NEW(delta):
 	
 	handle_state(delta)
 
+
+func TakeDamage():
+	
+	if (HP - player.damage > 0):
+		HP = HP - player.damage
+	elif (HP - player.damage <= 0):
+		HP = 0
+	
+	timer_HP_visible.start(1.5) 
+	HP_visible = true
+	
 
 ############################################################
 
@@ -231,6 +245,7 @@ func attack_impact():
 func _hurt_state():
 	
 	if (timer_general_states.is_stopped()):
+		TakeDamage()
 		self.already_hit = true
 		velocity.x = 0
 		velocity.z = 0
@@ -269,6 +284,7 @@ func _parried_state():
 func _parried_countered_state():
 	
 	if (timer_general_states.is_stopped()):
+		TakeDamage()
 		already_hit = true
 		velocity.x = 0
 		velocity.z = 0
@@ -324,6 +340,7 @@ func _clinched_hit_state():
 	look_at(look_target, Vector3.UP)
 	
 	if (timer_general_states.is_stopped()):
+		TakeDamage()
 		already_hit = true
 		animation.stop(true)
 		animation.play("Clinch_hit")
@@ -374,6 +391,11 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (animation.current_animation == "Clinch_hit"):
 		change_state(State.CLINCHED)
+
+
+func _on_timer_hp_visible_timeout() -> void:
+	
+	HP_visible = false
 
 
 ###########################--AREAS_ZONES_BEHAVIOUR--###########################
