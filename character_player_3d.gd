@@ -367,6 +367,38 @@ func GainDEF():
 		DEF_meter.value = DEF
 
 
+func comboVariety(action_name):
+	
+	action_array.push_back(action_name)
+	
+	##################################################
+	
+	for i in range(0, fr.size()):
+		if(action_array.has(fr[i])):
+			variety += 1
+
+	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch") || (action_name == "PowerAttack")):
+		parry_ok = false
+		
+		if((action_name == "PowerAttack")):
+			damage = damage_base * variety * 2 * 2
+		else:
+			damage = damage_base * variety * 2
+		#print("PARRY_HIT")
+	else:
+		if((action_name == "PowerAttack")):
+			damage = damage_base * variety * 2
+		else:
+			damage = damage_base * variety
+	
+	
+	#print(action_array)
+	print(damage)
+	#print(action_array.size())
+	variety_for_text = variety
+	variety = 1
+
+
 func buffer_states():
 
 	if (timer_general_states.is_stopped() == false) && (timer_general_states.time_left < 0.3):
@@ -734,14 +766,16 @@ func grab_punch_impact():
 func _on_timer_general_states_timeout() -> void:
 	
 	attack_damage_condition = false
+	
 	if (!Input.is_action_pressed("attack")) && (current_state == State.ATTACK) && (last_action == "new"):
 		change_state(State.IDLE)
 		return
-	elif (Input.is_action_pressed("attack")) && (current_state == State.ATTACK) && (last_action == "new"):
-		change_state(State.ATTACK_CHARGE)
-		return
 	elif (!Input.is_action_pressed("attack")) && (current_state == State.ATTACK) && (last_action != "new"):
 		choose_action_buffer_states()
+		return
+	elif (Input.is_action_pressed("attack")) && (current_state == State.ATTACK):
+		last_action = "new"
+		change_state(State.ATTACK_CHARGE)
 		return
 	
 	if (current_state == State.ATTACK_CHARGE): 

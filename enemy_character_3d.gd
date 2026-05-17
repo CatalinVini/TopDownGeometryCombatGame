@@ -73,7 +73,7 @@ func TakeDamage():
 	
 	timer_HP_visible.start(1.5) 
 	HP_visible = true
-	
+
 
 ############################################################
 
