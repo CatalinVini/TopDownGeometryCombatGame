@@ -113,7 +113,8 @@ func function_call_NEW_way(delta):
 	get_hurt()
 	buffer_states()
 	Enemy_Health_Bar()
-
+	
+	
 ###############################################
 
 
@@ -251,8 +252,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		if (current_state != State.GRAB_CLINCH) && (current_state != State.GRAB_PUNCH):
 			Armature.rotation.x = -x_rotation
-		else:
-			Armature.rotation.x = 0
 
 
 func aim(delta):
@@ -716,6 +715,7 @@ func grab_impact():
 		enemy_body_ID = ray_cast_attack.get_collider()
 		grab_condition = true
 		timer_general_states.stop()
+		last_action = "new"
 		change_state(State.GRAB_CLINCH)
 		ray_cast_attack.enabled = false
 	else:
@@ -726,6 +726,7 @@ func _grab_clinch_state():
 	
 	animation.play("Clinch", 0.2)
 	GrabMarker.position = Vector3(0.0, 0.0, -15)
+	Armature.rotation.x = 0
 	
 	if (Input.is_action_just_pressed("grab")):
 		timer_general_states.stop()
@@ -745,7 +746,13 @@ func _grab_throw_state():
 
 func _grab_punch_state():
 	
+	Armature.rotation.x = 0
+	
 	if (timer_general_states.is_stopped()):
+		
+		for enemy in Global_3D.enemy_array:
+			enemy.already_hit = false
+			
 		enemy_body_ID.already_hit = false
 		animation.stop(true)
 		animation.play("Grab_punch")
@@ -756,7 +763,7 @@ func _grab_punch_state():
 
 func grab_punch_impact():
 	
-	if timer_general_states.time_left < 0.4 && timer_general_states.time_left > 0.2 && grab_punch_damage_condition == false && enemy_body_ID.already_hit == false:
+	if timer_general_states.time_left < 0.4 && timer_general_states.time_left > 0.39 && grab_punch_damage_condition == false && enemy_body_ID.already_hit == false:
 		grab_punch_damage_condition = true
 
 
