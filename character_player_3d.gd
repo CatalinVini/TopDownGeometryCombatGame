@@ -725,7 +725,7 @@ func grab_impact():
 func _grab_clinch_state():
 	
 	animation.play("Clinch", 0.2)
-	GrabMarker.position = Vector3(0.0, 0.0, -15)
+	GrabMarker.position = Vector3(0.0, 0.0, -1.1)
 	Armature.rotation.x = 0
 	
 	if (Input.is_action_just_pressed("grab")):
