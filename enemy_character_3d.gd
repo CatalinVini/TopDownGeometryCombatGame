@@ -320,7 +320,8 @@ func _clinched_state():
 		change_state(State.THROWN)
 	
 	if player.grab_punch_damage_condition == true && already_hit == false:
-		player.grab_punch_damage_condition = false
+		already_hit = true
+		print("AGAGAGAGAGAG")
 		timer_general_states.stop()
 		change_state(State.CLINCHED_HIT)
 
@@ -349,7 +350,13 @@ func _clinched_hit_state():
 	if (player.current_state == player.State.GRAB_THROW):
 		timer_general_states.stop()
 		change_state(State.THROWN)
-
+	
+	if player.grab_punch_damage_condition == true && already_hit == false:
+		already_hit = true
+		print("AGAGAGAGAGAG")
+		timer_general_states.stop()
+		change_state(State.CLINCHED_HIT)
+		
 
 func _thrown_state():
 	
@@ -371,26 +378,33 @@ func _thrown_state():
 
 func _on_timer_general_states_timeout() -> void:
 	
-	if (animation.current_animation == "Attack"):
+	if (current_state == State.ATTACK):
 		change_state(State.IDLE)
+		return
 		
-	if (animation.current_animation == "Idle"):
+	if (current_state == State.IDLE):
 		change_state(State.ATTACK)
-	
-	if (animation.current_animation == "GettingHurt"):
-		change_state(State.IDLE)
+		return
 		
-	if (animation.current_animation == "Parried"):
+	if (current_state == State.HURT):
 		change_state(State.IDLE)
-	
-	if (animation.current_animation == "GettingCountered"):
+		return
+		
+	if (current_state == State.PARRIED):
 		change_state(State.IDLE)
-	
-	if (animation.current_animation == "Thrown"):
+		return
+		
+	if (current_state == State.PARRIED_COUNTERED):
 		change_state(State.IDLE)
-	
-	if (animation.current_animation == "Clinch_hit"):
+		return
+		
+	if (current_state == State.THROWN):
+		change_state(State.IDLE)
+		return
+		
+	if (current_state == State.CLINCHED_HIT):
 		change_state(State.CLINCHED)
+		return
 
 
 func _on_timer_hp_visible_timeout() -> void:

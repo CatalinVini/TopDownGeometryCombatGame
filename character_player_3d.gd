@@ -232,6 +232,8 @@ func exit_state(state):
 			print("PLAYER: Exit Grab_Throw")
 		State.GRAB_PUNCH:
 			print("PLAYER: Exit Grab_Punch")
+			for enemy in Global_3D.enemy_array:
+				enemy.already_hit = false
 
 
 ###############################
@@ -750,9 +752,6 @@ func _grab_punch_state():
 	
 	if (timer_general_states.is_stopped()):
 		
-		for enemy in Global_3D.enemy_array:
-			enemy.already_hit = false
-			
 		enemy_body_ID.already_hit = false
 		animation.stop(true)
 		animation.play("Grab_punch")
@@ -765,6 +764,8 @@ func grab_punch_impact():
 	
 	if timer_general_states.time_left < 0.4 && timer_general_states.time_left > 0.39 && grab_punch_damage_condition == false && enemy_body_ID.already_hit == false:
 		grab_punch_damage_condition = true
+	else:
+		grab_punch_damage_condition = false
 
 
 ###################################
@@ -855,10 +856,16 @@ func _on_timer_general_states_timeout() -> void:
 	if (current_state == State.GRAB_THROW):
 		
 		if (last_action == "new"):
-			change_state(State.IDLE)
+			if (Input.is_action_pressed("attack")):
+				change_state(State.ATTACK_CHARGE)
+			else:
+				change_state(State.IDLE)
 			return
 		else:
-			choose_action_buffer_states()
+			if (Input.is_action_pressed("attack")):
+				change_state(State.ATTACK_CHARGE)
+			else:
+				choose_action_buffer_states()
 			return
 	
 	if (current_state == State.GRAB_PUNCH):

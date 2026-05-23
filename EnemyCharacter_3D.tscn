@@ -2280,7 +2280,7 @@ speed = 3
 gravity = 5.0
 
 [node name="Armature" type="Node3D" parent="." unique_id=561961633]
-transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, 0, 0, 0)
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.055, 0, 0, 0)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="Armature" unique_id=457445548]
 bones/0/name = "body"

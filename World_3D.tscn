@@ -13,7 +13,7 @@ size = Vector3(2, 0.001, 2)
 script = ExtResource("1_df4i4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1527842564]
-transform = Transform3D(0.87206936, 0.48714906, 0.046701193, -2.9802322e-08, -0.095428765, 0.9954363, 0.48938242, -0.86808944, -0.08322054, -27.389063, 65.29733, 48.806744)
+transform = Transform3D(0.87206936, 0.48714897, 0.046701185, -2.9802322e-08, -0.095428765, 0.9954363, 0.48938242, -0.86808944, -0.08322049, -27.389063, 9.364155, -2.6470585)
 directional_shadow_max_distance = 1.0
 
 [node name="CharacterPlayer3D" parent="." unique_id=240290894 groups=["Player_3D"] instance=ExtResource("2_df4i4")]
