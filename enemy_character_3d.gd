@@ -333,7 +333,6 @@ func _clinched_state():
 	
 	if player.grab_punch_damage_condition == true && already_hit == false:
 		already_hit = true
-		print("AGAGAGAGAGAG")
 		timer_general_states.stop()
 		change_state(State.CLINCHED_HIT)
 

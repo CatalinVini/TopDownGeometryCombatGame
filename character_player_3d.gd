@@ -113,8 +113,8 @@ func function_call_NEW_way(delta):
 	get_hurt()
 	buffer_states()
 	Enemy_Health_Bar()
-	
-	
+
+
 ###############################################
 
 
@@ -227,6 +227,7 @@ func exit_state(state):
 		State.GRAB:
 			print("PLAYER: Exit Grab")
 		State.GRAB_CLINCH:
+			grab_condition = false
 			print("PLAYER: Exit Grab_Clinch")
 		State.GRAB_THROW:
 			print("PLAYER: Exit Grab_Throw")
@@ -332,6 +333,8 @@ func Enemy_Health_Bar():
 	if (enemy_body_ID):
 		Enemy_HP_bar.visible = enemy_body_ID.HP_visible
 		Enemy_HP_bar.value = enemy_body_ID.HP
+	else:
+		Enemy_HP_bar.visible = false
 
 
 func get_hurt():
@@ -648,16 +651,17 @@ func _block_parry_state():
 			animation.play("Block_Parry", 0.1, 1.5)
 			timer_general_states.start(animation.current_animation_length / 1.5)
 			
-		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.3 / 1.5): 
+		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
 			BPS = true
 			timer_general_states.stop()
 			timer_perfect_block_window.start(0.3)
 			change_state(State.BLOCK_PARRY_SUCCESS)
+			return
 		elif (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == true) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
 			B_simple_parried = true
 			timer_general_states.stop()
-			timer_perfect_block_window.start(0.3)
 			change_state(State.BLOCK_PARRY_SUCCESS)
+			return
 
 
 func _block_parry_success_state():
@@ -761,6 +765,7 @@ func _grab_punch_state():
 	
 	if (enemy_body_ID.current_state == enemy_body_ID.State.DEATH):
 		change_state(State.IDLE)
+		ray_cast_attack.enabled = true
 
 
 func grab_punch_impact():
