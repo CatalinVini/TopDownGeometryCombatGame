@@ -24,7 +24,8 @@ enum State {
 	PARRIED_COUNTERED,
 	CLINCHED,
 	THROWN,
-	CLINCHED_HIT
+	CLINCHED_HIT,
+	DEATH
 }
 
 var current_state: State = State.IDLE
@@ -66,13 +67,17 @@ func enemy_behaviour_NEW(delta):
 
 func TakeDamage():
 	
+	timer_HP_visible.start(1.5) 
+	HP_visible = true
+	
 	if (HP - player.damage > 0):
 		HP = HP - player.damage
 	elif (HP - player.damage <= 0):
 		HP = 0
+		timer_general_states.stop()
+		change_state(State.DEATH)
+		return 1
 	
-	timer_HP_visible.start(1.5) 
-	HP_visible = true
 
 
 ############################################################
@@ -99,6 +104,8 @@ func handle_state(delta):
 			_thrown_state()
 		State.CLINCHED_HIT:
 			_clinched_hit_state()
+		State.DEATH:
+			_death_state()
 
 
 func change_state(new_state: State):
@@ -133,6 +140,8 @@ func enter_state(state):
 			print("ENEMY: Enter Thrown")
 		State.CLINCHED_HIT:
 			print("ENEMY: Enter Clinched Hit")
+		State.DEATH:
+			print("ENEMY: Enter Death")
 
 
 func exit_state(state):
@@ -158,6 +167,8 @@ func exit_state(state):
 			print("ENEMY: Exit Thrown")
 		State.CLINCHED_HIT:
 			print("ENEMY: Exit Clinched Hit")
+		State.DEATH:
+			print("ENEMY: Exit Death")
 
 
 ####################################################
@@ -245,7 +256,8 @@ func attack_impact():
 func _hurt_state():
 	
 	if (timer_general_states.is_stopped()):
-		TakeDamage()
+		if (TakeDamage() == 1):
+			return
 		self.already_hit = true
 		velocity.x = 0
 		velocity.z = 0
@@ -341,7 +353,8 @@ func _clinched_hit_state():
 	look_at(look_target, Vector3.UP)
 	
 	if (timer_general_states.is_stopped()):
-		TakeDamage()
+		if (TakeDamage() == 1):
+			return
 		already_hit = true
 		animation.stop(true)
 		animation.play("Clinch_hit")
@@ -356,7 +369,7 @@ func _clinched_hit_state():
 		print("AGAGAGAGAGAG")
 		timer_general_states.stop()
 		change_state(State.CLINCHED_HIT)
-		
+
 
 func _thrown_state():
 	
@@ -371,6 +384,13 @@ func _thrown_state():
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		timer_general_states.stop()
 		change_state(State.HURT)
+
+
+func _death_state():
+	
+	if (timer_general_states.is_stopped()):
+		animation.play("Death")
+		timer_general_states.start(animation.current_animation_length)
 
 
 #####################################################
@@ -405,6 +425,10 @@ func _on_timer_general_states_timeout() -> void:
 	if (current_state == State.CLINCHED_HIT):
 		change_state(State.CLINCHED)
 		return
+	
+	if (current_state == State.DEATH):
+		Global_3D.enemy_array.erase(self)
+		queue_free()
 
 
 func _on_timer_hp_visible_timeout() -> void:

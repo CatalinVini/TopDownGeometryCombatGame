@@ -23,6 +23,6 @@ func _physics_process(delta: float) -> void:
 
 func inst():
 	var instance = enemy.instantiate()
-	pos = Vector3 (-50, 0, -50)
+	pos = Vector3 (-10, 0, -10)
 	instance.position = pos
 	add_child(instance)

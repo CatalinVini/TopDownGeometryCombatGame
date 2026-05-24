@@ -758,6 +758,9 @@ func _grab_punch_state():
 		timer_general_states.start(animation.current_animation_length)
 	
 	grab_punch_impact()
+	
+	if (enemy_body_ID.current_state == enemy_body_ID.State.DEATH):
+		change_state(State.IDLE)
 
 
 func grab_punch_impact():
