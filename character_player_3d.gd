@@ -36,11 +36,11 @@ var raycastcolis = false
 var power_attack_connection = false
 var enemy_raycast_collided = null
 
-var fr = ["attackL", "attackR", "PowerAttack", "throw", "grab", "grab_punch"]
+var fr = ["Attack_L", "Attack_R", "Power_attack_release_L", "Power_attack_release_R", "Throw", "Grab", "Grab_punch"]
 var action_array = []
 var variety = 1
 var variety_for_text = 1
-var damage = 20
+var damage = 3
 
 var parry_ok = false
 var successfull_parry = false
@@ -83,12 +83,15 @@ var counter_ready = false
 var B_simple_parried = false
 var BPS = false
 var dash_nr = 1
+var comboV_ok = false
 
 
 func _ready():
 	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	ray_cast_attack.add_exception($".")
+	action_array.resize(7)
+	action_array.fill("new")
 
 
 func _physics_process(delta: float) -> void:
@@ -373,32 +376,22 @@ func GainDEF():
 
 func comboVariety(action_name):
 	
-	action_array.push_back(action_name)
+	action_array.push_front(action_name)
+	action_array.pop_back()
 	
 	##################################################
 	
 	for i in range(0, fr.size()):
 		if(action_array.has(fr[i])):
 			variety += 1
-
-	if (parry_ok == true) && ((action_name == "attackR") || (action_name == "attackL") || (action_name == "grab_punch") || (action_name == "PowerAttack")):
-		parry_ok = false
-		
-		if((action_name == "PowerAttack")):
-			damage = damage_base * variety * 2 * 2
-		else:
-			damage = damage_base * variety * 2
-		#print("PARRY_HIT")
+			
+	if ((action_name == "PowerAttack")):
+		damage = damage_base * variety * 1.5
 	else:
-		if((action_name == "PowerAttack")):
-			damage = damage_base * variety * 2
-		else:
-			damage = damage_base * variety
+		damage = damage_base * variety
 	
-	
-	#print(action_array)
 	print(damage)
-	#print(action_array.size())
+	print(action_array)
 	variety_for_text = variety
 	variety = 1
 
@@ -608,11 +601,17 @@ func _attack_release_state():
 
 func attack_impact():
 	
-	if (timer_general_states.get_time_left() < 0.5) && (timer_general_states.get_time_left() > 0.4) && ray_cast_attack.is_colliding(): 
+	if ray_cast_attack.is_colliding():
 		enemy_body_ID = ray_cast_attack.get_collider()
+		
+	if (timer_general_states.get_time_left() < 0.5) && (timer_general_states.get_time_left() > 0.4) && enemy_body_ID.already_hit == false: 
 		attack_damage_condition = true
+		if (enemy_body_ID.already_hit == false) && (comboV_ok == false):
+			comboV_ok = true
+			comboVariety(animation.current_animation)
 	else:
 		attack_damage_condition = false
+		comboV_ok = false
 
 
 func _block_state():
@@ -722,6 +721,7 @@ func grab_impact():
 		grab_condition = true
 		timer_general_states.stop()
 		last_action = "new"
+		comboVariety("Grab")
 		change_state(State.GRAB_CLINCH)
 		ray_cast_attack.enabled = false
 	else:
@@ -747,6 +747,7 @@ func _grab_throw_state():
 	
 	if (timer_general_states.is_stopped()):
 		animation.play("Throw")
+		comboVariety("Throw")
 		timer_general_states.start(animation.current_animation_length)
 
 
@@ -772,6 +773,7 @@ func grab_punch_impact():
 	
 	if timer_general_states.time_left < 0.4 && timer_general_states.time_left > 0.39 && grab_punch_damage_condition == false && enemy_body_ID.already_hit == false:
 		grab_punch_damage_condition = true
+		comboVariety("Grab_punch")
 	else:
 		grab_punch_damage_condition = false
 

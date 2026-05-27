@@ -77,7 +77,6 @@ func TakeDamage():
 		timer_general_states.stop()
 		change_state(State.DEATH)
 		return 1
-	
 
 
 ############################################################
@@ -296,7 +295,8 @@ func _parried_state():
 func _parried_countered_state():
 	
 	if (timer_general_states.is_stopped()):
-		TakeDamage()
+		if (TakeDamage() == 1):
+			return
 		already_hit = true
 		velocity.x = 0
 		velocity.z = 0
