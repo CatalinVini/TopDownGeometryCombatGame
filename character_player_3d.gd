@@ -90,7 +90,7 @@ func _ready():
 	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	ray_cast_attack.add_exception($".")
-	action_array.resize(7)
+	action_array.resize(5)
 	action_array.fill("new")
 
 
@@ -393,7 +393,7 @@ func comboVariety(action_name):
 	print(damage)
 	print(action_array)
 	variety_for_text = variety
-	variety = 1
+	variety = 0
 
 
 func buffer_states():
@@ -604,14 +604,14 @@ func attack_impact():
 	if ray_cast_attack.is_colliding():
 		enemy_body_ID = ray_cast_attack.get_collider()
 		
-	if (timer_general_states.get_time_left() < 0.5) && (timer_general_states.get_time_left() > 0.4) && enemy_body_ID.already_hit == false: 
-		attack_damage_condition = true
-		if (enemy_body_ID.already_hit == false) && (comboV_ok == false):
-			comboV_ok = true
-			comboVariety(animation.current_animation)
-	else:
-		attack_damage_condition = false
-		comboV_ok = false
+		if (timer_general_states.get_time_left() < 0.5) && (timer_general_states.get_time_left() > 0.4) && enemy_body_ID.already_hit == false: 
+			attack_damage_condition = true
+			if (enemy_body_ID.already_hit == false) && (comboV_ok == false):
+				comboV_ok = true
+				comboVariety(animation.current_animation)
+		else:
+			attack_damage_condition = false
+			comboV_ok = false
 
 
 func _block_state():
