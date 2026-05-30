@@ -1,9 +1,8 @@
-[gd_scene format=3 uid="uid://dpnsba3gii5t4"]
+[gd_scene format=3 uid="uid://bbsjdhmpi423c"]
 
-[ext_resource type="Script" uid="uid://rclgvskwqwpe" path="res://world_3d.gd" id="1_df4i4"]
-[ext_resource type="PackedScene" uid="uid://cc4517y273la8" path="res://EnemyCharacter_3D.tscn" id="2_26jq8"]
-[ext_resource type="PackedScene" uid="uid://bh22gop501wom" path="res://CharacterPlayer_3D.tscn" id="2_df4i4"]
-[ext_resource type="Script" uid="uid://dwy7bte6ietll" path="res://global.gd" id="3_lrdgs"]
+[ext_resource type="Script" path="res://world_3d.gd" id="1_df4i4"]
+[ext_resource type="PackedScene" uid="uid://squt574ovncg" path="res://EnemyCharacter_3D.tscn" id="2_26jq8"]
+[ext_resource type="PackedScene" uid="uid://dp0k5b5x7x4p4" path="res://CharacterPlayer_3D.tscn" id="2_df4i4"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_gc53e"]
 
@@ -19,10 +18,7 @@ directional_shadow_max_distance = 1.0
 
 [node name="CharacterPlayer3D" parent="." unique_id=240290894 groups=["Player_3D"] instance=ExtResource("2_df4i4")]
 
-[node name="EnemyBehavior" type="Node3D" parent="." unique_id=1039750532]
-script = ExtResource("3_lrdgs")
-
-[node name="EnemyCharacter" parent="EnemyBehavior" unique_id=1466998257 instance=ExtResource("2_26jq8")]
+[node name="EnemyCharacter" parent="." unique_id=1466998257 instance=ExtResource("2_26jq8")]
 transform = Transform3D(-0.9999994, 0, 0.001064688, 0, 1, 0, -0.001064688, 0, -0.9999994, 0.39527246, 0, -5.148056)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=425885854]
