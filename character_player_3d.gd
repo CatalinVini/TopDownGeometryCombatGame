@@ -101,7 +101,7 @@ func _physics_process(delta: float) -> void:
 	
 	function_call_NEW_way(delta)
 	
-	Global_3D.player_position_3D = get_position()
+	Enemy_Behavior.player_position_3D = get_position()
 
 
 ###############################################
@@ -213,7 +213,7 @@ func exit_state(state):
 			SPEED = SPEED / 5 
 		State.ATTACK:
 			print("PLAYER: Exit Attack")
-			for enemy in Global_3D.enemy_array:
+			for enemy in Enemy_Behavior.enemy_array:
 				enemy.already_hit = false
 		State.ATTACK_CHARGE:
 			print("PLAYER: Exit Attack Charge")
@@ -236,7 +236,7 @@ func exit_state(state):
 			print("PLAYER: Exit Grab_Throw")
 		State.GRAB_PUNCH:
 			print("PLAYER: Exit Grab_Punch")
-			for enemy in Global_3D.enemy_array:
+			for enemy in Enemy_Behavior.enemy_array:
 				enemy.already_hit = false
 
 
@@ -342,7 +342,7 @@ func Enemy_Health_Bar():
 
 func get_hurt():
 	
-	for enemy in Global_3D.enemy_array:
+	for enemy in Enemy_Behavior.enemy_array:
 		if (enemy.attack_hit_connection == true) && (enemy.hit_flag_on_player == false) && ((current_state != State.BLOCK) && (current_state != State.BLOCK_HOLD) && (current_state != State.BLOCK_PARRY)) && (BPS == false) && (B_simple_parried == false):
 			enemy.attack_hit_connection = false
 			enemy.hit_flag_on_player = true
@@ -439,7 +439,7 @@ func buffer_states():
 func choose_action_buffer_states():
 
 	if (last_action == "attack"):
-		for enemy in Global_3D.enemy_array:
+		for enemy in Enemy_Behavior.enemy_array:
 			enemy.already_hit = false
 		change_state(State.ATTACK)
 		last_action_release = "attack"
@@ -531,7 +531,7 @@ func _dash_state():
 func _attack_state():
 	
 	if (timer_general_states.is_stopped()):
-		for enemy in Global_3D.enemy_array:
+		for enemy in Enemy_Behavior.enemy_array:
 			enemy.already_hit = false
 			
 		if (right_left_hand == true):
@@ -576,7 +576,7 @@ func _attack_charge_state():
 func _attack_release_state():
 	
 	if (timer_general_states.is_stopped()):
-		for enemy in Global_3D.enemy_array:
+		for enemy in Enemy_Behavior.enemy_array:
 			enemy.already_hit = false
 			
 		if (right_left_hand == true):
@@ -644,7 +644,7 @@ func _block_hold_state():
 
 func _block_parry_state():
 	
-	for enemy in Global_3D.enemy_array:
+	for enemy in Enemy_Behavior.enemy_array:
 		
 		if (timer_general_states.is_stopped() == true):
 			animation.play("Block_Parry", 0.1, 1.5)

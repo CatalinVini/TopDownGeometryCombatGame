@@ -22,6 +22,9 @@ directional_shadow_max_distance = 1.0
 [node name="EnemyBehavior" type="Node3D" parent="." unique_id=1039750532]
 script = ExtResource("3_lrdgs")
 
+[node name="EnemyBehaviorTimer" type="Timer" parent="EnemyBehavior" unique_id=680732029]
+one_shot = true
+
 [node name="EnemyCharacter" parent="EnemyBehavior" unique_id=1466998257 instance=ExtResource("2_26jq8")]
 transform = Transform3D(-0.9999994, 0, 0.001064688, 0, 1, 0, -0.001064688, 0, -0.9999994, 0.39527246, 0, -5.148056)
 
@@ -33,3 +36,5 @@ mesh = SubResource("PlaneMesh_gc53e")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=25872121]
 shape = SubResource("BoxShape3D_n2rlg")
+
+[connection signal="timeout" from="EnemyBehavior/EnemyBehaviorTimer" to="EnemyBehavior" method="_on_enemy_behavior_timer_timeout"]

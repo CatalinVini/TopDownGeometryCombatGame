@@ -41,7 +41,7 @@ var player
 func _ready():
 	
 	player = get_tree().get_first_node_in_group("Player_3D")
-	Global_3D.enemy_array.push_front(self)
+	Enemy_Behavior.enemy_array.push_front(self)
 
 
 func _physics_process(delta):
@@ -426,7 +426,7 @@ func _on_timer_general_states_timeout() -> void:
 		return
 	
 	if (current_state == State.DEATH):
-		Global_3D.enemy_array.erase(self)
+		Enemy_Behavior.enemy_array.erase(self)
 		queue_free()
 
 

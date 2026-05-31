@@ -21,7 +21,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Global_3D="*res://global.gd"
+Global_3D="res://global.gd"
+Enemy_Behavior="*uid://r3ieam4oj37t"
 
 [editor_plugins]
 
