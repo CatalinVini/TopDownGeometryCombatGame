@@ -183,9 +183,6 @@ func _idle_state():
 	if (attack_zone == false):
 		change_state(State.MOVE)
 	
-	if (timer_general_states.is_stopped() == true) && (attack_zone == true):
-		timer_general_states.start(1)
-	
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false):
 		change_state(State.HURT)
 	
@@ -401,10 +398,6 @@ func _on_timer_general_states_timeout() -> void:
 		change_state(State.IDLE)
 		return
 		
-	if (current_state == State.IDLE):
-		change_state(State.ATTACK)
-		return
-		
 	if (current_state == State.HURT):
 		change_state(State.IDLE)
 		return
@@ -427,6 +420,7 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (current_state == State.DEATH):
 		Enemy_Behavior.enemy_array.erase(self)
+		Enemy_Behavior.enemies_ready_attack.erase(self)
 		queue_free()
 
 
@@ -442,6 +436,7 @@ func _on_area_attack_zone_body_entered(body: Node3D) -> void:
 	
 	if (body == player):
 		attack_zone = true
+		Enemy_Behavior.enemies_ready_attack.push_front(self)
 		print("attack_zone: ", attack_zone)
 
 
@@ -449,6 +444,7 @@ func _on_area_attack_zone_body_exited(body: Node3D) -> void:
 	
 	if (body == player):
 		attack_zone = false
+		Enemy_Behavior.enemies_ready_attack.erase(self)
 		print("attack_zone: ", attack_zone)
 
 
