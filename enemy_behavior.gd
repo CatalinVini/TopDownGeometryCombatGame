@@ -13,10 +13,41 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	
-	for enemy in enemy_array:
-		if (enemy.attack_zone == false):
-			enemy.change_state(enemy.State.MOVE)
-	
+	for enemy in enemy_array:      
+		
+		if (enemy.current_state == enemy.State.IDLE):
+			
+			if (enemy.attack_zone == false):
+				enemy.change_state(enemy.State.MOVE)
+			
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false):
+				enemy.change_state(enemy.State.HURT)
+			
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.grab_condition == true):
+				enemy.change_state(enemy.State.CLINCHED)
+		
+		if (enemy.current_state == enemy.State.MOVE):
+			
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false):
+				enemy.change_state(enemy.State.HURT)
+			
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.grab_condition == true):
+				enemy.change_state(enemy.State.CLINCHED)
+			
+			if (enemy.attack_zone == true):
+				enemy.change_state(enemy.State.IDLE)
+				
+		if (enemy.current_state == enemy.State.ATTACK):
+			
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false): 
+				enemy.timer_general_states.stop()
+				enemy.change_state(enemy.State.HURT)
+			
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.grab_condition == true):
+				enemy.timer_general_states.stop()
+				enemy.change_state(enemy.State.CLINCHED)
+			
+			
 	if enemies_ready_attack:
 		if (timer_enemy_behavior.is_stopped()):
 			timer_enemy_behavior.start(randf_range(1,3))
@@ -35,5 +66,8 @@ func create_timer():
 func _on_enemy_behavior_timer_timeout():
 	
 	var enemy_attacking = enemies_ready_attack[randi_range(0, enemies_ready_attack.size() - 1)]
-	enemy_attacking.change_state(enemy_attacking.State.ATTACK)
-	print(timer_enemy_behavior.wait_time)
+	if (enemy_attacking.current_state == enemy_attacking.State.IDLE) || (enemy_attacking.current_state == enemy_attacking.State.MOVE):
+		enemy_attacking.animation.stop(true)
+		enemy_attacking.timer_general_states.stop()
+		enemy_attacking.change_state(enemy_attacking.State.ATTACK)
+		print(timer_enemy_behavior.wait_time)

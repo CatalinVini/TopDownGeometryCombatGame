@@ -179,15 +179,6 @@ func _idle_state():
 	animation.play("Idle")
 	
 	look_at(player.global_position)
-	
-	if (attack_zone == false):
-		change_state(State.MOVE)
-	
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false):
-		change_state(State.HURT)
-	
-	if (self == player.enemy_body_ID) && (player.grab_condition == true):
-		change_state(State.CLINCHED)
 
 
 func _move_state():
@@ -201,17 +192,6 @@ func _move_state():
 	
 	animation.play("Move")
 	
-	if (attack_zone == true):
-		animation.stop(true)
-		timer_general_states.stop()
-		change_state(State.ATTACK)
-	
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false):
-		change_state(State.HURT)
-	
-	if (self == player.enemy_body_ID) && (player.grab_condition == true):
-		change_state(State.CLINCHED)
-
 
 func _attack_state():
 	
