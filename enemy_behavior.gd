@@ -50,7 +50,7 @@ func _physics_process(delta: float) -> void:
 			
 	if enemies_ready_attack:
 		if (timer_enemy_behavior.is_stopped()):
-			timer_enemy_behavior.start(randf_range(1,3))
+			timer_enemy_behavior.start(randf_range(1,2))
 	else:
 		timer_enemy_behavior.stop()
 

@@ -30,7 +30,6 @@ var nr
 
 var right_left_hand = true
 var last_action = "new"
-var last_action_release = "new"
 var enemy_body_ID
 var raycastcolis = false
 var power_attack_connection = false
@@ -442,7 +441,6 @@ func choose_action_buffer_states():
 		for enemy in Enemy_Behavior.enemy_array:
 			enemy.already_hit = false
 		change_state(State.ATTACK)
-		last_action_release = "attack"
 	
 	if (last_action == "block"):
 		change_state(State.BLOCK)
@@ -644,11 +642,11 @@ func _block_hold_state():
 
 func _block_parry_state():
 	
+	if (timer_general_states.is_stopped() == true):
+		animation.play("Block_Parry", 0.1, 1.5)
+		timer_general_states.start(animation.current_animation_length / 1.5)
+	
 	for enemy in Enemy_Behavior.enemy_array:
-		
-		if (timer_general_states.is_stopped() == true):
-			animation.play("Block_Parry", 0.1, 1.5)
-			timer_general_states.start(animation.current_animation_length / 1.5)
 			
 		if (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == false) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
 			BPS = true
@@ -656,6 +654,7 @@ func _block_parry_state():
 			timer_perfect_block_window.start(0.3)
 			change_state(State.BLOCK_PARRY_SUCCESS)
 			return
+			
 		elif (enemy.attack_hit_connection == true) && (timer_perfect_block_window.is_stopped() == true) && (enemy.hit_flag_on_player == false) && (timer_general_states.time_left > 0.5 / 1.5): 
 			B_simple_parried = true
 			timer_general_states.stop()
@@ -711,6 +710,10 @@ func _grab_state():
 		animation.play("Grab")
 		timer_general_states.start(animation.current_animation_length)
 	
+	if (Input.is_action_just_pressed("block")):
+		timer_general_states.stop()
+		change_state(State.BLOCK)
+	
 	grab_impact()
 
 
@@ -749,6 +752,10 @@ func _grab_throw_state():
 		animation.play("Throw")
 		comboVariety("Throw")
 		timer_general_states.start(animation.current_animation_length)
+	
+	if (Input.is_action_just_pressed("block")):
+		timer_general_states.stop()
+		change_state(State.BLOCK)
 
 
 func _grab_punch_state():
@@ -801,9 +808,13 @@ func _on_timer_general_states_timeout() -> void:
 		return
 	
 	if (current_state == State.ATTACK_RELEASE):
-		change_state(State.IDLE)
-		return
-	
+		if (last_action == "new"):
+			change_state(State.IDLE)
+			return
+		else:
+			choose_action_buffer_states()
+			return
+			
 	if (current_state == State.BLOCK):
 		if (Input.is_action_pressed("block")):
 			change_state(State.BLOCK_HOLD)
