@@ -6,6 +6,7 @@ var attack_connected = false
 var enemy_array = []
 var enemies_ready_attack = [] 
 
+
 func _ready() -> void:
 	
 	create_timer()
@@ -20,18 +21,28 @@ func _physics_process(delta: float) -> void:
 			if (enemy.attack_zone == false):
 				enemy.change_state(enemy.State.MOVE)
 			
-			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false):
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text > 3):
+				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.HURT)
-			
+			elif (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text <= 3):
+				enemy.timer_general_states.stop()
+				enemy.change_state(enemy.State.HURT_COUNTER)
+				
 			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.grab_condition == true):
+				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.CLINCHED)
 		
 		if (enemy.current_state == enemy.State.MOVE):
 			
-			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false):
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text > 3):
+				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.HURT)
+			elif (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text <= 3):
+				enemy.timer_general_states.stop()
+				enemy.change_state(enemy.State.HURT_COUNTER)
 			
 			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.grab_condition == true):
+				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.CLINCHED)
 			
 			if (enemy.attack_zone == true):
@@ -39,9 +50,12 @@ func _physics_process(delta: float) -> void:
 				
 		if (enemy.current_state == enemy.State.ATTACK):
 			
-			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false): 
+			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text > 3):
 				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.HURT)
+			elif (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text <= 3):
+				enemy.timer_general_states.stop()
+				enemy.change_state(enemy.State.HURT_COUNTER)
 			
 			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.grab_condition == true):
 				enemy.timer_general_states.stop()

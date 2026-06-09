@@ -20,6 +20,7 @@ enum State {
 	MOVE,
 	ATTACK,
 	HURT,
+	HURT_COUNTER,
 	PARRIED,
 	PARRIED_COUNTERED,
 	CLINCHED,
@@ -93,6 +94,8 @@ func handle_state(delta):
 			_attack_state()
 		State.HURT:
 			_hurt_state()
+		State.HURT_COUNTER:
+			_hurt_counter_state()
 		State.PARRIED:
 			_parried_state()
 		State.PARRIED_COUNTERED:
@@ -128,6 +131,8 @@ func enter_state(state):
 			print("ENEMY: Enter Attack")
 		State.HURT:
 			print("ENEMY: Enter Hurt")
+		State.HURT_COUNTER:
+			print("ENEMY: Enter Hurt_Counter")
 		State.PARRIED:
 			print("ENEMY: Enter Parried")
 		State.PARRIED_COUNTERED:
@@ -156,6 +161,10 @@ func exit_state(state):
 			hit_flag_on_player = false
 		State.HURT:
 			print("ENEMY: Exit Hurt")
+		State.HURT_COUNTER:
+			attack_hit_connection = false
+			hit_flag_on_player = false
+			print("ENEMY: Exit Hurt Counter")
 		State.PARRIED:
 			print("ENEMY: Exit Parried")
 		State.PARRIED_COUNTERED:
@@ -179,7 +188,7 @@ func _idle_state():
 	animation.play("Idle")
 	
 	look_at(player.global_position)
-
+	
 
 func _move_state():
 	
@@ -191,7 +200,7 @@ func _move_state():
 	look_at(player.global_position)
 	
 	animation.play("Move")
-	
+
 
 func _attack_state():
 	
@@ -203,14 +212,6 @@ func _attack_state():
 		timer_general_states.start(animation.current_animation_length)
 	
 	attack_impact()
-		
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
-		timer_general_states.stop()
-		change_state(State.HURT)
-	
-	if (self == player.enemy_body_ID) && (player.grab_condition == true):
-		timer_general_states.stop()
-		change_state(State.CLINCHED)
 
 
 func attack_impact():
@@ -241,6 +242,29 @@ func _hurt_state():
 		animation.play("GettingHurt")
 		timer_general_states.start(animation.current_animation_length)
 		
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
+		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
+		change_state(State.CLINCHED)
+
+
+func _hurt_counter_state():
+	
+	if (timer_general_states.is_stopped() == true):
+		if (TakeDamage() == 1):
+			return
+		self.already_hit = true
+		velocity.x = 0
+		velocity.z = 0
+		animation.stop(true)
+		animation.play("GettingHurtAndCounter_1")
+		timer_general_states.start(animation.current_animation_length)
+	
+	attack_impact()
+	
 	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
 		timer_general_states.stop()
 		change_state(State.HURT)
@@ -379,6 +403,10 @@ func _on_timer_general_states_timeout() -> void:
 		return
 		
 	if (current_state == State.HURT):
+		change_state(State.IDLE)
+		return
+	
+	if (current_state == State.HURT_COUNTER):
 		change_state(State.IDLE)
 		return
 		

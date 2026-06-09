@@ -397,7 +397,7 @@ func comboVariety(action_name):
 
 func buffer_states():
 
-	if (timer_general_states.is_stopped() == false) && (timer_general_states.time_left < 0.3):
+	if (timer_general_states.is_stopped() == false) && (timer_general_states.time_left < timer_general_states.wait_time/1.5):
 		
 		if (current_state == State.ATTACK) || (current_state == State.ATTACK_RELEASE):
 			
@@ -723,9 +723,15 @@ func grab_impact():
 		enemy_body_ID = ray_cast_attack.get_collider()
 		grab_condition = true
 		timer_general_states.stop()
-		last_action = "new"
 		comboVariety("Grab")
-		change_state(State.GRAB_CLINCH)
+		
+		if (last_action == "attack"):
+			print("GRAB PUNCH111111111111111111111111")
+			change_state(State.GRAB_PUNCH)
+		else:
+			change_state(State.GRAB_CLINCH)
+		
+		last_action = "new"
 		ray_cast_attack.enabled = false
 	else:
 		grab_condition = false
