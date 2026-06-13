@@ -7,6 +7,8 @@ extends CharacterBody3D
 
 @onready var animation = $AnimationPlayer
 @onready var collision_shape = $CollisionShape3D
+@onready var AreaScanForPush = $AreaScanForPush/CollisionShape3D
+@onready var AreaToBeDetectedPush = $AreaToBeDetectedPush/CollisionShape3D
 
 ###############################################################
 
@@ -21,6 +23,7 @@ enum State {
 	ATTACK,
 	HURT,
 	HURT_COUNTER,
+	PUSHED,
 	PARRIED,
 	PARRIED_COUNTERED,
 	CLINCHED,
@@ -36,6 +39,7 @@ var attack_zone = false
 var area_attack_range = false
 var attack_hit_connection = false
 var HP_visible = false
+var pushed_location
 var player
 
 
@@ -96,6 +100,8 @@ func handle_state(delta):
 			_hurt_state()
 		State.HURT_COUNTER:
 			_hurt_counter_state()
+		State.PUSHED:
+			_pushed_state()
 		State.PARRIED:
 			_parried_state()
 		State.PARRIED_COUNTERED:
@@ -133,6 +139,8 @@ func enter_state(state):
 			print("ENEMY: Enter Hurt")
 		State.HURT_COUNTER:
 			print("ENEMY: Enter Hurt_Counter")
+		State.PUSHED:
+			print("ENEMY: Enter Pushed")
 		State.PARRIED:
 			print("ENEMY: Enter Parried")
 		State.PARRIED_COUNTERED:
@@ -141,6 +149,8 @@ func enter_state(state):
 			velocity = Vector3.ZERO
 			print("ENEMY: Enter Clinched")
 		State.THROWN:
+			AreaScanForPush.disabled = true
+			AreaToBeDetectedPush.disabled = false
 			print("ENEMY: Enter Thrown")
 		State.CLINCHED_HIT:
 			print("ENEMY: Enter Clinched Hit")
@@ -165,6 +175,8 @@ func exit_state(state):
 			attack_hit_connection = false
 			hit_flag_on_player = false
 			print("ENEMY: Exit Hurt Counter")
+		State.PUSHED:
+			print("ENEMY: Exit Pushed")
 		State.PARRIED:
 			print("ENEMY: Exit Parried")
 		State.PARRIED_COUNTERED:
@@ -188,7 +200,7 @@ func _idle_state():
 	animation.play("Idle")
 	
 	look_at(player.global_position)
-	
+
 
 func _move_state():
 	
@@ -313,6 +325,21 @@ func _parried_countered_state():
 		change_state(State.CLINCHED)
 
 
+func _pushed_state():
+	
+	var direction = (global_position - pushed_location).normalized()
+	velocity.x = direction.x * 2  
+	velocity.z = direction.z * 2
+	
+	if (timer_general_states.is_stopped()):
+		animation.play("Thrown")
+		timer_general_states.start(animation.current_animation_length)
+	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
+		change_state(State.HURT)
+
+
 func _clinched_state():
 	
 	velocity = Vector3.ZERO
@@ -366,7 +393,6 @@ func _clinched_hit_state():
 	
 	if player.grab_punch_damage_condition == true && already_hit == false:
 		already_hit = true
-		print("AGAGAGAGAGAG")
 		timer_general_states.stop()
 		change_state(State.CLINCHED_HIT)
 
@@ -409,6 +435,10 @@ func _on_timer_general_states_timeout() -> void:
 	if (current_state == State.HURT_COUNTER):
 		change_state(State.IDLE)
 		return
+	
+	if (current_state == State.PUSHED):
+		change_state(State.IDLE)
+		return
 		
 	if (current_state == State.PARRIED):
 		change_state(State.IDLE)
@@ -419,6 +449,8 @@ func _on_timer_general_states_timeout() -> void:
 		return
 		
 	if (current_state == State.THROWN):
+		AreaToBeDetectedPush.disabled = true
+		AreaScanForPush.disabled = false
 		change_state(State.IDLE)
 		return
 		
@@ -471,3 +503,11 @@ func _on_area_attack_range_body_exited(body: Node3D) -> void:
 	if (body == player):
 		area_attack_range = false
 		print("area_attack_range: ", area_attack_range)
+
+
+func _on_area_scan_for_push_area_entered(area: Area3D) -> void:
+	
+	if (area.name == "AreaToBeDetectedPush"):
+		pushed_location = area.global_position
+		print("PUSHED")
+		change_state(State.PUSHED)
