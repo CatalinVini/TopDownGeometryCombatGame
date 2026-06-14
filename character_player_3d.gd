@@ -413,6 +413,11 @@ func buffer_states():
 			if (Input.is_action_just_pressed("grab")):
 				last_action = "grab"
 		
+		if (current_state == State.BLOCK_RELEASE):
+			
+			if (Input.is_action_just_pressed("block")):
+				last_action = "block"
+		
 		if (current_state == State.GRAB):
 			
 			if (Input.is_action_just_pressed("grab")):
@@ -826,7 +831,7 @@ func _on_timer_general_states_timeout() -> void:
 			change_state(State.BLOCK_HOLD)
 			return
 		else:
-			if (last_action == "new") || (last_action == "block"):
+			if (last_action == "new"):
 				change_state(State.BLOCK_RELEASE)
 				return
 			elif (Input.is_action_pressed("attack")): 
@@ -837,8 +842,21 @@ func _on_timer_general_states_timeout() -> void:
 				return
 			
 	if (current_state == State.BLOCK_RELEASE):
-		change_state(State.IDLE)
-		return
+		
+		if (Input.is_action_pressed("block")):
+				change_state(State.BLOCK)
+				return
+		else:
+			
+			if (last_action == "new"):
+				change_state(State.IDLE)
+				return
+			elif (last_action == "block"):
+				change_state(State.BLOCK)
+				last_action = "new"
+				return
+			
+			
 		
 	if (current_state == State.DASH):
 		change_state(State.IDLE)
