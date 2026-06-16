@@ -234,6 +234,9 @@ func attack_impact():
 		if (player.B_simple_parried == true):
 			player.B_simple_parried = false
 		
+		if (player.B_timed_parry == true):
+			player.B_timed_parry = false
+		
 		if  (player.BPS == true):
 			player.BPS = false
 			timer_general_states.stop()
@@ -328,10 +331,11 @@ func _parried_countered_state():
 func _pushed_state():
 	
 	var direction = (global_position - pushed_location).normalized()
-	velocity.x = direction.x * 2  
-	velocity.z = direction.z * 2
+	velocity.x = direction.x   
+	velocity.z = direction.z  
 	
 	if (timer_general_states.is_stopped()):
+		look_at(pushed_location)
 		animation.play("Thrown")
 		timer_general_states.start(animation.current_animation_length)
 	
