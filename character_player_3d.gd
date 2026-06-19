@@ -832,35 +832,40 @@ func _on_timer_general_states_timeout() -> void:
 		return
 	
 	if (current_state == State.ATTACK_RELEASE):
-		if (last_action == "new"):
+		
+		if (!(Input.is_action_pressed("attack"))) && (last_action == "new"):
 			change_state(State.IDLE)
+			return
+		elif (Input.is_action_pressed("attack")):
+			change_state(State.ATTACK_CHARGE)
 			return
 		else:
 			choose_action_buffer_states()
-			return
+			return 
 			
 	if (current_state == State.BLOCK):
+		
 		if (Input.is_action_pressed("block")):
 			change_state(State.BLOCK_HOLD)
 			return
 		else:
-			if (last_action == "new"):
+			if (!Input.is_action_pressed("attack")) && (last_action == "new"):
 				change_state(State.BLOCK_RELEASE)
 				return
-			elif (Input.is_action_pressed("attack")): 
+			elif (Input.is_action_pressed("attack")):
+				last_action = "new" 
 				change_state(State.ATTACK_CHARGE)
 				return
-			else:
+			elif (!Input.is_action_pressed("attack")) && (last_action != "new"):
 				choose_action_buffer_states()
 				return
 			
 	if (current_state == State.BLOCK_RELEASE):
 		
 		if (Input.is_action_pressed("block")):
-				change_state(State.BLOCK)
-				return
+			change_state(State.BLOCK)
+			return
 		else:
-			
 			if (last_action == "new"):
 				change_state(State.IDLE)
 				return
@@ -869,8 +874,6 @@ func _on_timer_general_states_timeout() -> void:
 				last_action = "new"
 				return
 			
-			
-		
 	if (current_state == State.DASH):
 		change_state(State.IDLE)
 		return
@@ -904,8 +907,12 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (current_state == State.GRAB):
 		
-		if (last_action == "new"):
+		if (!(Input.is_action_pressed("attack"))) && (last_action == "new"):
 			change_state(State.IDLE)
+			return
+		elif (Input.is_action_pressed("attack")):
+			last_action = "new"
+			change_state(State.ATTACK_CHARGE)
 			return
 		else:
 			choose_action_buffer_states()
@@ -921,6 +928,7 @@ func _on_timer_general_states_timeout() -> void:
 			return
 		else:
 			if (Input.is_action_pressed("attack")):
+				last_action = "new"
 				change_state(State.ATTACK_CHARGE)
 			else:
 				choose_action_buffer_states()

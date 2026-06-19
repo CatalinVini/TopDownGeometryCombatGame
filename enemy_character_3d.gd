@@ -228,21 +228,30 @@ func _attack_state():
 
 func attack_impact():
 	
-	if (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2) && (area_attack_range == true): 
+	if (animation.current_animation == "Attack") && (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2) && (area_attack_range == true): 
 		attack_hit_connection = true
+		parried_condition()
+	
+	elif (animation.current_animation == "GettingHurtAndCounter_1") && (timer_general_states.time_left < 0.2) && (timer_general_states.time_left > 0.1) && (area_attack_range == true):
+		attack_hit_connection = true
+		parried_condition()
 		
-		if (player.B_simple_parried == true):
-			player.B_simple_parried = false
-		
-		if (player.B_timed_parry == true):
-			player.B_timed_parry = false
-		
-		if  (player.BPS == true):
-			player.BPS = false
-			timer_general_states.stop()
-			change_state(State.PARRIED)
 	else:
 		attack_hit_connection = false
+
+
+func parried_condition():
+	
+	if (player.B_simple_parried == true):
+			player.B_simple_parried = false
+	
+	if (player.B_timed_parry == true):
+		player.B_timed_parry = false
+	
+	if  (player.BPS == true):
+		player.BPS = false
+		timer_general_states.stop()
+		change_state(State.PARRIED)
 
 
 func _hurt_state():
