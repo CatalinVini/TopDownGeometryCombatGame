@@ -17,7 +17,7 @@ extends CharacterBody3D
 @onready var ray_cast_attack = $Camera3D/RayCastAttack3D
 @onready var areaparry = $Camera3D/AreaParry
 @onready var AKBS = $AreaKnockBackStaggered
-@onready var GrabMarker = $Marker3D
+@onready var GrabMarker = $GrabMarker
 
 ###################TIMERS############################
 

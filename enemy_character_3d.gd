@@ -220,7 +220,7 @@ func _attack_state():
 	velocity.z = 0
 	
 	if (timer_general_states.is_stopped() == true):
-		animation.play("Attack")
+		animation.play("Attack_Short1")
 		timer_general_states.start(animation.current_animation_length)
 	
 	attack_impact()
@@ -228,7 +228,7 @@ func _attack_state():
 
 func attack_impact():
 	
-	if (animation.current_animation == "Attack") && (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2) && (area_attack_range == true): 
+	if (animation.current_animation == "Attack_Short1") && (timer_general_states.time_left < 0.3) && (timer_general_states.time_left > 0.2) && (area_attack_range == true): 
 		attack_hit_connection = true
 		parried_condition()
 	

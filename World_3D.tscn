@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://rclgvskwqwpe" path="res://world_3d.gd" id="1_df4i4"]
 [ext_resource type="PackedScene" uid="uid://cc4517y273la8" path="res://EnemyCharacter_3D.tscn" id="2_26jq8"]
 [ext_resource type="PackedScene" uid="uid://bh22gop501wom" path="res://CharacterPlayer_3D.tscn" id="2_df4i4"]
-[ext_resource type="Script" uid="uid://r3ieam4oj37t" path="res://enemy_behavior.gd" id="3_lrdgs"]
+[ext_resource type="Script" uid="uid://r3ieam4oj37t" path="res://Enemy_behavior.gd" id="3_lrdgs"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_gc53e"]
 
@@ -23,7 +23,7 @@ directional_shadow_max_distance = 1.0
 script = ExtResource("3_lrdgs")
 
 [node name="EnemyCharacter" parent="EnemyBehavior" unique_id=1466998257 instance=ExtResource("2_26jq8")]
-transform = Transform3D(-0.9999994, 0, 0.001064688, 0, 1, 0, -0.001064688, 0, -0.9999994, 0.39527246, 0, -5.148056)
+transform = Transform3D(-0.9999994, 0, 0.001064688, 0, 1, 0, -0.001064688, 0, -0.9999994, 0.02492945, 0, -3.9757578)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=425885854]
 transform = Transform3D(30, 0, 0, 0, 30, 0, 0, 0, 30, 0, 0, 0)

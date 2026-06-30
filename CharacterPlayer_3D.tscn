@@ -1392,8 +1392,19 @@ libraries/ = SubResource("AnimationLibrary_1msux")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_1loh5")
 
-[node name="Marker3D" type="Marker3D" parent="." unique_id=1110596899]
+[node name="GrabMarker" type="Marker3D" parent="." unique_id=1110596899]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -1.1)
+
+[node name="PositionMarkerForEnemies" type="Node3D" parent="." unique_id=1908756214]
+
+[node name="MarkerFront" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=551426450]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.027217865, 0, -1.8054771)
+
+[node name="MarkerRight" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=876858912]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3988233, 0, -1.8039069)
+
+[node name="MarkerLeft" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=919072999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3726969, 0, -1.7846056)
 
 [node name="Timer_general_states" type="Timer" parent="." unique_id=1354440191]
 one_shot = true
