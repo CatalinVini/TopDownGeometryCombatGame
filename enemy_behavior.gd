@@ -16,7 +16,7 @@ func _physics_process(delta: float) -> void:
 	
 	for enemy in enemy_array:      
 		
-		if (enemy.current_state == enemy.State.IDLE):
+		if (enemy.current_state == enemy.State.IDLE): #IDLE EXIT CONDITIONS
 			
 			if (enemy.attack_zone == false):
 				enemy.change_state(enemy.State.MOVE)
@@ -32,7 +32,7 @@ func _physics_process(delta: float) -> void:
 				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.CLINCHED)
 		
-		if (enemy.current_state == enemy.State.MOVE):
+		if (enemy.current_state == enemy.State.MOVE): #MOVE EXIT CONDITIONS
 			
 			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text > 3):
 				enemy.timer_general_states.stop()
@@ -48,7 +48,7 @@ func _physics_process(delta: float) -> void:
 			if (enemy.attack_zone == true):
 				enemy.change_state(enemy.State.IDLE)
 				
-		if (enemy.current_state == enemy.State.ATTACK):
+		if (enemy.current_state == enemy.State.ATTACK):  #ATTACK EXIT CONDITIONS
 			
 			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text > 3):
 				enemy.timer_general_states.stop()

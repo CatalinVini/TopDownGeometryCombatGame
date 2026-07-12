@@ -25,7 +25,6 @@ extends CharacterBody3D
 @onready var timer_perfect_block_window = $Timer_Perfect_Block_Window
 @onready var timer_dash_recovery = $Timer_Dash_Recovery
 
-
 var nr
 
 var right_left_hand = true

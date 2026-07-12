@@ -9,6 +9,7 @@ extends CharacterBody3D
 @onready var collision_shape = $CollisionShape3D
 @onready var AreaScanForPush = $AreaScanForPush/CollisionShape3D
 @onready var AreaToBeDetectedPush = $AreaToBeDetectedPush/CollisionShape3D
+@onready var nav_agent = $NavigationAgent3D
 
 ###############################################################
 
@@ -47,6 +48,11 @@ func _ready():
 	
 	player = get_tree().get_first_node_in_group("Player_3D")
 	Enemy_Behavior.enemy_array.push_front(self)
+	
+	nav_agent.path_desired_distance = 0.5
+	nav_agent.target_desired_distance = 1.5
+	nav_agent.avoidance_enabled = true
+	nav_agent.radius = 0.6
 
 
 func _physics_process(delta):
@@ -82,6 +88,23 @@ func TakeDamage():
 		timer_general_states.stop()
 		change_state(State.DEATH)
 		return 1
+
+
+func follow_path(delta: float) -> void:
+	
+	if nav_agent.is_navigation_finished():
+		velocity.x = 0.0
+		velocity.z = 0.0
+		return
+
+	var next_position = nav_agent.get_next_path_position()
+	var direction = global_position.direction_to(next_position)
+
+	velocity.x = direction.x * speed
+	velocity.z = direction.z * speed
+
+	if direction.length() > 0.1:
+		look_at(Vector3(next_position.x, global_position.y, next_position.z), Vector3.UP)
 
 
 ############################################################

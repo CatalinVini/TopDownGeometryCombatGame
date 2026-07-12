@@ -4595,6 +4595,8 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6875807, -0.96053547)
 shape = SubResource("BoxShape3D_2b0n5")
 
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=908237187]
+
 [node name="Timer_general_states" type="Timer" parent="." unique_id=979276938]
 one_shot = true
 
