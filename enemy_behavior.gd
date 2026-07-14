@@ -5,11 +5,17 @@ var player_position_3D: Vector3
 var attack_connected = false
 var enemy_array = []
 var enemies_ready_attack = [] 
-
+var enemies_around_player = []
+var x_coord = 0
+var z_coord = -2
 
 func _ready() -> void:
 	
 	create_timer()
+
+
+func create_enemy_positions_around_player():
+	pass
 
 
 func _physics_process(delta: float) -> void:

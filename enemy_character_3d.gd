@@ -53,8 +53,11 @@ func _ready():
 	nav_agent.target_desired_distance = 1.5
 	nav_agent.avoidance_enabled = true
 	nav_agent.radius = 0.6
-
-
+	
+	Enemy_Behavior.x_coord += 1.5
+	Enemy_Behavior.enemies_around_player.push_back([Enemy_Behavior.x_coord, Enemy_Behavior.z_coord])
+	print(Enemy_Behavior.enemies_around_player)
+	
 func _physics_process(delta):
 
 	# Apply gravity
