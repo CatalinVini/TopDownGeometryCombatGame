@@ -1299,11 +1299,6 @@ _data = {
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1loh5"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_dndls"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stc5g"]
-albedo_color = Color(0.146128, 0.5669268, 0.48199123, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1loh5"]
 bg_color = Color(0.16350216, 0.16350222, 0.16350207, 1)
 
@@ -1399,58 +1394,6 @@ shape = SubResource("CapsuleShape3D_1loh5")
 
 [node name="GrabMarker" type="Marker3D" parent="." unique_id=1110596899]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -1.1)
-
-[node name="PositionMarkerForEnemies" type="Node3D" parent="." unique_id=1908756214]
-
-[node name="MarkerLeft4" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=2141396060]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, -3)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PositionMarkerForEnemies/MarkerLeft4" unique_id=1548265959]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("SphereMesh_dndls")
-skeleton = NodePath("../../MarkerLeft4")
-surface_material_override/0 = SubResource("StandardMaterial3D_stc5g")
-
-[node name="MarkerLeft2" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=1092057088]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0, -3)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PositionMarkerForEnemies/MarkerLeft2" unique_id=1334088990]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("SphereMesh_dndls")
-surface_material_override/0 = SubResource("StandardMaterial3D_stc5g")
-
-[node name="MarkerLeft3" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=1593049069]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, -3)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PositionMarkerForEnemies/MarkerLeft3" unique_id=640838397]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("SphereMesh_dndls")
-skeleton = NodePath("../../MarkerLeft3")
-surface_material_override/0 = SubResource("StandardMaterial3D_stc5g")
-
-[node name="MarkerLeft" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=919072999]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -2)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PositionMarkerForEnemies/MarkerLeft" unique_id=2069173001]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("SphereMesh_dndls")
-surface_material_override/0 = SubResource("StandardMaterial3D_stc5g")
-
-[node name="MarkerFront" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=551426450]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PositionMarkerForEnemies/MarkerFront" unique_id=1601173217]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("SphereMesh_dndls")
-surface_material_override/0 = SubResource("StandardMaterial3D_stc5g")
-
-[node name="MarkerRight" type="Marker3D" parent="PositionMarkerForEnemies" unique_id=876858912]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -2)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PositionMarkerForEnemies/MarkerRight" unique_id=961248368]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("SphereMesh_dndls")
-surface_material_override/0 = SubResource("StandardMaterial3D_stc5g")
 
 [node name="Timer_general_states" type="Timer" parent="." unique_id=1354440191]
 one_shot = true

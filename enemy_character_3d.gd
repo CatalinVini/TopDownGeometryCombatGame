@@ -9,12 +9,14 @@ extends CharacterBody3D
 @onready var collision_shape = $CollisionShape3D
 @onready var AreaScanForPush = $AreaScanForPush/CollisionShape3D
 @onready var AreaToBeDetectedPush = $AreaToBeDetectedPush/CollisionShape3D
+@onready var AreaAttackZone = $AreaAttackZone/CollisionShape3D
 @onready var nav_agent = $NavigationAgent3D
 
 ###############################################################
 
 @onready var timer_general_states = $Timer_general_states
 @onready var timer_HP_visible = $Timer_HP_visible
+@onready var timer_distancing = $Timer_distancing
 
 ##############################################################
 
@@ -54,10 +56,67 @@ func _ready():
 	nav_agent.avoidance_enabled = true
 	nav_agent.radius = 0.6
 	
-	Enemy_Behavior.x_coord += 1.5
-	Enemy_Behavior.enemies_around_player.push_back([Enemy_Behavior.x_coord, Enemy_Behavior.z_coord])
-	print(Enemy_Behavior.enemies_around_player)
+	timer_distancing.autostart = true
+
+
+func parried_condition():
 	
+	if (player.B_simple_parried == true):
+			player.B_simple_parried = false
+	
+	if (player.B_timed_parry == true):
+		player.B_timed_parry = false
+	
+	if  (player.BPS == true):
+		player.BPS = false
+		timer_general_states.stop()
+		change_state(State.PARRIED)
+
+
+func _hurt_state():
+	
+	if (timer_general_states.is_stopped()):
+		if (TakeDamage() == 1):
+			return
+		self.already_hit = true
+		velocity.x = 0
+		velocity.z = 0
+		animation.stop(true)
+		animation.play("GettingHurt")
+		timer_general_states.start(animation.current_animation_length)
+		
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
+		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
+		change_state(State.CLINCHED)
+
+
+func _hurt_counter_state():
+	
+	if (timer_general_states.is_stopped() == true):
+		if (TakeDamage() == 1):
+			return
+		self.already_hit = true
+		velocity.x = 0
+		velocity.z = 0
+		animation.stop(true)
+		animation.play("GettingHurtAndCounter_1")
+		timer_general_states.start(animation.current_animation_length)
+	
+	attack_impact()
+	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
+		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
+		change_state(State.CLINCHED)
+
+
 func _physics_process(delta):
 
 	# Apply gravity
@@ -93,7 +152,7 @@ func TakeDamage():
 		return 1
 
 
-func follow_path(delta: float) -> void:
+func fallow_path() -> void:
 	
 	if nav_agent.is_navigation_finished():
 		velocity.x = 0.0
@@ -223,21 +282,17 @@ func exit_state(state):
 func _idle_state():
 	
 	velocity = Vector3.ZERO
-	animation.play("Idle")
+	animation.play("Idle_Aggresive", 0.5)
 	
 	look_at(player.global_position)
 
 
 func _move_state():
 	
-	var direction = (player.global_position - global_position).normalized()
+	nav_agent.target_position = player.global_position
+	fallow_path()
 	
-	velocity.x = direction.x * speed
-	velocity.z = direction.z * speed
-	
-	look_at(player.global_position)
-	
-	animation.play("Move")
+	animation.play("Move_Run", 0.5)
 
 
 func _attack_state():
@@ -264,64 +319,6 @@ func attack_impact():
 		
 	else:
 		attack_hit_connection = false
-
-
-func parried_condition():
-	
-	if (player.B_simple_parried == true):
-			player.B_simple_parried = false
-	
-	if (player.B_timed_parry == true):
-		player.B_timed_parry = false
-	
-	if  (player.BPS == true):
-		player.BPS = false
-		timer_general_states.stop()
-		change_state(State.PARRIED)
-
-
-func _hurt_state():
-	
-	if (timer_general_states.is_stopped()):
-		if (TakeDamage() == 1):
-			return
-		self.already_hit = true
-		velocity.x = 0
-		velocity.z = 0
-		animation.stop(true)
-		animation.play("GettingHurt")
-		timer_general_states.start(animation.current_animation_length)
-		
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
-		timer_general_states.stop()
-		change_state(State.HURT)
-	
-	if (self == player.enemy_body_ID) && (player.grab_condition == true):
-		timer_general_states.stop()
-		change_state(State.CLINCHED)
-
-
-func _hurt_counter_state():
-	
-	if (timer_general_states.is_stopped() == true):
-		if (TakeDamage() == 1):
-			return
-		self.already_hit = true
-		velocity.x = 0
-		velocity.z = 0
-		animation.stop(true)
-		animation.play("GettingHurtAndCounter_1")
-		timer_general_states.start(animation.current_animation_length)
-	
-	attack_impact()
-	
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
-		timer_general_states.stop()
-		change_state(State.HURT)
-	
-	if (self == player.enemy_body_ID) && (player.grab_condition == true):
-		timer_general_states.stop()
-		change_state(State.CLINCHED)
 
 
 func _parried_state():
@@ -500,6 +497,9 @@ func _on_timer_general_states_timeout() -> void:
 	if (current_state == State.DEATH):
 		Enemy_Behavior.enemy_array.erase(self)
 		Enemy_Behavior.enemies_ready_attack.erase(self)
+		Enemy_Behavior.enemies_around_player.pop_back()
+		print(Enemy_Behavior.enemies_around_player)
+		timer_distancing.stop()
 		queue_free()
 
 
@@ -514,6 +514,8 @@ func _on_timer_hp_visible_timeout() -> void:
 func _on_area_attack_zone_body_entered(body: Node3D) -> void:
 	
 	if (body == player):
+		AreaAttackZone.shape.radius = 1.5
+		timer_distancing.stop()
 		attack_zone = true
 		Enemy_Behavior.enemies_ready_attack.push_front(self)
 		print("attack_zone: ", attack_zone)
@@ -522,9 +524,15 @@ func _on_area_attack_zone_body_entered(body: Node3D) -> void:
 func _on_area_attack_zone_body_exited(body: Node3D) -> void:
 	
 	if (body == player):
-		attack_zone = false
+		AreaAttackZone.shape.radius = 1.4
+		timer_distancing.start(0.5)
 		Enemy_Behavior.enemies_ready_attack.erase(self)
 		print("attack_zone: ", attack_zone)
+
+
+func _on_timer_distancing_timeout() -> void:
+	
+	attack_zone = false
 
 
 ##############################--AREA_EFFECTS--#################################

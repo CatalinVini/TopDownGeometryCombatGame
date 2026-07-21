@@ -4380,7 +4380,7 @@ height = 2.075055
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_2b0n5"]
 height = 2.0335503
-radius = 1.3769531
+radius = 1.4013672
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_m0ayn"]
 radius = 0.6567383
@@ -4389,7 +4389,7 @@ radius = 0.6567383
 radius = 0.7939453
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2b0n5"]
-size = Vector3(2.0151997, 0.6879675, 0.8249639)
+size = Vector3(2.0151997, 0.6879675, 1.0077547)
 
 [node name="EnemyCharacter" type="CharacterBody3D" unique_id=1466998257 groups=["Enemy_3D"]]
 collision_layer = 2
@@ -4397,6 +4397,16 @@ collision_mask = 3
 script = ExtResource("1_2b0n5")
 speed = 3
 gravity = 5.0
+
+[node name="Timer_general_states" type="Timer" parent="." unique_id=979276938]
+one_shot = true
+autostart = true
+
+[node name="Timer_HP_visible" type="Timer" parent="." unique_id=68177866]
+one_shot = true
+
+[node name="Timer_distancing" type="Timer" parent="." unique_id=1219124630]
+one_shot = true
 
 [node name="Armature" type="Node3D" parent="." unique_id=427382902]
 transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.055, 0, 0, 0)
@@ -4592,21 +4602,16 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 [node name="AreaAttackRange" type="Area3D" parent="." unique_id=323809082]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AreaAttackRange" unique_id=576152271]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6875807, -0.96053547)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6875807, -1.0519309)
 shape = SubResource("BoxShape3D_2b0n5")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=908237187]
 
-[node name="Timer_general_states" type="Timer" parent="." unique_id=979276938]
-one_shot = true
-
-[node name="Timer_HP_visible" type="Timer" parent="." unique_id=68177866]
-one_shot = true
-
+[connection signal="timeout" from="Timer_general_states" to="." method="_on_timer_general_states_timeout"]
+[connection signal="timeout" from="Timer_HP_visible" to="." method="_on_timer_hp_visible_timeout"]
+[connection signal="timeout" from="Timer_distancing" to="." method="_on_timer_distancing_timeout"]
 [connection signal="body_entered" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_entered"]
 [connection signal="body_exited" from="AreaAttackZone" to="." method="_on_area_attack_zone_body_exited"]
 [connection signal="area_entered" from="AreaScanForPush" to="." method="_on_area_scan_for_push_area_entered"]
 [connection signal="body_entered" from="AreaAttackRange" to="." method="_on_area_attack_range_body_entered"]
 [connection signal="body_exited" from="AreaAttackRange" to="." method="_on_area_attack_range_body_exited"]
-[connection signal="timeout" from="Timer_general_states" to="." method="_on_timer_general_states_timeout"]
-[connection signal="timeout" from="Timer_HP_visible" to="." method="_on_timer_hp_visible_timeout"]

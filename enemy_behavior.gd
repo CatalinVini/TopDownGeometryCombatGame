@@ -9,6 +9,7 @@ var enemies_around_player = []
 var x_coord = 0
 var z_coord = -2
 
+
 func _ready() -> void:
 	
 	create_timer()
@@ -26,10 +27,11 @@ func _physics_process(delta: float) -> void:
 			
 			if (enemy.attack_zone == false):
 				enemy.change_state(enemy.State.MOVE)
-			
+				
 			if (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text > 3):
 				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.HURT)
+				
 			elif (enemy == enemy.player.enemy_body_ID) && (enemy.player.attack_damage_condition == true) && (enemy.already_hit == false) && (enemy.player.variety_for_text <= 3):
 				enemy.timer_general_states.stop()
 				enemy.change_state(enemy.State.HURT_COUNTER)
