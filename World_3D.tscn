@@ -21,7 +21,7 @@ script = ExtResource("1_df4i4")
 transform = Transform3D(0.87206936, 0.48714897, 0.046701185, -2.9802322e-08, -0.095428765, 0.9954363, 0.48938242, -0.86808944, -0.08322049, -27.389063, 9.364155, -2.6470585)
 directional_shadow_max_distance = 1.0
 
-[node name="CharacterPlayer3D" parent="." unique_id=240290894 groups=["Player_3D"] instance=ExtResource("2_df4i4")]
+[node name="CharacterPlayer3D" parent="." unique_id=240290894 instance=ExtResource("2_df4i4")]
 
 [node name="EnemyBehavior" type="Node3D" parent="." unique_id=1039750532]
 script = ExtResource("3_lrdgs")

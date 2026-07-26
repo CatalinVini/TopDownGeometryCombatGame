@@ -83,7 +83,8 @@ var BPS = false
 var B_timed_parry = false
 var dash_nr = 1
 var comboV_ok = false
-
+var rotation_speed_y
+var event: InputEvent
 
 func _ready():
 	
@@ -94,7 +95,7 @@ func _ready():
 
 
 func _physics_process(delta: float) -> void:
-
+	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	
@@ -247,8 +248,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if (event is InputEventMouseMotion):
 		
 		y_rotation -= event.relative.x * mouse_sensitivity
+		rotation_speed_y = event.relative.x
 		x_rotation -= event.relative.y * mouse_sensitivity
-		
 		x_rotation = clamp(x_rotation, deg_to_rad(-80), deg_to_rad(80))
 		
 		rotation.y = y_rotation
@@ -332,7 +333,7 @@ func TakeDEFDamage(enemy):
 
 func Enemy_Health_Bar():
 	
-	if (enemy_body_ID):
+	if is_instance_valid(enemy_body_ID) and enemy_body_ID.is_in_group("Enemy_3D"):
 		Enemy_HP_bar.visible = enemy_body_ID.HP_visible
 		Enemy_HP_bar.value = enemy_body_ID.HP
 	else:
@@ -611,7 +612,10 @@ func _attack_release_state():
 func attack_impact():
 	
 	if ray_cast_attack.is_colliding():
-		enemy_body_ID = ray_cast_attack.get_collider()
+		var collider = ray_cast_attack.get_collider()
+
+		if collider != null and collider.is_in_group("Enemy_3D"):
+			enemy_body_ID = collider
 		
 		if (timer_general_states.get_time_left() < 0.5) && (timer_general_states.get_time_left() > 0.4) && enemy_body_ID.already_hit == false: 
 			attack_damage_condition = true
@@ -737,21 +741,24 @@ func _grab_state():
 func grab_impact():
 	
 	if (timer_general_states.time_left < 0.4) && (timer_general_states.time_left > 0.3) && ray_cast_attack.is_colliding():
-		enemy_body_ID = ray_cast_attack.get_collider()
-		grab_condition = true
-		timer_general_states.stop()
-		comboVariety("Grab")
+		var collider = ray_cast_attack.get_collider()
 		
-		if (last_action == "attack"):
-			print("GRAB PUNCH111111111111111111111111")
-			change_state(State.GRAB_PUNCH)
+		if collider != null and collider.is_in_group("Enemy_3D"):
+			enemy_body_ID = collider
+			grab_condition = true
+			timer_general_states.stop()
+			comboVariety("Grab")
+			
+			if (last_action == "attack"):
+				print("GRAB PUNCH111111111111111111111111")
+				change_state(State.GRAB_PUNCH)
+			else:
+				change_state(State.GRAB_CLINCH)
+			
+			last_action = "new"
+			ray_cast_attack.enabled = false
 		else:
-			change_state(State.GRAB_CLINCH)
-		
-		last_action = "new"
-		ray_cast_attack.enabled = false
-	else:
-		grab_condition = false
+			grab_condition = false
 
 
 func _grab_clinch_state():
@@ -944,6 +951,7 @@ func _on_timer_general_states_timeout() -> void:
 
 
 func _on_timer_perfect_block_window_timeout() -> void:
+	
 	pass
 
 
