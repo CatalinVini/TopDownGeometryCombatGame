@@ -15,10 +15,6 @@ func _ready() -> void:
 	create_timer()
 
 
-func create_enemy_positions_around_player():
-	pass
-
-
 func _physics_process(delta: float) -> void:
 	
 	for enemy in enemy_array:

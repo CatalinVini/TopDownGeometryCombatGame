@@ -17,10 +17,12 @@ extends CharacterBody3D
 @onready var timer_general_states = $Timer_general_states
 @onready var timer_HP_visible = $Timer_HP_visible
 @onready var timer_distancing = $Timer_distancing
+@onready var timer_clinch_attack = $Timer_clinch_attack
 
 ##############################################################
 
 enum State {
+	
 	IDLE,
 	MOVE,
 	ATTACK,
@@ -31,9 +33,10 @@ enum State {
 	PARRIED_COUNTERED,
 	CLINCHED,
 	CLINCHED_STUNNED,
-	THROWN,
 	CLINCHED_HIT,
 	CLINCHED_STUNNED_HIT,
+	CLINCHED_ATTACK,
+	THROWN,
 	DEATH
 }
 
@@ -49,6 +52,7 @@ var player
 
 
 func _ready():
+	
 	player = get_tree().get_first_node_in_group("Player_3D")
 	Enemy_Behavior.enemy_array.push_front(self)
 	
@@ -58,64 +62,6 @@ func _ready():
 	nav_agent.radius = 0.6
 	
 	timer_distancing.autostart = true
-
-
-func parried_condition():
-	
-	if (player.B_simple_parried == true):
-			player.B_simple_parried = false
-	
-	if (player.B_timed_parry == true):
-		player.B_timed_parry = false
-	
-	if  (player.BPS == true):
-		player.BPS = false
-		timer_general_states.stop()
-		change_state(State.PARRIED)
-
-
-func _hurt_state():
-	
-	if (timer_general_states.is_stopped()):
-		if (TakeDamage() == 1):
-			return
-		self.already_hit = true
-		velocity.x = 0
-		velocity.z = 0
-		animation.stop(true)
-		animation.play("GettingHurt")
-		timer_general_states.start(animation.current_animation_length)
-		
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
-		timer_general_states.stop()
-		change_state(State.HURT)
-	
-	if (self == player.enemy_body_ID) && (player.grab_condition == true):
-		timer_general_states.stop()
-		change_state(State.CLINCHED)
-
-
-func _hurt_counter_state():
-	
-	if (timer_general_states.is_stopped() == true):
-		if (TakeDamage() == 1):
-			return
-		self.already_hit = true
-		velocity.x = 0
-		velocity.z = 0
-		animation.stop(true)
-		animation.play("GettingHurtAndCounter_1")
-		timer_general_states.start(animation.current_animation_length)
-	
-	attack_impact()
-	
-	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
-		timer_general_states.stop()
-		change_state(State.HURT)
-	
-	if (self == player.enemy_body_ID) && (player.grab_condition == true):
-		timer_general_states.stop()
-		change_state(State.CLINCHED_STUNNED)
 
 
 func _physics_process(delta):
@@ -170,6 +116,20 @@ func fallow_path() -> void:
 		look_at(Vector3(next_position.x, global_position.y, next_position.z), Vector3.UP)
 
 
+func parried_condition():
+	
+	if (player.B_simple_parried == true):
+			player.B_simple_parried = false
+	
+	if (player.B_timed_parry == true):
+		player.B_timed_parry = false
+	
+	if  (player.BPS == true):
+		player.BPS = false
+		timer_general_states.stop()
+		change_state(State.PARRIED)
+
+
 ############################################################
 
 
@@ -196,12 +156,14 @@ func handle_state(delta):
 			_clinched_state()
 		State.CLINCHED_STUNNED:
 			_clinched_stunned_state()
-		State.THROWN:
-			_thrown_state()
 		State.CLINCHED_HIT:
 			_clinched_hit_state()
 		State.CLINCHED_STUNNED_HIT:
 			_clinched_stunned_hit_state()
+		State.CLINCHED_ATTACK:
+			_clinched_attack_state()
+		State.THROWN:
+			_thrown_state()
 		State.DEATH:
 			_death_state()
 
@@ -239,15 +201,17 @@ func enter_state(state):
 			print("ENEMY: Enter Clinched_State")
 		State.CLINCHED_STUNNED:
 			velocity = Vector3.ZERO
-			print("ENEMY: Enter Clinched_Stunned_State")
-		State.THROWN:
-			AreaScanForPush.disabled = true
-			AreaToBeDetectedPush.disabled = false
-			print("ENEMY: Enter Thrown")
+			print("ENEMY: Enter Clinched_Stunned")
 		State.CLINCHED_HIT:
 			print("ENEMY: Enter Clinched_Hit")
 		State.CLINCHED_STUNNED_HIT:
 			print("ENEMY: Enter Clinched_Stunned_Hit")
+		State.CLINCHED_ATTACK:
+			print("ENEMY: Enter Clinched_Attack")
+		State.THROWN:
+			AreaScanForPush.disabled = true
+			AreaToBeDetectedPush.disabled = false
+			print("ENEMY: Enter Thrown")
 		State.DEATH:
 			print("ENEMY: Enter Death")
 
@@ -276,15 +240,17 @@ func exit_state(state):
 		State.PARRIED_COUNTERED:
 			print("ENEMY: Exit Parried Countered")
 		State.CLINCHED:
-			print("ENEMY: Enter Clinched_State")
+			print("ENEMY: Enter Clinched")
 		State.CLINCHED_STUNNED:
-			print("ENEMY: Exit Clinched")
-		State.THROWN:
-			print("ENEMY: Exit Thrown")
+			print("ENEMY: Exit Clinched_Stunned")
 		State.CLINCHED_HIT:
 			print("ENEMY: Enter Clinched_Hit")
 		State.CLINCHED_STUNNED_HIT:
-			print("ENEMY: Exit Clinched Hit")
+			print("ENEMY: Exit Clinched_Stunned_Hit")
+		State.CLINCHED_ATTACK:
+			print("ENEMY: Exit Clinched_Attack")
+		State.THROWN:
+			print("ENEMY: Exit Thrown")
 		State.DEATH:
 			print("ENEMY: Exit Death")
 
@@ -332,6 +298,50 @@ func attack_impact():
 		
 	else:
 		attack_hit_connection = false
+
+
+func _hurt_state():
+	
+	if (timer_general_states.is_stopped()):
+		if (TakeDamage() == 1):
+			return
+		self.already_hit = true
+		velocity.x = 0
+		velocity.z = 0
+		animation.stop(true)
+		animation.play("GettingHurt")
+		timer_general_states.start(animation.current_animation_length)
+		
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
+		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
+		change_state(State.CLINCHED)
+
+
+func _hurt_counter_state():
+	
+	if (timer_general_states.is_stopped() == true):
+		if (TakeDamage() == 1):
+			return
+		self.already_hit = true
+		velocity.x = 0
+		velocity.z = 0
+		animation.stop(true)
+		animation.play("GettingHurtAndCounter_1")
+		timer_general_states.start(animation.current_animation_length)
+	
+	attack_impact()
+	
+	if (self == player.enemy_body_ID) && (player.attack_damage_condition == true) && (self.already_hit == false): 
+		timer_general_states.stop()
+		change_state(State.HURT)
+	
+	if (self == player.enemy_body_ID) && (player.grab_condition == true):
+		timer_general_states.stop()
+		change_state(State.CLINCHED_STUNNED)
 
 
 func _parried_state():
@@ -404,6 +414,9 @@ func _clinched_state():
 	look_target.y = global_position.y
 	look_at(look_target, Vector3.UP)
 	
+	if (timer_clinch_attack.is_stopped()):
+		timer_clinch_attack.start(randf_range(1,2))
+	
 	if (player.current_state == player.State.GRAB_THROW):
 		timer_general_states.stop()
 		change_state(State.THROWN)
@@ -411,7 +424,7 @@ func _clinched_state():
 	if player.grab_punch_damage_condition == true && already_hit == false:
 		already_hit = true
 		timer_general_states.stop()
-		change_state(State.CLINCHED_STUNNED_HIT)
+		change_state(State.CLINCHED_HIT)
 
 
 func _clinched_stunned_state():
@@ -458,7 +471,7 @@ func _clinched_hit_state():
 			return
 		already_hit = true
 		animation.stop(true)
-		animation.play("Clinch_Stunned_hit")
+		animation.play("Clinch_Hit")
 		timer_general_states.start(animation.current_animation_length)
 	
 	if (player.current_state == player.State.GRAB_THROW):
@@ -468,7 +481,7 @@ func _clinched_hit_state():
 	if player.grab_punch_damage_condition == true && already_hit == false:
 		already_hit = true
 		timer_general_states.stop()
-		change_state(State.CLINCHED_STUNNED_HIT)
+		change_state(State.CLINCHED_HIT)
 
 
 func _clinched_stunned_hit_state():
@@ -501,6 +514,35 @@ func _clinched_stunned_hit_state():
 		already_hit = true
 		timer_general_states.stop()
 		change_state(State.CLINCHED_STUNNED_HIT)
+
+
+func _clinched_attack_state():
+	
+	velocity = Vector3.ZERO
+	
+	global_position = Vector3(
+		player.GrabMarker.global_position.x, 
+		0, 
+		player.GrabMarker.global_position.z
+	)
+	
+	var look_target = player.global_position
+	look_target.y = global_position.y
+	look_at(look_target, Vector3.UP)
+	
+	if (timer_general_states.is_stopped()):
+		animation.stop(true)
+		animation.play("Clinch_Attack")
+		timer_general_states.start(animation.current_animation_length)
+		
+	if (player.current_state == player.State.GRAB_THROW):
+		timer_general_states.stop()
+		change_state(State.THROWN)
+		
+	if player.grab_punch_damage_condition == true && already_hit == false:
+		already_hit = true
+		timer_general_states.stop()
+		change_state(State.CLINCHED_HIT)
 
 
 func _thrown_state():
@@ -564,6 +606,14 @@ func _on_timer_general_states_timeout() -> void:
 		change_state(State.CLINCHED_STUNNED)
 		return
 	
+	if (current_state == State.CLINCHED_HIT):
+		change_state(State.CLINCHED)
+		return
+	
+	if (current_state == State.CLINCHED_ATTACK):
+		change_state(State.CLINCHED)
+		return
+	
 	if (current_state == State.DEATH):
 		Enemy_Behavior.enemy_array.erase(self)
 		Enemy_Behavior.enemies_ready_attack.erase(self)
@@ -571,6 +621,14 @@ func _on_timer_general_states_timeout() -> void:
 		print(Enemy_Behavior.enemies_around_player)
 		timer_distancing.stop()
 		queue_free()
+
+
+func _on_timer_clinch_attack_timeout() -> void:
+	
+	if (current_state == State.CLINCHED):
+		change_state(State.CLINCHED_ATTACK)
+		print("ASDASDADSSADADS")
+
 
 
 func _on_timer_hp_visible_timeout() -> void:

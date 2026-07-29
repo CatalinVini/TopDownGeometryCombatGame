@@ -67,6 +67,7 @@ enum State {
 	BLOCK_PARRY_SUCCESS,
 	GRAB,
 	GRAB_CLINCH,
+	GRAB_BLOCK,
 	GRAB_THROW,
 	GRAB_PUNCH
 }
@@ -85,6 +86,7 @@ var dash_nr = 1
 var comboV_ok = false
 var rotation_speed_y
 var event: InputEvent
+
 
 func _ready():
 	
@@ -150,6 +152,8 @@ func handle_state(delta):
 			_grab_state()
 		State.GRAB_CLINCH:
 			_grab_clinch_state()
+		State.GRAB_BLOCK:
+			_grab_block_state()
 		State.GRAB_THROW:
 			_grab_throw_state()
 		State.GRAB_PUNCH:
@@ -193,6 +197,8 @@ func enter_state(state):
 			print("PLAYER: Enter Grab")
 		State.GRAB_CLINCH:
 			print("PLAYER: Enter Grab_Clinch")
+		State.GRAB_BLOCK:
+			print("PLAYER: Enter Grab_Block")
 		State.GRAB_THROW:
 			grab_condition = false
 			ray_cast_attack.enabled = true
@@ -232,6 +238,8 @@ func exit_state(state):
 		State.GRAB_CLINCH:
 			grab_condition = false
 			print("PLAYER: Exit Grab_Clinch")
+		State.GRAB_BLOCK:
+			print("PLAYER: Exit Grab_Block")
 		State.GRAB_THROW:
 			print("PLAYER: Exit Grab_Throw")
 		State.GRAB_PUNCH:
@@ -433,6 +441,14 @@ func buffer_states():
 			if (Input.is_action_just_pressed("attack")):
 				last_action = "attack"
 		
+		if (current_state == State.GRAB_BLOCK):
+			
+			if (Input.is_action_just_pressed("attack")):
+				last_action = "grab_punch"
+			
+			if (Input.is_action_just_pressed("grab")):
+				last_action = "grab"
+		
 		if (current_state == State.GRAB_PUNCH):
 			
 			if (Input.is_action_just_pressed("attack")):
@@ -440,7 +456,7 @@ func buffer_states():
 			
 			if (Input.is_action_just_pressed("grab")):
 				last_action = "throw"
-				
+		
 		if (current_state == State.GRAB_THROW):
 			
 			if (Input.is_action_just_pressed("attack")):
@@ -459,6 +475,9 @@ func choose_action_buffer_states():
 		
 	if (last_action == "grab"):
 		change_state(State.GRAB)
+	
+	if (last_action == "grab_block"):
+		change_state(State.GRAB_BLOCK)
 	
 	if (last_action == "grab_punch"):
 		change_state(State.GRAB_PUNCH)
@@ -774,6 +793,17 @@ func _grab_clinch_state():
 	if (Input.is_action_just_pressed("attack")):
 		timer_general_states.stop()
 		change_state(State.GRAB_PUNCH)
+	
+	if (Input.is_action_just_pressed("block")):
+		timer_general_states.stop()
+		change_state(State.GRAB_BLOCK)
+
+
+func _grab_block_state():
+	
+	if (timer_general_states.is_stopped()):
+		animation.play("Clinch_Block")
+		timer_general_states.start(animation.current_animation_length)
 
 
 func _grab_throw_state():
@@ -798,6 +828,10 @@ func _grab_punch_state():
 		animation.stop(true)
 		animation.play("Grab_punch")
 		timer_general_states.start(animation.current_animation_length)
+	
+	if (Input.is_action_just_pressed("block")):
+		timer_general_states.stop()
+		change_state(State.GRAB_BLOCK)
 	
 	grab_punch_impact()
 	
@@ -924,6 +958,15 @@ func _on_timer_general_states_timeout() -> void:
 			choose_action_buffer_states()
 			return 
 			
+	if (current_state == State.GRAB_BLOCK):
+		
+		if (last_action == "new"):
+			change_state(State.GRAB_CLINCH)
+			return
+		else:
+			choose_action_buffer_states()
+			return
+		
 	if (current_state == State.GRAB_THROW):
 		
 		if (last_action == "new"):
