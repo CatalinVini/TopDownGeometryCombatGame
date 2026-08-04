@@ -375,7 +375,6 @@ func get_hurt():
 			enemy.attack_hit_connection = false
 			enemy.hit_flag_on_player = true
 			GainDEF(50)
-			print("55555555555")
 
 
 func GainDEF(amount):
@@ -769,7 +768,6 @@ func grab_impact():
 			comboVariety("Grab")
 			
 			if (last_action == "attack"):
-				print("GRAB PUNCH111111111111111111111111")
 				change_state(State.GRAB_PUNCH)
 			else:
 				change_state(State.GRAB_CLINCH)
@@ -801,9 +799,24 @@ func _grab_clinch_state():
 
 func _grab_block_state():
 	
+	
 	if (timer_general_states.is_stopped()):
-		animation.play("Clinch_Block")
-		timer_general_states.start(animation.current_animation_length)
+		animation.play("Clinch_Block",0 ,1.5)
+		timer_general_states.start(animation.current_animation_length / 1.5)
+		
+	if (enemy_body_ID.attack_hit_connection == true) && (DEF < 100) && (enemy_body_ID.hit_flag_on_player == false): 
+		B_timed_parry = true
+		timer_general_states.stop()
+		timer_general_states.timeout.emit()
+		print("Yeah!")
+		return
+		
+	if (enemy_body_ID.attack_hit_connection == true) && (DEF == 100) && (enemy_body_ID.hit_flag_on_player == false): 
+		BPS = true
+		timer_general_states.stop()
+		timer_general_states.timeout.emit()
+		print("Hell Yeah!")
+		return
 
 
 func _grab_throw_state():

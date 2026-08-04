@@ -119,16 +119,22 @@ func fallow_path() -> void:
 func parried_condition():
 	
 	if (player.B_simple_parried == true):
-			player.B_simple_parried = false
+		player.B_simple_parried = false
 	
 	if (player.B_timed_parry == true):
 		player.B_timed_parry = false
 	
-	if  (player.BPS == true):
+	if  (player.BPS == true) && (player.current_state == player.State.GRAB_BLOCK):
+		player.BPS = false
+		timer_general_states.stop()
+		timer_general_states.timeout.emit()
+		print("AAWW HECK!!")
+
+	elif (player.BPS == true) && (player.current_state != player.State.GRAB_BLOCK):
 		player.BPS = false
 		timer_general_states.stop()
 		change_state(State.PARRIED)
-
+		
 
 ############################################################
 
@@ -244,10 +250,14 @@ func exit_state(state):
 		State.CLINCHED_STUNNED:
 			print("ENEMY: Exit Clinched_Stunned")
 		State.CLINCHED_HIT:
+			attack_hit_connection = false
+			hit_flag_on_player = false
 			print("ENEMY: Enter Clinched_Hit")
 		State.CLINCHED_STUNNED_HIT:
 			print("ENEMY: Exit Clinched_Stunned_Hit")
 		State.CLINCHED_ATTACK:
+			attack_hit_connection = false
+			hit_flag_on_player = false
 			print("ENEMY: Exit Clinched_Attack")
 		State.THROWN:
 			print("ENEMY: Exit Thrown")
@@ -295,7 +305,12 @@ func attack_impact():
 	elif (animation.current_animation == "GettingHurtAndCounter_1") && (timer_general_states.time_left < 0.2) && (timer_general_states.time_left > 0.1) && (area_attack_range == true):
 		attack_hit_connection = true
 		parried_condition()
-		
+	else:
+		attack_hit_connection = false
+	
+	if (animation.current_animation == "Clinch_Attack") && (timer_general_states.time_left < 0.2):
+		attack_hit_connection = true
+		parried_condition()
 	else:
 		attack_hit_connection = false
 
@@ -535,6 +550,8 @@ func _clinched_attack_state():
 		animation.play("Clinch_Attack")
 		timer_general_states.start(animation.current_animation_length)
 		
+	attack_impact()
+	
 	if (player.current_state == player.State.GRAB_THROW):
 		timer_general_states.stop()
 		change_state(State.THROWN)
