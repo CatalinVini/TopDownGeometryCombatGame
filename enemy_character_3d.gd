@@ -54,7 +54,7 @@ var player
 func _ready():
 	
 	player = get_tree().get_first_node_in_group("Player_3D")
-	Enemy_Behavior.enemy_array.push_front(self)
+	Enemy_Behavior.enemy_array.push_back(self)
 	
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 1.5
@@ -124,17 +124,21 @@ func parried_condition():
 	if (player.B_timed_parry == true):
 		player.B_timed_parry = false
 	
-	if  (player.BPS == true) && (player.current_state == player.State.GRAB_BLOCK):
-		player.BPS = false
-		timer_general_states.stop()
-		timer_general_states.timeout.emit()
-		print("AAWW HECK!!")
-
-	elif (player.BPS == true) && (player.current_state != player.State.GRAB_BLOCK):
+	if (player.BPS == true):
 		player.BPS = false
 		timer_general_states.stop()
 		change_state(State.PARRIED)
+	
+	if  (player.BPS_grab == true):
+		player.BPS_grab = false
+		timer_general_states.stop()
+		timer_general_states.timeout.emit()
 		
+	if (player.B_timed_parry_grab == true):
+		player.B_timed_parry_grab = false
+		timer_general_states.stop()
+		timer_general_states.timeout.emit()
+
 
 ############################################################
 
@@ -305,14 +309,10 @@ func attack_impact():
 	elif (animation.current_animation == "GettingHurtAndCounter_1") && (timer_general_states.time_left < 0.2) && (timer_general_states.time_left > 0.1) && (area_attack_range == true):
 		attack_hit_connection = true
 		parried_condition()
-	else:
-		attack_hit_connection = false
-	
+		
 	if (animation.current_animation == "Clinch_Attack") && (timer_general_states.time_left < 0.2):
 		attack_hit_connection = true
 		parried_condition()
-	else:
-		attack_hit_connection = false
 
 
 func _hurt_state():
