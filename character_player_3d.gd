@@ -861,7 +861,7 @@ func _grab_block_state():
 		
 	if (enemy_body_ID.attack_hit_connection == true) && (DEF < 100) && (enemy_body_ID.hit_flag_on_player == false): 
 		enemy_body_ID.attack_hit_connection = false
-		B_timed_parry_grab = true
+		BPS_grab = true
 		GainDEF(25)
 		timer_general_states.stop()
 		timer_general_states.timeout.emit()
@@ -870,7 +870,7 @@ func _grab_block_state():
 		
 	elif (enemy_body_ID.attack_hit_connection == true) && (DEF == 100) && (enemy_body_ID.hit_flag_on_player == false): 
 		enemy_body_ID.attack_hit_connection = false
-		BPS_grab = true
+		B_timed_parry_grab = true
 		timer_general_states.stop()
 		timer_general_states.timeout.emit()
 		print("Hell Yeah!")
