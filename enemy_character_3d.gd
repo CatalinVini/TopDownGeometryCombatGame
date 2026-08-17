@@ -30,7 +30,6 @@ var HP_visible = false
 var pushed_location
 var player
 
-
 var current_state: State = State.IDLE
 enum State {
 	
@@ -47,11 +46,14 @@ enum State {
 	CLINCHED_HIT,
 	CLINCHED_STUNNED_HIT,
 	CLINCHED_ATTACK,
+	CLINCHED_BLOCK,
+	CLINCHED_BLOCK_COUNTER,
 	CLINCHED_PARRIED,
 	CLINCHED_PARRIED_COUNTERED,
 	THROWN,
 	THROWN_STUNNED,
 	DEATH
+	
 }
 
 
@@ -176,6 +178,10 @@ func handle_state(delta):
 			_clinched_stunned_hit_state()
 		State.CLINCHED_ATTACK:
 			_clinched_attack_state()
+		State.CLINCHED_BLOCK:
+			_clinched_block_state()
+		State.CLINCHED_BLOCK_COUNTER:
+			_clinched_block_counter()
 		State.CLINCHED_PARRIED:
 			_clinched_parried_state()
 		State.CLINCHED_PARRIED_COUNTERED:
@@ -228,6 +234,10 @@ func enter_state(state):
 			print("ENEMY: Enter Clinched_Stunned_Hit")
 		State.CLINCHED_ATTACK:
 			print("ENEMY: Enter Clinched_Attack")
+		State.CLINCHED_BLOCK:
+			print("ENEMY: Enter Clinched_Block")
+		State.CLINCHED_BLOCK_COUNTER:
+			print("ENEMY: Enter Clinched_Block_Counter")
 		State.CLINCHED_PARRIED:
 			print("ENEMY: Enter Clinched_Parried")
 		State.CLINCHED_PARRIED_COUNTERED:
@@ -274,13 +284,17 @@ func exit_state(state):
 		State.CLINCHED_HIT:
 			attack_hit_connection = false
 			hit_flag_on_player = false
-			print("ENEMY: Enter Clinched_Hit")
+			print("ENEMY: Exit Clinched_Hit")
 		State.CLINCHED_STUNNED_HIT:
 			print("ENEMY: Exit Clinched_Stunned_Hit")
 		State.CLINCHED_ATTACK:
 			attack_hit_connection = false
 			hit_flag_on_player = false
 			print("ENEMY: Exit Clinched_Attack")
+		State.CLINCHED_BLOCK:
+			print("ENEMY: Exit Clinched_Block")
+		State.CLINCHED_BLOCK_COUNTER:
+			print("ENEMY: Exit Clinched_Block_Counter")
 		State.CLINCHED_PARRIED:
 			print("ENEMY: Exit Clinched_Parried")
 		State.CLINCHED_PARRIED_COUNTERED:
@@ -586,6 +600,46 @@ func _clinched_attack_state():
 		change_state(State.CLINCHED_HIT)
 
 
+func _clinched_block_state():
+	
+	velocity = Vector3.ZERO
+	
+	global_position = Vector3(
+		player.GrabMarker.global_position.x, 
+		0, 
+		player.GrabMarker.global_position.z
+	)
+	
+	var look_target = player.global_position
+	look_target.y = global_position.y
+	look_at(look_target, Vector3.UP)
+	
+	if (timer_general_states.is_stopped()):
+		animation.stop(true)
+		animation.play("Clinch_Blocked")
+		timer_general_states.start(animation.current_animation_length)
+
+
+func _clinched_block_counter():
+
+	velocity = Vector3.ZERO
+	
+	global_position = Vector3(
+		player.GrabMarker.global_position.x, 
+		0, 
+		player.GrabMarker.global_position.z
+	)
+	
+	var look_target = player.global_position
+	look_target.y = global_position.y
+	look_at(look_target, Vector3.UP)
+	
+	if (timer_general_states.is_stopped()):
+		animation.stop(true)
+		animation.play("Clinch_Blocked_Counter")
+		timer_general_states.start(animation.current_animation_length)
+
+
 func _clinched_parried_state():
 	
 	velocity = Vector3.ZERO
@@ -731,6 +785,14 @@ func _on_timer_general_states_timeout() -> void:
 	
 	if (current_state == State.CLINCHED_ATTACK):
 		change_state(State.CLINCHED)
+		return
+	
+	if (current_state == State.CLINCHED_BLOCK):
+		change_state(State.CLINCHED)
+		return
+	
+	if (current_state == State.CLINCHED_BLOCK_COUNTER):
+		change_state(State.CLINCHED_BLOCK_COUNTER)
 		return
 	
 	if (current_state == State.CLINCHED_PARRIED):
