@@ -474,7 +474,17 @@ func _clinched_state():
 		timer_general_states.stop()
 		change_state(State.THROWN)
 	
-	if player.grab_punch_damage_condition == true && already_hit == false:
+	if (player.variety_for_text == 3) && (player.current_state == player.State.GRAB_PUNCH)  :
+		already_hit = true
+		change_state(State.CLINCHED_BLOCK)
+		timer_general_states.stop()
+	
+	if (player.variety_for_text < 3) && (player.current_state == player.State.GRAB_PUNCH)  :
+		already_hit = true
+		change_state(State.CLINCHED_BLOCK_COUNTER)
+		timer_general_states.stop()
+	
+	if (player.variety_for_text > 3) && (player.grab_punch_damage_condition == true) && (already_hit == false):
 		already_hit = true
 		timer_general_states.stop()
 		change_state(State.CLINCHED_HIT)
@@ -792,7 +802,7 @@ func _on_timer_general_states_timeout() -> void:
 		return
 	
 	if (current_state == State.CLINCHED_BLOCK_COUNTER):
-		change_state(State.CLINCHED_BLOCK_COUNTER)
+		change_state(State.CLINCHED)
 		return
 	
 	if (current_state == State.CLINCHED_PARRIED):
