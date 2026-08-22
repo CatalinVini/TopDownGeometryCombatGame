@@ -29,6 +29,7 @@ var attack_hit_connection = false
 var HP_visible = false
 var pushed_location
 var player
+var nr_clinch_stun_duration = 2.0
 
 var current_state: State = State.IDLE
 enum State {
@@ -222,6 +223,7 @@ func enter_state(state):
 		State.PARRIED:
 			print("ENEMY: Enter Parried")
 		State.PARRIED_COUNTERED:
+			nr_clinch_stun_duration = 2.0
 			print("ENEMY: Enter Parried Countered")
 		State.CLINCHED:
 			print("ENEMY: Enter Clinched_State")
@@ -241,6 +243,7 @@ func enter_state(state):
 		State.CLINCHED_PARRIED:
 			print("ENEMY: Enter Clinched_Parried")
 		State.CLINCHED_PARRIED_COUNTERED:
+			nr_clinch_stun_duration = 2.0
 			print("ENEMY: Enter Clinched_Parried_Countered")
 		State.THROWN:
 			AreaScanForPush.disabled = true
@@ -294,6 +297,8 @@ func exit_state(state):
 		State.CLINCHED_BLOCK:
 			print("ENEMY: Exit Clinched_Block")
 		State.CLINCHED_BLOCK_COUNTER:
+			attack_hit_connection = false
+			hit_flag_on_player = false
 			print("ENEMY: Exit Clinched_Block_Counter")
 		State.CLINCHED_PARRIED:
 			print("ENEMY: Exit Clinched_Parried")
@@ -349,6 +354,10 @@ func attack_impact():
 		parried_condition()
 		
 	if (animation.current_animation == "Clinch_Attack") && (timer_general_states.time_left < 0.2):
+		attack_hit_connection = true
+		parried_condition()
+	
+	if (animation.current_animation == "Clinch_Blocked_Counter") && (timer_general_states.time_left < 0.5):
 		attack_hit_connection = true
 		parried_condition()
 
@@ -455,7 +464,7 @@ func _pushed_state():
 func _clinched_state():
 
 	velocity = Vector3.ZERO
-	animation.play("Clinch_Idle")
+	animation.play("Clinch_Idle",0.3)
 
 	global_position = Vector3(
 		player.GrabMarker.global_position.x, 
@@ -494,7 +503,10 @@ func _clinched_stunned_state():
 	
 	velocity = Vector3.ZERO
 	animation.play("Clinch_Stunned")
-
+	
+	if (timer_general_states.is_stopped()):
+		timer_general_states.start(nr_clinch_stun_duration)
+	
 	global_position = Vector3(
 		player.GrabMarker.global_position.x, 
 		0, 
@@ -550,7 +562,6 @@ func _clinched_hit_state():
 func _clinched_stunned_hit_state():
 	
 	velocity = Vector3.ZERO
-	
 	global_position = Vector3(
 		player.GrabMarker.global_position.x, 
 		0, 
@@ -564,6 +575,7 @@ func _clinched_stunned_hit_state():
 	if (timer_general_states.is_stopped()):
 		if (TakeDamage() == 1):
 			return
+		nr_clinch_stun_duration -= 1.0
 		already_hit = true
 		animation.stop(true)
 		animation.play("Clinch_Stunned_hit")
@@ -573,10 +585,15 @@ func _clinched_stunned_hit_state():
 		timer_general_states.stop()
 		change_state(State.THROWN_STUNNED)
 	
-	if player.grab_punch_damage_condition == true && already_hit == false:
+	if (player.grab_punch_damage_condition == true) && (already_hit == false) && (nr_clinch_stun_duration > 0):
 		already_hit = true
 		timer_general_states.stop()
 		change_state(State.CLINCHED_STUNNED_HIT)
+	
+	if (player.grab_punch_damage_condition == true) && (already_hit == false) && (nr_clinch_stun_duration <= 0):
+		already_hit = true
+		timer_general_states.stop()
+		change_state(State.CLINCHED_HIT)
 
 
 func _clinched_attack_state():
@@ -648,6 +665,8 @@ func _clinched_block_counter():
 		animation.stop(true)
 		animation.play("Clinch_Blocked_Counter")
 		timer_general_states.start(animation.current_animation_length)
+	
+	attack_impact()
 
 
 func _clinched_parried_state():
@@ -816,7 +835,11 @@ func _on_timer_general_states_timeout() -> void:
 	if (current_state == State.CLINCHED_PARRIED_COUNTERED):
 		change_state(State.CLINCHED_STUNNED)
 		return
-		
+	
+	if (current_state == State.CLINCHED_STUNNED):
+		change_state(State.CLINCHED)
+		return
+	
 	if (current_state == State.DEATH):
 		Enemy_Behavior.enemy_array.erase(self)
 		Enemy_Behavior.enemies_ready_attack.erase(self)
