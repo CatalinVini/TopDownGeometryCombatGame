@@ -63,14 +63,19 @@ func _ready():
 	player = get_tree().get_first_node_in_group("Player_3D")
 	Enemy_Behavior.enemy_array.push_back(self)
 	
-	nav_agent.path_desired_distance = 0.5
-	nav_agent.target_desired_distance = 1.5
 	nav_agent.avoidance_enabled = true
-	nav_agent.radius = 0.6
+	nav_agent.radius = 0.8
+	nav_agent.neighbor_distance = 4.0
+	nav_agent.max_neighbors = 8
+	nav_agent.time_horizon_agents = 1.0
+	nav_agent.time_horizon_obstacles = 1.0
+	nav_agent.max_speed = speed
 	
 	timer_distancing.autostart = true
 
-
+	nav_agent.velocity_computed.connect(_on_velocity_computed)
+	
+	
 func _physics_process(delta):
 
 	# Apply gravity
@@ -108,19 +113,23 @@ func TakeDamage():
 
 func fallow_path() -> void:
 	
-	if nav_agent.is_navigation_finished():
-		velocity.x = 0.0
-		velocity.z = 0.0
+	if player == null:
 		return
 
-	var next_position = nav_agent.get_next_path_position()
-	var direction = global_position.direction_to(next_position)
+	nav_agent.target_position = player.global_position
 
-	velocity.x = direction.x * speed
-	velocity.z = direction.z * speed
+	if nav_agent.is_navigation_finished():
+		nav_agent.velocity = Vector3.ZERO
+	else:
+		var next_pos = nav_agent.get_next_path_position()
+		var direction = global_position.direction_to(next_pos)
+		direction.y = 0.0
+		direction = direction.normalized()
 
-	if direction.length() > 0.1:
-		look_at(Vector3(next_position.x, global_position.y, next_position.z), Vector3.UP)
+		nav_agent.velocity = direction * speed
+	
+		if direction.length() > 0.1:
+			look_at(Vector3(next_pos.x, global_position.y, next_pos.z), Vector3.UP)
 
 
 func parried_condition():
@@ -146,6 +155,13 @@ func parried_condition():
 		timer_general_states.stop()
 		change_state(State.CLINCHED_PARRIED)
 
+
+func _on_velocity_computed(safe_velocity: Vector3) -> void:
+	
+	if (current_state != State.HURT) && (current_state != State.HURT_COUNTER) && (current_state != State.PARRIED_COUNTERED):
+		velocity.x = safe_velocity.x
+		velocity.z = safe_velocity.z
+	
 
 ############################################################
 

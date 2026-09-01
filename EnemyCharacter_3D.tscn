@@ -6937,6 +6937,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6875807, -1.0519309)
 shape = SubResource("BoxShape3D_2b0n5")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=908237187]
+avoidance_enabled = true
 
 [connection signal="timeout" from="Timer_general_states" to="." method="_on_timer_general_states_timeout"]
 [connection signal="timeout" from="Timer_HP_visible" to="." method="_on_timer_hp_visible_timeout"]
