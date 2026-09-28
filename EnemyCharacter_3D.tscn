@@ -6711,7 +6711,7 @@ height = 2.0335503
 radius = 1.4013672
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_m0ayn"]
-radius = 0.6567383
+radius = 0.88378906
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jm0p7"]
 radius = 0.7939453

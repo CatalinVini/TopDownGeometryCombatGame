@@ -262,12 +262,12 @@ func enter_state(state):
 			nr_clinch_stun_duration = 2.0
 			print("ENEMY: Enter Clinched_Parried_Countered")
 		State.THROWN:
-			AreaScanForPush.disabled = true
-			AreaToBeDetectedPush.disabled = false
+			self.AreaScanForPush.disabled = true
+			self.AreaToBeDetectedPush.disabled = false
 			print("ENEMY: Enter Thrown")
 		State.THROWN_STUNNED:
-			AreaScanForPush.disabled = true
-			AreaToBeDetectedPush.disabled = false
+			self.AreaScanForPush.disabled = true
+			self.AreaToBeDetectedPush.disabled = false
 			print("ENEMY: Enter Thrown_Stunned")
 		State.DEATH:
 			print("ENEMY: Enter Death")
@@ -321,8 +321,12 @@ func exit_state(state):
 		State.CLINCHED_PARRIED_COUNTERED:
 			print("ENEMY: Exit Clinched_Parried_Countered")
 		State.THROWN:
+			self.AreaScanForPush.disabled = false
+			self.AreaToBeDetectedPush.disabled = true
 			print("ENEMY: Exit Thrown")
 		State.THROWN_STUNNED:
+			self.AreaScanForPush.disabled = false
+			self.AreaToBeDetectedPush.disabled = true
 			print("ENEMY: Exit Thrown_Stunned")
 		State.DEATH:
 			print("ENEMY: Exit Death")
@@ -813,14 +817,14 @@ func _on_timer_general_states_timeout() -> void:
 		return
 		
 	if (current_state == State.THROWN):
-		AreaToBeDetectedPush.disabled = true
-		AreaScanForPush.disabled = false
+		self.AreaScanForPush.disabled = false
+		self.AreaToBeDetectedPush.disabled = true
 		change_state(State.IDLE)
 		return
 		
 	if (current_state == State.THROWN_STUNNED):
-		AreaToBeDetectedPush.disabled = true
-		AreaScanForPush.disabled = false
+		self.AreaScanForPush.disabled = false
+		self.AreaToBeDetectedPush.disabled = true
 		change_state(State.IDLE)
 		return
 	
