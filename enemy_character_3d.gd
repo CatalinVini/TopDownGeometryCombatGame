@@ -665,6 +665,10 @@ func _clinched_block_state():
 		animation.stop(true)
 		animation.play("Clinch_Blocked")
 		timer_general_states.start(animation.current_animation_length)
+	
+	if (player.current_state == player.State.GRAB_THROW):
+		timer_general_states.stop()
+		change_state(State.THROWN)
 
 
 func _clinched_block_counter():
@@ -687,6 +691,10 @@ func _clinched_block_counter():
 		timer_general_states.start(animation.current_animation_length)
 	
 	attack_impact()
+	
+	if (player.current_state == player.State.GRAB_THROW):
+		timer_general_states.stop()
+		change_state(State.THROWN)
 
 
 func _clinched_parried_state():
